@@ -1,91 +1,74 @@
 <template>
   <div>
-    <v-row>
-      <v-col cols="12">
-        <h1 class="text-h4 mb-6">Статистика</h1>
-      </v-col>
-    </v-row>
-
-    <v-row>
-      <v-col cols="12" md="6">
-        <v-card>
-          <v-card-title>
-            <v-icon class="mr-2">mdi-chart-line</v-icon>
-            Игры по дням
-          </v-card-title>
-          <v-card-text>
-            <div class="text-center pa-8">
-              <v-icon size="64" color="grey-lighten-2">mdi-chart-line</v-icon>
-              <p class="text-grey mt-4">График игр будет здесь</p>
-            </div>
-          </v-card-text>
-        </v-card>
-      </v-col>
-
-      <v-col cols="12" md="6">
-        <v-card>
-          <v-card-title>
-            <v-icon class="mr-2">mdi-chart-pie</v-icon>
-            Распределение призов
-          </v-card-title>
-          <v-card-text>
-            <div class="text-center pa-8">
-              <v-icon size="64" color="grey-lighten-2">mdi-chart-pie</v-icon>
-              <p class="text-grey mt-4">Круговая диаграмма будет здесь</p>
-            </div>
-          </v-card-text>
-        </v-card>
-      </v-col>
-    </v-row>
-
-    <v-row class="mt-6">
-      <v-col cols="12">
-        <v-card>
-          <v-card-title>
-            <v-icon class="mr-2">mdi-table</v-icon>
-            Детальная статистика
-          </v-card-title>
-          <v-card-text>
-            <v-data-table
-              :headers="statsHeaders"
-              :items="statsData"
-              class="elevation-1"
-            >
-              <template v-slot:item.games="{ item }">
-                <span class="font-weight-bold">{{ item.games }}</span>
-              </template>
-              <template v-slot:item.prizes="{ item }">
-                <span class="font-weight-bold text-success">{{ item.prizes }}</span>
-              </template>
-              <template v-slot:item.users="{ item }">
-                <span class="font-weight-bold text-info">{{ item.users }}</span>
-              </template>
-            </v-data-table>
-          </v-card-text>
-        </v-card>
-      </v-col>
-    </v-row>
+    <h2>Статистика</h2>
+    <p>Здесь будет статистика системы</p>
+    
+    <div style="margin: 2rem 0;">
+      <h3>Общая статистика</h3>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+        <div style="background: #e3f2fd; padding: 1rem; border-radius: 8px; text-align: center;">
+          <h4>Игры за неделю</h4>
+          <div style="font-size: 2rem; font-weight: bold; color: #1976D2;">245</div>
+        </div>
+        <div style="background: #e8f5e8; padding: 1rem; border-radius: 8px; text-align: center;">
+          <h4>Призы выдано</h4>
+          <div style="font-size: 2rem; font-weight: bold; color: #4CAF50;">89</div>
+        </div>
+        <div style="background: #fff3e0; padding: 1rem; border-radius: 8px; text-align: center;">
+          <h4>Новые пользователи</h4>
+          <div style="font-size: 2rem; font-weight: bold; color: #FF9800;">23</div>
+        </div>
+        <div style="background: #fce4ec; padding: 1rem; border-radius: 8px; text-align: center;">
+          <h4>Конверсия</h4>
+          <div style="font-size: 2rem; font-weight: bold; color: #E91E63;">36.3%</div>
+        </div>
+      </div>
+    </div>
+    
+    <div style="margin: 2rem 0;">
+      <h3>Детальная статистика</h3>
+      <div style="border: 1px solid #ddd; border-radius: 8px; overflow: hidden;">
+        <div style="background: #f5f5f5; padding: 1rem; font-weight: bold; border-bottom: 1px solid #ddd;">
+          <div style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr 1fr; gap: 1rem;">
+            <div>Дата</div>
+            <div>Игры</div>
+            <div>Призы</div>
+            <div>Пользователи</div>
+            <div>Конверсия</div>
+          </div>
+        </div>
+        <div style="padding: 1rem; border-bottom: 1px solid #ddd;">
+          <div style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr 1fr; gap: 1rem;">
+            <div>2024-01-15</div>
+            <div>45</div>
+            <div>12</div>
+            <div>8</div>
+            <div>26.7%</div>
+          </div>
+        </div>
+        <div style="padding: 1rem; border-bottom: 1px solid #ddd;">
+          <div style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr 1fr; gap: 1rem;">
+            <div>2024-01-14</div>
+            <div>38</div>
+            <div>9</div>
+            <div>5</div>
+            <div>23.7%</div>
+          </div>
+        </div>
+        <div style="padding: 1rem;">
+          <div style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr 1fr; gap: 1rem;">
+            <div>2024-01-13</div>
+            <div>52</div>
+            <div>15</div>
+            <div>12</div>
+            <div>28.8%</div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script setup>
-definePageMeta({
-  layout: 'admin'
-})
-
-const statsHeaders = [
-  { title: 'Дата', key: 'date', sortable: true },
-  { title: 'Игры', key: 'games', sortable: true },
-  { title: 'Призы выдано', key: 'prizes', sortable: true },
-  { title: 'Новые пользователи', key: 'users', sortable: true },
-  { title: 'Конверсия', key: 'conversion', sortable: true }
-]
-
-const statsData = ref([
-  { date: '2024-01-15', games: 45, prizes: 12, users: 8, conversion: '26.7%' },
-  { date: '2024-01-14', games: 38, prizes: 9, users: 5, conversion: '23.7%' },
-  { date: '2024-01-13', games: 52, prizes: 15, users: 12, conversion: '28.8%' },
-  { date: '2024-01-12', games: 41, prizes: 11, users: 7, conversion: '26.8%' },
-  { date: '2024-01-11', games: 47, prizes: 13, users: 9, conversion: '27.7%' }
-])
+// Статистика
 </script>

@@ -1,107 +1,52 @@
 <template>
   <div>
-    <v-row>
-      <v-col cols="12">
-        <div class="d-flex justify-space-between align-center mb-6">
-          <h1 class="text-h4">Управление играми</h1>
-          <v-btn color="primary" prepend-icon="mdi-plus">
-            Добавить игру
-          </v-btn>
+    <h2>Управление играми</h2>
+    <p>Здесь будет список игр</p>
+    
+    <div style="margin: 2rem 0;">
+      <h3>Список игр</h3>
+      <div style="border: 1px solid #ddd; border-radius: 8px; overflow: hidden;">
+        <div style="background: #f5f5f5; padding: 1rem; font-weight: bold; border-bottom: 1px solid #ddd;">
+          <div style="display: grid; grid-template-columns: 1fr 2fr 1fr 1fr; gap: 1rem;">
+            <div>ID</div>
+            <div>Название</div>
+            <div>Статус</div>
+            <div>Действия</div>
+          </div>
         </div>
-      </v-col>
-    </v-row>
-
-    <v-row>
-      <v-col cols="12">
-        <v-card>
-          <v-card-title>
-            <v-icon class="mr-2">mdi-gamepad-variant</v-icon>
-            Список игр
-          </v-card-title>
-          <v-card-text>
-            <v-data-table
-              :headers="headers"
-              :items="games"
-              :loading="loading"
-              class="elevation-1"
-            >
-              <template v-slot:item.status="{ item }">
-                <v-chip
-                  :color="item.status === 'active' ? 'success' : 'error'"
-                  size="small"
-                >
-                  {{ item.status === 'active' ? 'Активна' : 'Неактивна' }}
-                </v-chip>
-              </template>
-
-              <template v-slot:item.actions="{ item }">
-                <v-btn
-                  icon="mdi-pencil"
-                  size="small"
-                  variant="text"
-                  @click="editGame(item)"
-                ></v-btn>
-                <v-btn
-                  icon="mdi-delete"
-                  size="small"
-                  variant="text"
-                  color="error"
-                  @click="deleteGame(item)"
-                ></v-btn>
-              </template>
-            </v-data-table>
-          </v-card-text>
-        </v-card>
-      </v-col>
-    </v-row>
+        <div style="padding: 1rem; border-bottom: 1px solid #ddd;">
+          <div style="display: grid; grid-template-columns: 1fr 2fr 1fr 1fr; gap: 1rem; align-items: center;">
+            <div>1</div>
+            <div>Лук и стрелы</div>
+            <div><span style="background: #4CAF50; color: white; padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.8rem;">Активна</span></div>
+            <div>
+              <button style="background: #2196F3; color: white; border: none; padding: 0.25rem 0.5rem; border-radius: 4px; margin-right: 0.5rem;">✏️</button>
+              <button style="background: #f44336; color: white; border: none; padding: 0.25rem 0.5rem; border-radius: 4px;">🗑️</button>
+            </div>
+          </div>
+        </div>
+        <div style="padding: 1rem;">
+          <div style="display: grid; grid-template-columns: 1fr 2fr 1fr 1fr; gap: 1rem; align-items: center;">
+            <div>2</div>
+            <div>Дартс</div>
+            <div><span style="background: #4CAF50; color: white; padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.8rem;">Активна</span></div>
+            <div>
+              <button style="background: #2196F3; color: white; border: none; padding: 0.25rem 0.5rem; border-radius: 4px; margin-right: 0.5rem;">✏️</button>
+              <button style="background: #f44336; color: white; border: none; padding: 0.25rem 0.5rem; border-radius: 4px;">🗑️</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div style="margin: 2rem 0;">
+      <button style="background: #1976D2; color: white; border: none; padding: 0.75rem 1.5rem; border-radius: 4px; font-size: 1rem;">
+        ➕ Добавить игру
+      </button>
+    </div>
   </div>
 </template>
 
 <script setup>
-definePageMeta({
-  layout: 'admin'
-})
-
-const loading = ref(false)
-
-const headers = [
-  { title: 'ID', key: 'id', sortable: true },
-  { title: 'Название', key: 'name', sortable: true },
-  { title: 'Описание', key: 'description' },
-  { title: 'Статус', key: 'status', sortable: true },
-  { title: 'Дата создания', key: 'createdAt', sortable: true },
-  { title: 'Действия', key: 'actions', sortable: false }
-]
-
-const games = ref([
-  {
-    id: 1,
-    name: 'Лук и стрелы',
-    description: 'Классическая игра с луком и стрелами',
-    status: 'active',
-    createdAt: '2024-01-15'
-  },
-  {
-    id: 2,
-    name: 'Дартс',
-    description: 'Игра в дартс на точность',
-    status: 'active',
-    createdAt: '2024-01-10'
-  },
-  {
-    id: 3,
-    name: 'Кольцеброс',
-    description: 'Набрось кольцо на цель',
-    status: 'inactive',
-    createdAt: '2024-01-05'
-  }
-])
-
-const editGame = (game) => {
-  console.log('Редактировать игру:', game)
-}
-
-const deleteGame = (game) => {
-  console.log('Удалить игру:', game)
-}
+// Управление играми
 </script>

@@ -1,199 +1,79 @@
 <template>
   <div>
-    <v-row>
-      <v-col cols="12">
-        <h1 class="text-h4 mb-6">Настройки системы</h1>
-      </v-col>
-    </v-row>
-
-    <v-row>
-      <v-col cols="12" md="6">
-        <v-card>
-          <v-card-title>
-            <v-icon class="mr-2">mdi-cog</v-icon>
-            Общие настройки
-          </v-card-title>
-          <v-card-text>
-            <v-form>
-              <v-text-field
-                v-model="settings.siteName"
-                label="Название сайта"
-                variant="outlined"
-                class="mb-4"
-              ></v-text-field>
-
-              <v-textarea
-                v-model="settings.description"
-                label="Описание сайта"
-                variant="outlined"
-                rows="3"
-                class="mb-4"
-              ></v-textarea>
-
-              <v-text-field
-                v-model="settings.contactEmail"
-                label="Контактный email"
-                variant="outlined"
-                type="email"
-                class="mb-4"
-              ></v-text-field>
-
-              <v-text-field
-                v-model="settings.contactPhone"
-                label="Контактный телефон"
-                variant="outlined"
-                class="mb-4"
-              ></v-text-field>
-
-              <v-switch
-                v-model="settings.maintenanceMode"
-                label="Режим обслуживания"
-                color="warning"
-                class="mb-4"
-              ></v-switch>
-
-              <v-btn color="primary" @click="saveSettings">
-                Сохранить настройки
-              </v-btn>
-            </v-form>
-          </v-card-text>
-        </v-card>
-      </v-col>
-
-      <v-col cols="12" md="6">
-        <v-card>
-          <v-card-title>
-            <v-icon class="mr-2">mdi-gamepad-variant</v-icon>
-            Настройки игр
-          </v-card-title>
-          <v-card-text>
-            <v-form>
-              <v-text-field
-                v-model="gameSettings.maxGamesPerUser"
-                label="Максимум игр на пользователя"
-                variant="outlined"
-                type="number"
-                class="mb-4"
-              ></v-text-field>
-
-              <v-text-field
-                v-model="gameSettings.gameTimeout"
-                label="Таймаут игры (секунды)"
-                variant="outlined"
-                type="number"
-                class="mb-4"
-              ></v-text-field>
-
-              <v-switch
-                v-model="gameSettings.allowMultipleGames"
-                label="Разрешить несколько игр одновременно"
-                color="success"
-                class="mb-4"
-              ></v-switch>
-
-              <v-switch
-                v-model="gameSettings.requireRegistration"
-                label="Требовать регистрацию для игры"
-                color="info"
-                class="mb-4"
-              ></v-switch>
-
-              <v-btn color="primary" @click="saveGameSettings">
-                Сохранить настройки игр
-              </v-btn>
-            </v-form>
-          </v-card-text>
-        </v-card>
-      </v-col>
-    </v-row>
-
-    <v-row class="mt-6">
-      <v-col cols="12">
-        <v-card>
-          <v-card-title>
-            <v-icon class="mr-2">mdi-gift</v-icon>
-            Настройки призов
-          </v-card-title>
-          <v-card-text>
-            <v-form>
-              <v-row>
-                <v-col cols="12" md="4">
-                  <v-text-field
-                    v-model="prizeSettings.minPrizeValue"
-                    label="Минимальная стоимость приза"
-                    variant="outlined"
-                    type="number"
-                    suffix="₽"
-                  ></v-text-field>
-                </v-col>
-                <v-col cols="12" md="4">
-                  <v-text-field
-                    v-model="prizeSettings.maxPrizeValue"
-                    label="Максимальная стоимость приза"
-                    variant="outlined"
-                    type="number"
-                    suffix="₽"
-                  ></v-text-field>
-                </v-col>
-                <v-col cols="12" md="4">
-                  <v-text-field
-                    v-model="prizeSettings.dailyPrizeLimit"
-                    label="Лимит призов в день"
-                    variant="outlined"
-                    type="number"
-                  ></v-text-field>
-                </v-col>
-              </v-row>
-
-              <v-btn color="primary" @click="savePrizeSettings">
-                Сохранить настройки призов
-              </v-btn>
-            </v-form>
-          </v-card-text>
-        </v-card>
-      </v-col>
-    </v-row>
+    <h2>Настройки системы</h2>
+    <p>Здесь будут настройки системы</p>
+    
+    <div style="margin: 2rem 0;">
+      <h3>Общие настройки</h3>
+      <div style="background: #f9f9f9; padding: 1.5rem; border-radius: 8px; border: 1px solid #ddd;">
+        <div style="margin-bottom: 1rem;">
+          <label style="display: block; margin-bottom: 0.5rem; font-weight: bold;">Название сайта</label>
+          <input type="text" value="Brand Games" style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;">
+        </div>
+        
+        <div style="margin-bottom: 1rem;">
+          <label style="display: block; margin-bottom: 0.5rem; font-weight: bold;">Описание сайта</label>
+          <textarea style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px; height: 80px;">Интерактивные игры с призами и брендингом</textarea>
+        </div>
+        
+        <div style="margin-bottom: 1rem;">
+          <label style="display: block; margin-bottom: 0.5rem; font-weight: bold;">Контактный email</label>
+          <input type="email" value="admin@brandgames.ru" style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;">
+        </div>
+        
+        <div style="margin-bottom: 1rem;">
+          <label style="display: block; margin-bottom: 0.5rem; font-weight: bold;">Контактный телефон</label>
+          <input type="tel" value="+7 (999) 123-45-67" style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;">
+        </div>
+        
+        <div style="margin-bottom: 1rem;">
+          <label style="display: flex; align-items: center; gap: 0.5rem;">
+            <input type="checkbox" style="transform: scale(1.2);">
+            <span>Режим обслуживания</span>
+          </label>
+        </div>
+        
+        <button style="background: #1976D2; color: white; border: none; padding: 0.75rem 1.5rem; border-radius: 4px; font-size: 1rem;">
+          💾 Сохранить настройки
+        </button>
+      </div>
+    </div>
+    
+    <div style="margin: 2rem 0;">
+      <h3>Настройки игр</h3>
+      <div style="background: #f9f9f9; padding: 1.5rem; border-radius: 8px; border: 1px solid #ddd;">
+        <div style="margin-bottom: 1rem;">
+          <label style="display: block; margin-bottom: 0.5rem; font-weight: bold;">Максимум игр на пользователя</label>
+          <input type="number" value="5" style="width: 100px; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;">
+        </div>
+        
+        <div style="margin-bottom: 1rem;">
+          <label style="display: block; margin-bottom: 0.5rem; font-weight: bold;">Таймаут игры (секунды)</label>
+          <input type="number" value="60" style="width: 100px; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;">
+        </div>
+        
+        <div style="margin-bottom: 1rem;">
+          <label style="display: flex; align-items: center; gap: 0.5rem;">
+            <input type="checkbox" checked style="transform: scale(1.2);">
+            <span>Разрешить несколько игр одновременно</span>
+          </label>
+        </div>
+        
+        <div style="margin-bottom: 1rem;">
+          <label style="display: flex; align-items: center; gap: 0.5rem;">
+            <input type="checkbox" checked style="transform: scale(1.2);">
+            <span>Требовать регистрацию для игры</span>
+          </label>
+        </div>
+        
+        <button style="background: #1976D2; color: white; border: none; padding: 0.75rem 1.5rem; border-radius: 4px; font-size: 1rem;">
+          💾 Сохранить настройки игр
+        </button>
+      </div>
+    </div>
   </div>
 </template>
 
 <script setup>
-definePageMeta({
-  layout: 'admin'
-})
-
-const settings = ref({
-  siteName: 'Brand Games',
-  description: 'Интерактивные игры с призами и брендингом',
-  contactEmail: 'admin@brandgames.ru',
-  contactPhone: '+7 (999) 123-45-67',
-  maintenanceMode: false
-})
-
-const gameSettings = ref({
-  maxGamesPerUser: 5,
-  gameTimeout: 60,
-  allowMultipleGames: true,
-  requireRegistration: true
-})
-
-const prizeSettings = ref({
-  minPrizeValue: 100,
-  maxPrizeValue: 5000,
-  dailyPrizeLimit: 100
-})
-
-const saveSettings = () => {
-  console.log('Сохранение общих настроек:', settings.value)
-  // Здесь будет логика сохранения
-}
-
-const saveGameSettings = () => {
-  console.log('Сохранение настроек игр:', gameSettings.value)
-  // Здесь будет логика сохранения
-}
-
-const savePrizeSettings = () => {
-  console.log('Сохранение настроек призов:', prizeSettings.value)
-  // Здесь будет логика сохранения
-}
+// Настройки системы
 </script>

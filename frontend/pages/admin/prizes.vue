@@ -1,133 +1,55 @@
 <template>
   <div>
-    <v-row>
-      <v-col cols="12">
-        <div class="d-flex justify-space-between align-center mb-6">
-          <h1 class="text-h4">Управление призами</h1>
-          <v-btn color="primary" prepend-icon="mdi-plus">
-            Добавить приз
-          </v-btn>
+    <h2>Управление призами</h2>
+    <p>Здесь будет список призов</p>
+    
+    <div style="margin: 2rem 0;">
+      <h3>Список призов</h3>
+      <div style="border: 1px solid #ddd; border-radius: 8px; overflow: hidden;">
+        <div style="background: #f5f5f5; padding: 1rem; font-weight: bold; border-bottom: 1px solid #ddd;">
+          <div style="display: grid; grid-template-columns: 1fr 2fr 1fr 1fr 1fr; gap: 1rem;">
+            <div>ID</div>
+            <div>Название</div>
+            <div>Стоимость</div>
+            <div>Количество</div>
+            <div>Действия</div>
+          </div>
         </div>
-      </v-col>
-    </v-row>
-
-    <v-row>
-      <v-col cols="12" md="8">
-        <v-card>
-          <v-card-title>
-            <v-icon class="mr-2">mdi-gift</v-icon>
-            Список призов
-          </v-card-title>
-          <v-card-text>
-            <v-data-table
-              :headers="headers"
-              :items="prizes"
-              :loading="loading"
-              class="elevation-1"
-            >
-              <template v-slot:item.value="{ item }">
-                <span class="font-weight-bold">{{ item.value }}₽</span>
-              </template>
-
-              <template v-slot:item.actions="{ item }">
-                <v-btn
-                  icon="mdi-pencil"
-                  size="small"
-                  variant="text"
-                  @click="editPrize(item)"
-                ></v-btn>
-                <v-btn
-                  icon="mdi-delete"
-                  size="small"
-                  variant="text"
-                  color="error"
-                  @click="deletePrize(item)"
-                ></v-btn>
-              </template>
-            </v-data-table>
-          </v-card-text>
-        </v-card>
-      </v-col>
-
-      <v-col cols="12" md="4">
-        <v-card>
-          <v-card-title>
-            <v-icon class="mr-2">mdi-chart-pie</v-icon>
-            Статистика призов
-          </v-card-title>
-          <v-card-text>
-            <v-list>
-              <v-list-item>
-                <v-list-item-title>Всего призов</v-list-item>
-                <template v-slot:append>
-                  <span class="text-h6 font-weight-bold">24</span>
-                </template>
-              </v-list-item>
-              <v-list-item>
-                <v-list-item-title>Общая стоимость</v-list-item>
-                <template v-slot:append>
-                  <span class="text-h6 font-weight-bold">15,000₽</span>
-                </template>
-              </v-list-item>
-              <v-list-item>
-                <v-list-item-title>Выдано сегодня</v-list-item>
-                <template v-slot:append>
-                  <span class="text-h6 font-weight-bold text-success">3</span>
-                </template>
-              </v-list-item>
-            </v-list>
-          </v-card-text>
-        </v-card>
-      </v-col>
-    </v-row>
+        <div style="padding: 1rem; border-bottom: 1px solid #ddd;">
+          <div style="display: grid; grid-template-columns: 1fr 2fr 1fr 1fr 1fr; gap: 1rem; align-items: center;">
+            <div>1</div>
+            <div>Скидка 10%</div>
+            <div>500₽</div>
+            <div>50</div>
+            <div>
+              <button style="background: #2196F3; color: white; border: none; padding: 0.25rem 0.5rem; border-radius: 4px; margin-right: 0.5rem;">✏️</button>
+              <button style="background: #f44336; color: white; border: none; padding: 0.25rem 0.5rem; border-radius: 4px;">🗑️</button>
+            </div>
+          </div>
+        </div>
+        <div style="padding: 1rem;">
+          <div style="display: grid; grid-template-columns: 1fr 2fr 1fr 1fr 1fr; gap: 1rem; align-items: center;">
+            <div>2</div>
+            <div>Бесплатная доставка</div>
+            <div>300₽</div>
+            <div>100</div>
+            <div>
+              <button style="background: #2196F3; color: white; border: none; padding: 0.25rem 0.5rem; border-radius: 4px; margin-right: 0.5rem;">✏️</button>
+              <button style="background: #f44336; color: white; border: none; padding: 0.25rem 0.5rem; border-radius: 4px;">🗑️</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div style="margin: 2rem 0;">
+      <button style="background: #1976D2; color: white; border: none; padding: 0.75rem 1.5rem; border-radius: 4px; font-size: 1rem;">
+        ➕ Добавить приз
+      </button>
+    </div>
   </div>
 </template>
 
 <script setup>
-definePageMeta({
-  layout: 'admin'
-})
-
-const loading = ref(false)
-
-const headers = [
-  { title: 'ID', key: 'id', sortable: true },
-  { title: 'Название', key: 'name', sortable: true },
-  { title: 'Описание', key: 'description' },
-  { title: 'Стоимость', key: 'value', sortable: true },
-  { title: 'Количество', key: 'quantity', sortable: true },
-  { title: 'Действия', key: 'actions', sortable: false }
-]
-
-const prizes = ref([
-  {
-    id: 1,
-    name: 'Скидка 10%',
-    description: 'Скидка на следующий заказ',
-    value: 500,
-    quantity: 50
-  },
-  {
-    id: 2,
-    name: 'Бесплатная доставка',
-    description: 'Бесплатная доставка на заказ от 1000₽',
-    value: 300,
-    quantity: 100
-  },
-  {
-    id: 3,
-    name: 'Подарочный сертификат',
-    description: 'Сертификат на 1000₽',
-    value: 1000,
-    quantity: 10
-  }
-])
-
-const editPrize = (prize) => {
-  console.log('Редактировать приз:', prize)
-}
-
-const deletePrize = (prize) => {
-  console.log('Удалить приз:', prize)
-}
+// Управление призами
 </script>
