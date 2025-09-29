@@ -1,0 +1,88 @@
+version: '3.8'
+
+services:
+  # База данных MySQL
+  mysql:
+    image: mysql:8.0
+    container_name: brand-games-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: brand_games
+      MYSQL_USER: brand_games
+      MYSQL_PASSWORD: brand_games_password
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./docker/mysql/init:/docker-entrypoint-initdb.d
+    networks:
+      - brand-games-network
+
+  # Redis для кеширования (опционально)
+  redis:
+    image: redis:7-alpine
+    container_name: brand-games-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - brand-games-network
+
+  # Фронтенд (Nuxt.js)
+  frontend:
+    build:
+      context: .
+      dockerfile: docker/frontend/Dockerfile
+    container_name: brand-games-frontend
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    environment:
+      - NODE_ENV=development
+      - NUXT_PUBLIC_API_BASE_URL=http://localhost:3001
+    depends_on:
+      - backend
+    networks:
+      - brand-games-network
+
+  # Бэкенд (NestJS)
+  backend:
+    build:
+      context: .
+      dockerfile: docker/backend/Dockerfile
+    container_name: brand-games-backend
+    restart: unless-stopped
+    ports:
+      - "3001:3001"
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+    environment:
+      - NODE_ENV=development
+      - DATABASE_HOST=mysql
+      - DATABASE_PORT=3306
+      - DATABASE_NAME=brand_games
+      - DATABASE_USER=brand_games
+      - DATABASE_PASSWORD=brand_games_password
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+    depends_on:
+      - mysql
+      - redis
+    networks:
+      - brand-games-network
+
+volumes:
+  mysql_data:
+  redis_data:
+
+networks:
+  brand-games-network:
+    driver: bridge
+
