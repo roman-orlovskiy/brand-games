@@ -12,5 +12,9 @@ export default defineNuxtConfig({
     define: {
       'process.env.DEBUG': false,
     },
+    ssr: {
+      noExternal: ['vuetify']
+    }
   },
+  ssr: true
 })
