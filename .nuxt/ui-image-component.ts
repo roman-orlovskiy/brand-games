@@ -1,1 +1,1 @@
-export default "img"
+export { default } from "C:/Users/irom-/Projects/brand-games/node_modules/@nuxt/image/dist/runtime/components/NuxtImg.vue";

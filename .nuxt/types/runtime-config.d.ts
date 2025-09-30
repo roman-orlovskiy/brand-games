@@ -14,12 +14,22 @@ import { RuntimeConfig as UserRuntimeConfig, PublicRuntimeConfig as UserPublicRu
       envPrefix: string,
    },
 
+   "nuxt-scripts": {
+      version: string,
+   },
+
    icon: {
       serverKnownCssClasses: Array<any>,
    },
   }
   interface SharedPublicRuntimeConfig {
+   "nuxt-scripts": {
+      version: string,
 
+      defaultScriptOptions: {
+         trigger: string,
+      },
+   },
   }
 declare module '@nuxt/schema' {
   interface RuntimeConfig extends UserRuntimeConfig {}

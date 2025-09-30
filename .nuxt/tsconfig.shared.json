@@ -22,9 +22,6 @@
       "ofetch": [
         "../node_modules/ofetch"
       ],
-      "@unhead/vue": [
-        "../node_modules/@unhead/vue"
-      ],
       "@nuxt/devtools": [
         "../node_modules/@nuxt/devtools"
       ],
@@ -85,6 +82,21 @@
       "vue-demi": [
         "../node_modules/nuxt/dist/app/compat/vue-demi"
       ],
+      "#image": [
+        "../node_modules/@nuxt/image/dist/runtime"
+      ],
+      "#image/*": [
+        "../node_modules/@nuxt/image/dist/runtime/*"
+      ],
+      "#nuxt-scripts-validator": [
+        "../node_modules/@nuxt/scripts/dist/runtime/validation/valibot"
+      ],
+      "#nuxt-scripts": [
+        "../node_modules/@nuxt/scripts/dist/runtime"
+      ],
+      "#nuxt-scripts/*": [
+        "../node_modules/@nuxt/scripts/dist/runtime/*"
+      ],
       "#ui": [
         "../node_modules/@nuxt/ui/dist/runtime"
       ],
@@ -104,7 +116,7 @@
         "./imports"
       ],
       "#app-manifest": [
-        "./manifest/meta/dev"
+        "./manifest/meta/dev.json"
       ],
       "#build": [
         "."

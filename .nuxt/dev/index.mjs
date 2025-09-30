@@ -3,7 +3,7 @@ import { Server } from 'node:http';
 import { resolve, dirname, join } from 'node:path';
 import nodeCrypto from 'node:crypto';
 import { parentPort, threadId } from 'node:worker_threads';
-import { defineEventHandler, handleCacheHeaders, splitCookiesString, createEvent, fetchWithEvent, isEvent, eventHandler, setHeaders, sendRedirect, proxyRequest, getRequestHeader, setResponseHeaders, setResponseStatus, send, getRequestHeaders, setResponseHeader, appendResponseHeader, getRequestURL, getResponseHeader, removeResponseHeader, createError, getResponseStatus, getQuery as getQuery$1, readBody, createApp, createRouter as createRouter$1, toNodeListener, lazyEventHandler, getRouterParam, getResponseStatusText } from 'file://C:/Users/irom-/Projects/brand-games/node_modules/h3/dist/index.mjs';
+import { defineEventHandler, handleCacheHeaders, splitCookiesString, createEvent, fetchWithEvent, isEvent, eventHandler, setHeaders, sendRedirect, proxyRequest, getRequestHeader, setResponseHeaders, setResponseStatus, send, getRequestHeaders, setResponseHeader, appendResponseHeader, getRequestURL, getResponseHeader, removeResponseHeader, createError, getResponseStatus, getQuery as getQuery$1, readBody, lazyEventHandler, useBase, createApp, createRouter as createRouter$1, toNodeListener, getRouterParam, getResponseStatusText } from 'file://C:/Users/irom-/Projects/brand-games/node_modules/h3/dist/index.mjs';
 import { escapeHtml } from 'file://C:/Users/irom-/Projects/brand-games/node_modules/@vue/shared/dist/shared.cjs.js';
 import { createRenderer, getRequestDependencies, getPreloadLinks, getPrefetchLinks } from 'file://C:/Users/irom-/Projects/brand-games/node_modules/vue-bundle-renderer/dist/runtime.mjs';
 import { parseURL, withoutBase, joinURL, getQuery, withQuery, withTrailingSlash, decodePath, withLeadingSlash, withoutTrailingSlash, joinRelativeURL } from 'file://C:/Users/irom-/Projects/brand-games/node_modules/ufo/dist/index.mjs';
@@ -32,10 +32,11 @@ import { getContext } from 'file://C:/Users/irom-/Projects/brand-games/node_modu
 import { captureRawStackTrace, parseRawStackTrace } from 'file://C:/Users/irom-/Projects/brand-games/node_modules/errx/dist/index.js';
 import { promises } from 'node:fs';
 import { fileURLToPath } from 'node:url';
-import { dirname as dirname$1, resolve as resolve$1, basename } from 'file://C:/Users/irom-/Projects/brand-games/node_modules/pathe/dist/index.mjs';
+import { dirname as dirname$1, resolve as resolve$1, basename, isAbsolute } from 'file://C:/Users/irom-/Projects/brand-games/node_modules/pathe/dist/index.mjs';
 import { getIcons } from 'file://C:/Users/irom-/Projects/brand-games/node_modules/@iconify/utils/lib/index.js';
 import { collections } from 'file://C:/Users/irom-/Projects/brand-games/.nuxt/nuxt-icon-server-bundle.mjs';
 import { walkResolver } from 'file://C:/Users/irom-/Projects/brand-games/node_modules/unhead/dist/utils.mjs';
+import { ipxFSStorage, ipxHttpStorage, createIPX, createIPXH3Handler } from 'file://C:/Users/irom-/Projects/brand-games/node_modules/ipx/dist/index.mjs';
 
 const serverAssets = [{"baseName":"server","dir":"C:/Users/irom-/Projects/brand-games/server/assets"}];
 
@@ -893,6 +894,14 @@ const _inlineRuntimeConfig = {
           "maxAge": 31536000
         }
       },
+      "/_scripts/**": {
+        "headers": {
+          "cache-control": "public, max-age=31536000, immutable"
+        },
+        "cache": {
+          "maxAge": 31536000
+        }
+      },
       "/_nuxt/builds/meta/**": {
         "headers": {
           "cache-control": "public, max-age=31536000, immutable"
@@ -905,9 +914,31 @@ const _inlineRuntimeConfig = {
       }
     }
   },
-  "public": {},
+  "public": {
+    "nuxt-scripts": {
+      "version": "0.12.1",
+      "defaultScriptOptions": {
+        "trigger": "onNuxtReady"
+      }
+    }
+  },
+  "nuxt-scripts": {
+    "version": "0.12.1"
+  },
   "icon": {
     "serverKnownCssClasses": []
+  },
+  "ipx": {
+    "baseURL": "/_ipx",
+    "alias": {},
+    "fs": {
+      "dir": [
+        "C:/Users/irom-/Projects/brand-games/public"
+      ]
+    },
+    "http": {
+      "domains": []
+    }
   }
 };
 const envOptions = {
@@ -1397,7 +1428,7 @@ function readAsset (id) {
   return promises.readFile(resolve$1(serverDir, assets[id].path))
 }
 
-const publicAssetBases = {"/_nuxt/builds/meta/":{"maxAge":31536000},"/_nuxt/builds/":{"maxAge":1},"/_fonts/":{"maxAge":31536000}};
+const publicAssetBases = {"/_nuxt/builds/meta/":{"maxAge":31536000},"/_nuxt/builds/":{"maxAge":1},"/_fonts/":{"maxAge":31536000},"/_scripts/":{"maxAge":31536000}};
 
 function isPublicAssetURL(id = '') {
   if (assets[id]) {
@@ -1933,6 +1964,24 @@ async function getIslandContext(event) {
   return ctx;
 }
 
+const _j0ANVa = lazyEventHandler(() => {
+  const opts = useRuntimeConfig().ipx || {};
+  const fsDir = opts?.fs?.dir ? (Array.isArray(opts.fs.dir) ? opts.fs.dir : [opts.fs.dir]).map((dir) => isAbsolute(dir) ? dir : fileURLToPath(new URL(dir, globalThis._importMeta_.url))) : void 0;
+  const fsStorage = opts.fs?.dir ? ipxFSStorage({ ...opts.fs, dir: fsDir }) : void 0;
+  const httpStorage = opts.http?.domains ? ipxHttpStorage({ ...opts.http }) : void 0;
+  if (!fsStorage && !httpStorage) {
+    throw new Error("IPX storage is not configured!");
+  }
+  const ipxOptions = {
+    ...opts,
+    storage: fsStorage || httpStorage,
+    httpStorage
+  };
+  const ipx = createIPX(ipxOptions);
+  const ipxHandler = createIPXH3Handler(ipx);
+  return useBase(opts.baseURL, ipxHandler);
+});
+
 const _lazy_jfU_EK = () => Promise.resolve().then(function () { return renderer$1; });
 
 const handlers = [
@@ -1940,7 +1989,9 @@ const handlers = [
   { route: '/__nuxt_error', handler: _lazy_jfU_EK, lazy: true, middleware: false, method: undefined },
   { route: '/api/_nuxt_icon/:collection', handler: _hQ3I1n, lazy: false, middleware: false, method: undefined },
   { route: '/__nuxt_island/**', handler: _SxA8c9, lazy: false, middleware: false, method: undefined },
+  { route: '/_ipx/**', handler: _j0ANVa, lazy: false, middleware: false, method: undefined },
   { route: '/_fonts/**', handler: _lazy_jfU_EK, lazy: true, middleware: false, method: undefined },
+  { route: '/_scripts/**', handler: _lazy_jfU_EK, lazy: true, middleware: false, method: undefined },
   { route: '/**', handler: _lazy_jfU_EK, lazy: true, middleware: false, method: undefined }
 ];
 

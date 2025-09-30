@@ -21,7 +21,6 @@ declare global {
   const defineNuxtLink: typeof import('../../node_modules/nuxt/dist/app/components/nuxt-link')['defineNuxtLink']
   const defineNuxtPlugin: typeof import('../../node_modules/nuxt/dist/app/nuxt')['defineNuxtPlugin']
   const defineNuxtRouteMiddleware: typeof import('../../node_modules/nuxt/dist/app/composables/router')['defineNuxtRouteMiddleware']
-  const definePageMeta: typeof import('../../node_modules/nuxt/dist/pages/runtime/composables')['definePageMeta']
   const definePayloadPlugin: typeof import('../../node_modules/nuxt/dist/app/nuxt')['definePayloadPlugin']
   const definePayloadReducer: typeof import('../../node_modules/nuxt/dist/app/composables/payload')['definePayloadReducer']
   const definePayloadReviver: typeof import('../../node_modules/nuxt/dist/app/composables/payload')['definePayloadReviver']
@@ -65,8 +64,8 @@ declare global {
   const nextTick: typeof import('vue')['nextTick']
   const onActivated: typeof import('vue')['onActivated']
   const onBeforeMount: typeof import('vue')['onBeforeMount']
-  const onBeforeRouteLeave: typeof import('vue-router')['onBeforeRouteLeave']
-  const onBeforeRouteUpdate: typeof import('vue-router')['onBeforeRouteUpdate']
+  const onBeforeRouteLeave: typeof import('../../node_modules/nuxt/dist/app/composables/router')['onBeforeRouteLeave']
+  const onBeforeRouteUpdate: typeof import('../../node_modules/nuxt/dist/app/composables/router')['onBeforeRouteUpdate']
   const onBeforeUnmount: typeof import('vue')['onBeforeUnmount']
   const onBeforeUpdate: typeof import('vue')['onBeforeUpdate']
   const onDeactivated: typeof import('vue')['onDeactivated']
@@ -131,10 +130,10 @@ declare global {
   const useHeadSafe: typeof import('../../node_modules/nuxt/dist/app/composables/head')['useHeadSafe']
   const useHydration: typeof import('../../node_modules/nuxt/dist/app/composables/hydrate')['useHydration']
   const useId: typeof import('vue')['useId']
+  const useImage: typeof import('../../node_modules/@nuxt/image/dist/runtime/composables')['useImage']
   const useKbd: typeof import('../../node_modules/@nuxt/ui/dist/runtime/composables/useKbd')['useKbd']
   const useLazyAsyncData: typeof import('../../node_modules/nuxt/dist/app/composables/asyncData')['useLazyAsyncData']
   const useLazyFetch: typeof import('../../node_modules/nuxt/dist/app/composables/fetch')['useLazyFetch']
-  const useLink: typeof import('vue-router')['useLink']
   const useLoadingIndicator: typeof import('../../node_modules/nuxt/dist/app/composables/loading-indicator')['useLoadingIndicator']
   const useLocale: typeof import('../../node_modules/@nuxt/ui/dist/runtime/composables/useLocale')['useLocale']
   const useModel: typeof import('vue')['useModel']
@@ -156,33 +155,36 @@ declare global {
   const useRouter: typeof import('../../node_modules/nuxt/dist/app/composables/router')['useRouter']
   const useRuntimeConfig: typeof import('../../node_modules/nuxt/dist/app/nuxt')['useRuntimeConfig']
   const useRuntimeHook: typeof import('../../node_modules/nuxt/dist/app/composables/runtime-hook')['useRuntimeHook']
-  const useScript: typeof import('../../node_modules/nuxt/dist/app/composables/script-stubs')['useScript']
-  const useScriptClarity: typeof import('../../node_modules/nuxt/dist/app/composables/script-stubs')['useScriptClarity']
-  const useScriptCloudflareWebAnalytics: typeof import('../../node_modules/nuxt/dist/app/composables/script-stubs')['useScriptCloudflareWebAnalytics']
-  const useScriptCrisp: typeof import('../../node_modules/nuxt/dist/app/composables/script-stubs')['useScriptCrisp']
-  const useScriptEventPage: typeof import('../../node_modules/nuxt/dist/app/composables/script-stubs')['useScriptEventPage']
-  const useScriptFathomAnalytics: typeof import('../../node_modules/nuxt/dist/app/composables/script-stubs')['useScriptFathomAnalytics']
-  const useScriptGoogleAdsense: typeof import('../../node_modules/nuxt/dist/app/composables/script-stubs')['useScriptGoogleAdsense']
-  const useScriptGoogleAnalytics: typeof import('../../node_modules/nuxt/dist/app/composables/script-stubs')['useScriptGoogleAnalytics']
-  const useScriptGoogleMaps: typeof import('../../node_modules/nuxt/dist/app/composables/script-stubs')['useScriptGoogleMaps']
-  const useScriptGoogleTagManager: typeof import('../../node_modules/nuxt/dist/app/composables/script-stubs')['useScriptGoogleTagManager']
-  const useScriptHotjar: typeof import('../../node_modules/nuxt/dist/app/composables/script-stubs')['useScriptHotjar']
-  const useScriptIntercom: typeof import('../../node_modules/nuxt/dist/app/composables/script-stubs')['useScriptIntercom']
-  const useScriptLemonSqueezy: typeof import('../../node_modules/nuxt/dist/app/composables/script-stubs')['useScriptLemonSqueezy']
-  const useScriptMatomoAnalytics: typeof import('../../node_modules/nuxt/dist/app/composables/script-stubs')['useScriptMatomoAnalytics']
-  const useScriptMetaPixel: typeof import('../../node_modules/nuxt/dist/app/composables/script-stubs')['useScriptMetaPixel']
-  const useScriptNpm: typeof import('../../node_modules/nuxt/dist/app/composables/script-stubs')['useScriptNpm']
-  const useScriptPlausibleAnalytics: typeof import('../../node_modules/nuxt/dist/app/composables/script-stubs')['useScriptPlausibleAnalytics']
-  const useScriptRybbitAnalytics: typeof import('../../node_modules/nuxt/dist/app/composables/script-stubs')['useScriptRybbitAnalytics']
-  const useScriptSegment: typeof import('../../node_modules/nuxt/dist/app/composables/script-stubs')['useScriptSegment']
-  const useScriptSnapchatPixel: typeof import('../../node_modules/nuxt/dist/app/composables/script-stubs')['useScriptSnapchatPixel']
-  const useScriptStripe: typeof import('../../node_modules/nuxt/dist/app/composables/script-stubs')['useScriptStripe']
-  const useScriptTriggerConsent: typeof import('../../node_modules/nuxt/dist/app/composables/script-stubs')['useScriptTriggerConsent']
-  const useScriptTriggerElement: typeof import('../../node_modules/nuxt/dist/app/composables/script-stubs')['useScriptTriggerElement']
-  const useScriptUmamiAnalytics: typeof import('../../node_modules/nuxt/dist/app/composables/script-stubs')['useScriptUmamiAnalytics']
-  const useScriptVimeoPlayer: typeof import('../../node_modules/nuxt/dist/app/composables/script-stubs')['useScriptVimeoPlayer']
-  const useScriptXPixel: typeof import('../../node_modules/nuxt/dist/app/composables/script-stubs')['useScriptXPixel']
-  const useScriptYouTubePlayer: typeof import('../../node_modules/nuxt/dist/app/composables/script-stubs')['useScriptYouTubePlayer']
+  const useScript: typeof import('../../node_modules/@nuxt/scripts/dist/runtime/composables/useScript')['useScript']
+  const useScriptClarity: typeof import('../../node_modules/@nuxt/scripts/dist/runtime/registry/clarity')['useScriptClarity']
+  const useScriptCloudflareWebAnalytics: typeof import('../../node_modules/@nuxt/scripts/dist/runtime/registry/cloudflare-web-analytics')['useScriptCloudflareWebAnalytics']
+  const useScriptCrisp: typeof import('../../node_modules/@nuxt/scripts/dist/runtime/registry/crisp')['useScriptCrisp']
+  const useScriptDatabuddyAnalytics: typeof import('../../node_modules/@nuxt/scripts/dist/runtime/registry/databuddy-analytics')['useScriptDatabuddyAnalytics']
+  const useScriptEventPage: typeof import('../../node_modules/@nuxt/scripts/dist/runtime/composables/useScriptEventPage')['useScriptEventPage']
+  const useScriptFathomAnalytics: typeof import('../../node_modules/@nuxt/scripts/dist/runtime/registry/fathom-analytics')['useScriptFathomAnalytics']
+  const useScriptGoogleAdsense: typeof import('../../node_modules/@nuxt/scripts/dist/runtime/registry/google-adsense')['useScriptGoogleAdsense']
+  const useScriptGoogleAnalytics: typeof import('../../node_modules/@nuxt/scripts/dist/runtime/registry/google-analytics')['useScriptGoogleAnalytics']
+  const useScriptGoogleMaps: typeof import('../../node_modules/@nuxt/scripts/dist/runtime/registry/google-maps')['useScriptGoogleMaps']
+  const useScriptGoogleTagManager: typeof import('../../node_modules/@nuxt/scripts/dist/runtime/registry/google-tag-manager')['useScriptGoogleTagManager']
+  const useScriptHotjar: typeof import('../../node_modules/@nuxt/scripts/dist/runtime/registry/hotjar')['useScriptHotjar']
+  const useScriptIntercom: typeof import('../../node_modules/@nuxt/scripts/dist/runtime/registry/intercom')['useScriptIntercom']
+  const useScriptLemonSqueezy: typeof import('../../node_modules/@nuxt/scripts/dist/runtime/registry/lemon-squeezy')['useScriptLemonSqueezy']
+  const useScriptMatomoAnalytics: typeof import('../../node_modules/@nuxt/scripts/dist/runtime/registry/matomo-analytics')['useScriptMatomoAnalytics']
+  const useScriptMetaPixel: typeof import('../../node_modules/@nuxt/scripts/dist/runtime/registry/meta-pixel')['useScriptMetaPixel']
+  const useScriptNpm: typeof import('../../node_modules/@nuxt/scripts/dist/runtime/registry/npm')['useScriptNpm']
+  const useScriptPayPal: typeof import('../../node_modules/@nuxt/scripts/dist/runtime/registry/paypal')['useScriptPayPal']
+  const useScriptPlausibleAnalytics: typeof import('../../node_modules/@nuxt/scripts/dist/runtime/registry/plausible-analytics')['useScriptPlausibleAnalytics']
+  const useScriptRedditPixel: typeof import('../../node_modules/@nuxt/scripts/dist/runtime/registry/reddit-pixel')['useScriptRedditPixel']
+  const useScriptRybbitAnalytics: typeof import('../../node_modules/@nuxt/scripts/dist/runtime/registry/rybbit-analytics')['useScriptRybbitAnalytics']
+  const useScriptSegment: typeof import('../../node_modules/@nuxt/scripts/dist/runtime/registry/segment')['useScriptSegment']
+  const useScriptSnapchatPixel: typeof import('../../node_modules/@nuxt/scripts/dist/runtime/registry/snapchat-pixel')['useScriptSnapchatPixel']
+  const useScriptStripe: typeof import('../../node_modules/@nuxt/scripts/dist/runtime/registry/stripe')['useScriptStripe']
+  const useScriptTriggerConsent: typeof import('../../node_modules/@nuxt/scripts/dist/runtime/composables/useScriptTriggerConsent')['useScriptTriggerConsent']
+  const useScriptTriggerElement: typeof import('../../node_modules/@nuxt/scripts/dist/runtime/composables/useScriptTriggerElement')['useScriptTriggerElement']
+  const useScriptUmamiAnalytics: typeof import('../../node_modules/@nuxt/scripts/dist/runtime/registry/umami-analytics')['useScriptUmamiAnalytics']
+  const useScriptVimeoPlayer: typeof import('../../node_modules/@nuxt/scripts/dist/runtime/registry/vimeo-player')['useScriptVimeoPlayer']
+  const useScriptXPixel: typeof import('../../node_modules/@nuxt/scripts/dist/runtime/registry/x-pixel')['useScriptXPixel']
+  const useScriptYouTubePlayer: typeof import('../../node_modules/@nuxt/scripts/dist/runtime/registry/youtube-player')['useScriptYouTubePlayer']
   const useScrollspy: typeof import('../../node_modules/@nuxt/ui/dist/runtime/composables/useScrollspy')['useScrollspy']
   const useSeoMeta: typeof import('../../node_modules/nuxt/dist/app/composables/head')['useSeoMeta']
   const useServerHead: typeof import('../../node_modules/nuxt/dist/app/composables/head')['useServerHead']
@@ -235,7 +237,6 @@ declare module 'vue' {
     readonly defineNuxtLink: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/components/nuxt-link')['defineNuxtLink']>
     readonly defineNuxtPlugin: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/nuxt')['defineNuxtPlugin']>
     readonly defineNuxtRouteMiddleware: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/composables/router')['defineNuxtRouteMiddleware']>
-    readonly definePageMeta: UnwrapRef<typeof import('../../node_modules/nuxt/dist/pages/runtime/composables')['definePageMeta']>
     readonly definePayloadPlugin: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/nuxt')['definePayloadPlugin']>
     readonly definePayloadReducer: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/composables/payload')['definePayloadReducer']>
     readonly definePayloadReviver: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/composables/payload')['definePayloadReviver']>
@@ -279,8 +280,8 @@ declare module 'vue' {
     readonly nextTick: UnwrapRef<typeof import('vue')['nextTick']>
     readonly onActivated: UnwrapRef<typeof import('vue')['onActivated']>
     readonly onBeforeMount: UnwrapRef<typeof import('vue')['onBeforeMount']>
-    readonly onBeforeRouteLeave: UnwrapRef<typeof import('vue-router')['onBeforeRouteLeave']>
-    readonly onBeforeRouteUpdate: UnwrapRef<typeof import('vue-router')['onBeforeRouteUpdate']>
+    readonly onBeforeRouteLeave: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/composables/router')['onBeforeRouteLeave']>
+    readonly onBeforeRouteUpdate: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/composables/router')['onBeforeRouteUpdate']>
     readonly onBeforeUnmount: UnwrapRef<typeof import('vue')['onBeforeUnmount']>
     readonly onBeforeUpdate: UnwrapRef<typeof import('vue')['onBeforeUpdate']>
     readonly onDeactivated: UnwrapRef<typeof import('vue')['onDeactivated']>
@@ -345,10 +346,10 @@ declare module 'vue' {
     readonly useHeadSafe: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/composables/head')['useHeadSafe']>
     readonly useHydration: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/composables/hydrate')['useHydration']>
     readonly useId: UnwrapRef<typeof import('vue')['useId']>
+    readonly useImage: UnwrapRef<typeof import('../../node_modules/@nuxt/image/dist/runtime/composables')['useImage']>
     readonly useKbd: UnwrapRef<typeof import('../../node_modules/@nuxt/ui/dist/runtime/composables/useKbd')['useKbd']>
     readonly useLazyAsyncData: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/composables/asyncData')['useLazyAsyncData']>
     readonly useLazyFetch: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/composables/fetch')['useLazyFetch']>
-    readonly useLink: UnwrapRef<typeof import('vue-router')['useLink']>
     readonly useLoadingIndicator: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/composables/loading-indicator')['useLoadingIndicator']>
     readonly useLocale: UnwrapRef<typeof import('../../node_modules/@nuxt/ui/dist/runtime/composables/useLocale')['useLocale']>
     readonly useModel: UnwrapRef<typeof import('vue')['useModel']>
@@ -370,33 +371,36 @@ declare module 'vue' {
     readonly useRouter: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/composables/router')['useRouter']>
     readonly useRuntimeConfig: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/nuxt')['useRuntimeConfig']>
     readonly useRuntimeHook: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/composables/runtime-hook')['useRuntimeHook']>
-    readonly useScript: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/composables/script-stubs')['useScript']>
-    readonly useScriptClarity: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/composables/script-stubs')['useScriptClarity']>
-    readonly useScriptCloudflareWebAnalytics: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/composables/script-stubs')['useScriptCloudflareWebAnalytics']>
-    readonly useScriptCrisp: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/composables/script-stubs')['useScriptCrisp']>
-    readonly useScriptEventPage: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/composables/script-stubs')['useScriptEventPage']>
-    readonly useScriptFathomAnalytics: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/composables/script-stubs')['useScriptFathomAnalytics']>
-    readonly useScriptGoogleAdsense: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/composables/script-stubs')['useScriptGoogleAdsense']>
-    readonly useScriptGoogleAnalytics: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/composables/script-stubs')['useScriptGoogleAnalytics']>
-    readonly useScriptGoogleMaps: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/composables/script-stubs')['useScriptGoogleMaps']>
-    readonly useScriptGoogleTagManager: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/composables/script-stubs')['useScriptGoogleTagManager']>
-    readonly useScriptHotjar: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/composables/script-stubs')['useScriptHotjar']>
-    readonly useScriptIntercom: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/composables/script-stubs')['useScriptIntercom']>
-    readonly useScriptLemonSqueezy: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/composables/script-stubs')['useScriptLemonSqueezy']>
-    readonly useScriptMatomoAnalytics: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/composables/script-stubs')['useScriptMatomoAnalytics']>
-    readonly useScriptMetaPixel: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/composables/script-stubs')['useScriptMetaPixel']>
-    readonly useScriptNpm: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/composables/script-stubs')['useScriptNpm']>
-    readonly useScriptPlausibleAnalytics: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/composables/script-stubs')['useScriptPlausibleAnalytics']>
-    readonly useScriptRybbitAnalytics: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/composables/script-stubs')['useScriptRybbitAnalytics']>
-    readonly useScriptSegment: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/composables/script-stubs')['useScriptSegment']>
-    readonly useScriptSnapchatPixel: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/composables/script-stubs')['useScriptSnapchatPixel']>
-    readonly useScriptStripe: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/composables/script-stubs')['useScriptStripe']>
-    readonly useScriptTriggerConsent: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/composables/script-stubs')['useScriptTriggerConsent']>
-    readonly useScriptTriggerElement: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/composables/script-stubs')['useScriptTriggerElement']>
-    readonly useScriptUmamiAnalytics: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/composables/script-stubs')['useScriptUmamiAnalytics']>
-    readonly useScriptVimeoPlayer: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/composables/script-stubs')['useScriptVimeoPlayer']>
-    readonly useScriptXPixel: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/composables/script-stubs')['useScriptXPixel']>
-    readonly useScriptYouTubePlayer: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/composables/script-stubs')['useScriptYouTubePlayer']>
+    readonly useScript: UnwrapRef<typeof import('../../node_modules/@nuxt/scripts/dist/runtime/composables/useScript')['useScript']>
+    readonly useScriptClarity: UnwrapRef<typeof import('../../node_modules/@nuxt/scripts/dist/runtime/registry/clarity')['useScriptClarity']>
+    readonly useScriptCloudflareWebAnalytics: UnwrapRef<typeof import('../../node_modules/@nuxt/scripts/dist/runtime/registry/cloudflare-web-analytics')['useScriptCloudflareWebAnalytics']>
+    readonly useScriptCrisp: UnwrapRef<typeof import('../../node_modules/@nuxt/scripts/dist/runtime/registry/crisp')['useScriptCrisp']>
+    readonly useScriptDatabuddyAnalytics: UnwrapRef<typeof import('../../node_modules/@nuxt/scripts/dist/runtime/registry/databuddy-analytics')['useScriptDatabuddyAnalytics']>
+    readonly useScriptEventPage: UnwrapRef<typeof import('../../node_modules/@nuxt/scripts/dist/runtime/composables/useScriptEventPage')['useScriptEventPage']>
+    readonly useScriptFathomAnalytics: UnwrapRef<typeof import('../../node_modules/@nuxt/scripts/dist/runtime/registry/fathom-analytics')['useScriptFathomAnalytics']>
+    readonly useScriptGoogleAdsense: UnwrapRef<typeof import('../../node_modules/@nuxt/scripts/dist/runtime/registry/google-adsense')['useScriptGoogleAdsense']>
+    readonly useScriptGoogleAnalytics: UnwrapRef<typeof import('../../node_modules/@nuxt/scripts/dist/runtime/registry/google-analytics')['useScriptGoogleAnalytics']>
+    readonly useScriptGoogleMaps: UnwrapRef<typeof import('../../node_modules/@nuxt/scripts/dist/runtime/registry/google-maps')['useScriptGoogleMaps']>
+    readonly useScriptGoogleTagManager: UnwrapRef<typeof import('../../node_modules/@nuxt/scripts/dist/runtime/registry/google-tag-manager')['useScriptGoogleTagManager']>
+    readonly useScriptHotjar: UnwrapRef<typeof import('../../node_modules/@nuxt/scripts/dist/runtime/registry/hotjar')['useScriptHotjar']>
+    readonly useScriptIntercom: UnwrapRef<typeof import('../../node_modules/@nuxt/scripts/dist/runtime/registry/intercom')['useScriptIntercom']>
+    readonly useScriptLemonSqueezy: UnwrapRef<typeof import('../../node_modules/@nuxt/scripts/dist/runtime/registry/lemon-squeezy')['useScriptLemonSqueezy']>
+    readonly useScriptMatomoAnalytics: UnwrapRef<typeof import('../../node_modules/@nuxt/scripts/dist/runtime/registry/matomo-analytics')['useScriptMatomoAnalytics']>
+    readonly useScriptMetaPixel: UnwrapRef<typeof import('../../node_modules/@nuxt/scripts/dist/runtime/registry/meta-pixel')['useScriptMetaPixel']>
+    readonly useScriptNpm: UnwrapRef<typeof import('../../node_modules/@nuxt/scripts/dist/runtime/registry/npm')['useScriptNpm']>
+    readonly useScriptPayPal: UnwrapRef<typeof import('../../node_modules/@nuxt/scripts/dist/runtime/registry/paypal')['useScriptPayPal']>
+    readonly useScriptPlausibleAnalytics: UnwrapRef<typeof import('../../node_modules/@nuxt/scripts/dist/runtime/registry/plausible-analytics')['useScriptPlausibleAnalytics']>
+    readonly useScriptRedditPixel: UnwrapRef<typeof import('../../node_modules/@nuxt/scripts/dist/runtime/registry/reddit-pixel')['useScriptRedditPixel']>
+    readonly useScriptRybbitAnalytics: UnwrapRef<typeof import('../../node_modules/@nuxt/scripts/dist/runtime/registry/rybbit-analytics')['useScriptRybbitAnalytics']>
+    readonly useScriptSegment: UnwrapRef<typeof import('../../node_modules/@nuxt/scripts/dist/runtime/registry/segment')['useScriptSegment']>
+    readonly useScriptSnapchatPixel: UnwrapRef<typeof import('../../node_modules/@nuxt/scripts/dist/runtime/registry/snapchat-pixel')['useScriptSnapchatPixel']>
+    readonly useScriptStripe: UnwrapRef<typeof import('../../node_modules/@nuxt/scripts/dist/runtime/registry/stripe')['useScriptStripe']>
+    readonly useScriptTriggerConsent: UnwrapRef<typeof import('../../node_modules/@nuxt/scripts/dist/runtime/composables/useScriptTriggerConsent')['useScriptTriggerConsent']>
+    readonly useScriptTriggerElement: UnwrapRef<typeof import('../../node_modules/@nuxt/scripts/dist/runtime/composables/useScriptTriggerElement')['useScriptTriggerElement']>
+    readonly useScriptUmamiAnalytics: UnwrapRef<typeof import('../../node_modules/@nuxt/scripts/dist/runtime/registry/umami-analytics')['useScriptUmamiAnalytics']>
+    readonly useScriptVimeoPlayer: UnwrapRef<typeof import('../../node_modules/@nuxt/scripts/dist/runtime/registry/vimeo-player')['useScriptVimeoPlayer']>
+    readonly useScriptXPixel: UnwrapRef<typeof import('../../node_modules/@nuxt/scripts/dist/runtime/registry/x-pixel')['useScriptXPixel']>
+    readonly useScriptYouTubePlayer: UnwrapRef<typeof import('../../node_modules/@nuxt/scripts/dist/runtime/registry/youtube-player')['useScriptYouTubePlayer']>
     readonly useScrollspy: UnwrapRef<typeof import('../../node_modules/@nuxt/ui/dist/runtime/composables/useScrollspy')['useScrollspy']>
     readonly useSeoMeta: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/composables/head')['useSeoMeta']>
     readonly useServerHead: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/composables/head')['useServerHead']>
