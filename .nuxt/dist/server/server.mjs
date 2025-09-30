@@ -1,0 +1,1 @@
+export { default } from "file:///C:/Users/irom-/Projects/brand-games/node_modules/@nuxt/vite-builder/dist/runtime/vite-node.mjs"
