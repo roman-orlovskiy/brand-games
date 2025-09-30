@@ -70,9 +70,9 @@ const login = async () => {
   loading.value = true
   
   // Мок аутентификация
-  setTimeout(() => {
-    if (form.value.email === 'admin@brandgames.com' && form.value.password === 'admin123') {
+  setTimeout(() => {    if (form.value.email === 'admin@test.ru' && form.value.password === 'admin123') {
       // Сохраняем токен в localStorage
+
       localStorage.setItem('adminToken', 'mock-jwt-token')
       navigateTo('/admin')
     } else {
