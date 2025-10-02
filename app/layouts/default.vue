@@ -17,26 +17,19 @@
 <script setup lang="ts">
 import type { NavigationMenuItem } from '@nuxt/ui'
 
-const items: NavigationMenuItem[][] = [[{
-  label: 'Dashboard',
+const items: NavigationMenuItem[][] = [[
+{
+  label: 'Дашборд',
   icon: 'i-lucide-layout-dashboard',
-  to: '/admin/dashboard',
+  to: '/',
   active: true
-}, {
-  label: 'Бренды',
+},
+{
+  label: 'Настройка бренда',
   icon: 'i-lucide-palette',
-  defaultOpen: true,
-  children: [{
-    label: 'Список брендов',
-    to: '/admin/brands'
-  }, {
-    label: 'Настройки брендинга',
-    to: '/admin/brands/settings'
-  }, {
-    label: 'Предпросмотр',
-    to: '/admin/brands/preview'
-  }]
-}, {
+  to: '/admin/brand'
+},
+{
   label: 'Игра',
   icon: 'i-lucide-target',
   defaultOpen: true,
@@ -53,7 +46,8 @@ const items: NavigationMenuItem[][] = [[{
     label: 'Отчеты',
     to: '/admin/game/reports'
   }]
-}, {
+},
+{
   label: 'Промокоды',
   icon: 'i-lucide-ticket',
   defaultOpen: true,
