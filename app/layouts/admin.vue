@@ -19,7 +19,7 @@
 
     </UDashboardSidebar>
 
-    <div class="flex-1 overflow-y-auto">
+    <div class="flex-1 overflow-y-auto p-4">
       <slot />
     </div>
   </UDashboardGroup>
@@ -30,30 +30,26 @@ import type { NavigationMenuItem } from '@nuxt/ui'
 
 const items: NavigationMenuItem[][] = [[
 {
-  label: 'Дашборд',
-  icon: 'i-lucide-layout-dashboard',
+  label: 'Настройки бренда',
+  icon: 'i-lucide-settings',
   to: '/admin',
-  active: true
-},
-{
-  label: 'Настройка бренда',
-  icon: 'i-lucide-palette',
-  to: '/admin/brand'
 },
 {
   label: 'Игра',
   icon: 'i-lucide-target',
   defaultOpen: true,
-  children: [{
-    label: 'Основные настройки',
-    to: '/admin/game/settings'
-  }, {
-    label: 'Промокоды',
-    to: '/admin/game/promo'
-  }, {
-    label: 'Статистика',
-    to: '/admin/game/statistics'
-  }]
+  children: [
+    {
+      label: 'Основные настройки',
+      to: '/admin/game-settings',
+    }, {
+      label: 'Промокоды',
+      to: '/admin/game-promo'
+    },
+    {
+      label: 'Статистика',
+      to: '/admin/game-statistics'
+    }]
 }],
 [{
   label: 'Профиль',
