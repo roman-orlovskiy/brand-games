@@ -19,7 +19,9 @@
 
     </UDashboardSidebar>
 
-    <slot />
+    <div class="flex-1 overflow-y-auto">
+      <slot />
+    </div>
   </UDashboardGroup>
 </template>
 
