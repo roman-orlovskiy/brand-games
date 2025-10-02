@@ -8,6 +8,14 @@
           orientation="vertical"
         />
       </template>
+
+      <template #footer="{ collapsed }">
+        <UNavigationMenu
+          :collapsed="collapsed"
+          :items="items[1]"
+          orientation="vertical"
+        />
+      </template>
     </UDashboardSidebar>
 
     <slot />
@@ -34,47 +42,22 @@ const items: NavigationMenuItem[][] = [[
   icon: 'i-lucide-target',
   defaultOpen: true,
   children: [{
-    label: 'Настройки игры',
+    label: 'Основные настройки',
     to: '/admin/game/settings'
   }, {
-    label: 'Управление призами',
-    to: '/admin/game/prizes'
+    label: 'Промокоды',
+    to: '/admin/game/promo'
   }, {
-    label: 'Аналитика',
-    to: '/admin/game/analytics'
-  }, {
-    label: 'Отчеты',
-    to: '/admin/game/reports'
+    label: 'Статистика',
+    to: '/admin/game/statistics'
   }]
-},
-{
-  label: 'Промокоды',
-  icon: 'i-lucide-ticket',
-  defaultOpen: true,
-  children: [{
-    label: 'Управление',
-    to: '/admin/promo/manage'
-  }, {
-    label: 'Генератор',
-    to: '/admin/promo/generator'
-  }]
-}, {
-  label: 'Пользователи',
-  icon: 'i-lucide-users',
-  to: '/admin/users'
-}, {
-  label: 'Результаты игр',
-  icon: 'i-lucide-trophy',
-  to: '/admin/results'
-}], [{
-  label: 'Настройки',
-  icon: 'i-lucide-settings',
-  to: '/admin/settings'
-}, {
+}],
+[{
   label: 'Профиль',
   icon: 'i-lucide-user',
   to: '/admin/profile'
-}, {
+},
+{
   label: 'Выход',
   icon: 'i-lucide-log-out',
   to: '/admin/logout'
