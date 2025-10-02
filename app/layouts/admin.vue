@@ -16,6 +16,7 @@
           orientation="vertical"
         />
       </template>
+
     </UDashboardSidebar>
 
     <slot />
