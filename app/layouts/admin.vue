@@ -29,7 +29,7 @@ const items: NavigationMenuItem[][] = [[
 {
   label: 'Дашборд',
   icon: 'i-lucide-layout-dashboard',
-  to: '/',
+  to: '/admin',
   active: true
 },
 {
