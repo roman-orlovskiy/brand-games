@@ -20,21 +20,29 @@
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div v-for="colorItem in brandSettings.colors" :key="colorItem.id" class="space-y-2">
                   <label class="block text-sm font-medium text-gray-700">{{ colorItem.name }}</label>
-                  <select 
+                  <USelect
                     v-model="colorItem.color"
-                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                    :items="colorOptions"
+                    placeholder="Выберите цвет"
+                    value-key="value"
                   >
-                    <option v-for="option in colorItem.options" :key="option" :value="option">
-                      {{ option }}
-                    </option>
-                  </select>
-                  <div class="mt-1 flex items-center space-x-2">
-                    <div 
-                      class="w-6 h-6 rounded border border-gray-300"
-                      :style="{ backgroundColor: colorItem.color }"
-                    />
-                    <span class="text-xs text-gray-500">{{ colorItem.color }}</span>
-                  </div>
+                    <template #leading="{ modelValue }">
+                      <div 
+                        v-if="modelValue"
+                        class="w-4 h-4 rounded-full border border-gray-300"
+                        :style="{ backgroundColor: modelValue }"
+                      />
+                    </template>
+                    <template #item-label="{ item }">
+                      <div class="flex items-center space-x-2">
+                        <div 
+                          class="w-4 h-4 rounded-full border border-gray-300"
+                          :style="{ backgroundColor: item.color }"
+                        />
+                        <span>{{ item.label }}</span>
+                      </div>
+                    </template>
+                  </USelect>
                 </div>
               </div>
             </div>
@@ -51,18 +59,31 @@ definePageMeta({
   layout: 'admin'
 })
 
+// Исходный массив цветов
+const rawColors = [
+  '#8B4513', '#A0522D', '#654321', '#2F1B14',
+  '#228B22', '#32CD32', '#006400', '#2E8B57'
+]
+
+// Преобразование в формат для USelect
+const colorOptions = rawColors.map(color => ({
+  label: color,
+  value: color,
+  color: color
+}))
+
 const brandSettings = ref({
   colors: [
-    { id: 1, name: 'Дерево', color: '#8B4513', options: ['#8B4513', '#A0522D', '#654321', '#2F1B14'] },
-    { id: 2, name: 'Крона', color: '#228B22', options: ['#228B22', '#32CD32', '#006400', '#2E8B57'] },
-    { id: 3, name: 'Траектория', color: '#FFD700', options: ['#FFD700', '#FFA500', '#FF6347', '#FF1493'] },
-    { id: 4, name: 'Майка лучника', color: '#FF6B6B', options: ['#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4'] },
-    { id: 5, name: 'Лук', color: '#8B4513', options: ['#8B4513', '#A0522D', '#654321', '#2F1B14'] },
-    { id: 6, name: 'Стрела', color: '#696969', options: ['#696969', '#2F4F4F', '#A9A9A9', '#000000'] },
-    { id: 7, name: 'Фон', color: '#87CEEB', options: ['#87CEEB', '#98FB98', '#F0E68C', '#FFB6C1'] },
-    { id: 8, name: 'Призы', color: '#FF69B4', options: ['#FF69B4', '#FFD700', '#32CD32', '#FF6347'] },
-    { id: 9, name: 'Интерфейс', color: '#4682B4', options: ['#4682B4', '#5F9EA0', '#6495ED', '#20B2AA'] },
-    { id: 10, name: 'Кнопки', color: '#DC143C', options: ['#DC143C', '#FF4500', '#32CD32', '#4169E1'] },
+    { id: 1, name: 'Дерево', color: '#8B4513' },
+    { id: 2, name: 'Крона', color: '#228B22' },
+    { id: 3, name: 'Траектория', color: '#FFD700' },
+    { id: 4, name: 'Майка лучника', color: '#FF6B6B' },
+    { id: 5, name: 'Лук', color: '#8B4513' },
+    { id: 6, name: 'Стрела', color: '#696969' },
+    { id: 7, name: 'Фон', color: '#87CEEB' },
+    { id: 8, name: 'Призы', color: '#FF69B4' },
+    { id: 9, name: 'Интерфейс', color: '#4682B4' },
+    { id: 10, name: 'Кнопки', color: '#DC143C' },
   ]
 })
 </script>
