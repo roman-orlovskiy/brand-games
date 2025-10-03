@@ -17,7 +17,7 @@
           <div class="space-y-6">
             <!-- Основные цвета -->
             <div>
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
                 <div v-for="colorItem in brandSettings.colors" :key="colorItem.id" class="space-y-2">
                   <label class="block text-sm font-medium text-gray-700">{{ colorItem.name }}</label>
                   <USelect
@@ -28,7 +28,6 @@
                   >
                     <template #leading="{ modelValue }">
                       <div 
-                        v-if="modelValue"
                         class="w-4 h-4 rounded-full border border-gray-300"
                         :style="{ backgroundColor: modelValue }"
                       />
@@ -37,7 +36,7 @@
                       <div class="flex items-center space-x-2">
                         <div 
                           class="w-4 h-4 rounded-full border border-gray-300"
-                          :style="{ backgroundColor: item.color }"
+                          :style="{ backgroundColor: item.value }"
                         />
                         <span>{{ item.label }}</span>
                       </div>
@@ -69,7 +68,6 @@ const rawColors = [
 const colorOptions = rawColors.map(color => ({
   label: color,
   value: color,
-  color: color
 }))
 
 const brandSettings = ref({
