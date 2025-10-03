@@ -57,7 +57,7 @@
         <h2 class="text-lg font-semibold">Предпросмотр игры</h2>
       </template>
 
-      <div class="lg:col-span-1">
+      <div class="lg:col-span-1 w-3xl">
         <GameField />
       </div>
     </UCard>
