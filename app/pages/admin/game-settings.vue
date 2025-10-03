@@ -25,6 +25,7 @@
                     :items="colorOptions"
                     placeholder="Выберите цвет"
                     value-key="value"
+                    class="w-35"
                   >
                     <template #leading="{ modelValue }">
                       <div 
