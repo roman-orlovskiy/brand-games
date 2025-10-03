@@ -5,7 +5,7 @@
       <p class="text-gray-600 mt-1">Здесь можно настроить дизайн игры</p>
     </div>
 
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-3">
       <!-- Основные настройки -->
       <div class="lg:col-span-2 space-y-6">
         <!-- Цветовая палитра -->
@@ -51,10 +51,21 @@
 
       </div>
     </div>
+
+    <UCard>
+      <template #header>
+        <h2 class="text-lg font-semibold">Предпросмотр игры</h2>
+      </template>
+
+      <div class="lg:col-span-1">
+        <GameField />
+      </div>
+    </UCard>
   </div>
 </template>
 
 <script setup lang="ts">
+
 definePageMeta({
   layout: 'admin'
 })

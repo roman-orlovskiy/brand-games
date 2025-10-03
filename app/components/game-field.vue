@@ -1,6 +1,6 @@
 <template>
   <div class="game-field">
-
+    345
   </div>
 </template>
 
@@ -9,7 +9,7 @@
 </script>
 
 <style scoped lang="scss">
-.gane-field {
+.game-field {
   width: 100%;
   height: 100%;
   background-color: red;
