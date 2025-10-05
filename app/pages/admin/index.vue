@@ -58,7 +58,7 @@
           
           <div class="space-y-4">
             <!-- Логотип/название -->
-            <div class="p-6 rounded-lg" :style="{ backgroundColor: brandSettings.colors[4].color }">
+            <div class="p-6 rounded-lg" :style="{ backgroundColor: brandSettings.colors[3].color }">
               <h3 class="text-2xl font-bold" :style="{ color: brandSettings.colors[0].color }">
                 Ваш Бренд
               </h3>
@@ -68,15 +68,15 @@
             <div class="flex space-x-3">
               <button 
                 class="px-4 py-2 rounded-lg text-white font-medium"
-                :style="{ backgroundColor: brandSettings.colors[1].color }"
+                :style="{ backgroundColor: brandSettings.colors[0].color }"
               >
                 Основная кнопка
               </button>
               <button 
                 class="px-4 py-2 rounded-lg border-2 font-medium"
                 :style="{ 
-                  borderColor: brandSettings.colors[1].color,
-                  color: brandSettings.colors[1].color 
+                  borderColor: brandSettings.colors[0].color,
+                  color: brandSettings.colors[0].color 
                 }"
               >
                 Вторичная кнопка
@@ -143,31 +143,31 @@ const brandSettings = ref({
     { 
       id: 1, 
       name: 'Основной цвет', 
-      color: '#3B82F6',
+      color: '#00BCD4',
       description: 'Главный цвет бренда для логотипа и ключевых элементов'
     },
     { 
       id: 2, 
       name: 'Дополнительный цвет', 
-      color: '#10B981',
+      color: '#00BFA5',
       description: 'Вторичный цвет для акцентов и кнопок'
     },
     { 
       id: 3, 
       name: 'Нейтральный цвет', 
-      color: '#6B7280',
+      color: '#C27BA0',
       description: 'Цвет для текста и фоновых элементов'
     },
     { 
       id: 4, 
       name: 'Фоновый цвет', 
-      color: '#F9FAFB',
+      color: '#FFFDE7',
       description: 'Основной фоновый цвет интерфейса'
     },
     { 
       id: 5, 
       name: 'Акцентный цвет', 
-      color: '#F59E0B',
+      color: '#FF6B6B',
       description: 'Цвет для выделения важных элементов'
     }
   ]
