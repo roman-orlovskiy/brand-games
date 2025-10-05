@@ -1,6 +1,11 @@
 <template>
   <div class="game-field__wrapper">
-    <div class="game-field__inner"></div>
+    <div class="game-field__inner">
+
+      <div class="game-field__tree">
+        <ImagesTreeImage />
+      </div>
+    </div>
   </div>
 </template>
 
@@ -15,7 +20,6 @@
     position: relative;
     /* Пропорции 1453:1000 = 1000/1453 ≈ 0.688 */
     padding-top: 68.8%; /* 1000/1453 * 100% */
-    background-color: red;
   }
   
   &__inner {
@@ -25,6 +29,13 @@
     width: 100%;
     height: 100%;
     overflow: hidden;
+  }
+
+  &__tree {
+    width: 70%;
+    position: absolute;
+    right: 0;
+    top: 0;
   }
 }
 </style>
