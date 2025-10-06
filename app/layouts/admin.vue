@@ -35,20 +35,27 @@ const items: NavigationMenuItem[][] = [[
   to: '/admin',
 },
 {
-  label: 'Игра',
-  icon: 'i-lucide-target',
+  label: 'Игры',
+  icon: 'i-lucide-gamepad',
   defaultOpen: true,
   children: [
     {
-      label: 'Основные настройки',
-      to: '/admin/game-settings',
-    }, {
-      label: 'Промокоды',
-      to: '/admin/game-promo'
-    },
-    {
-      label: 'Статистика',
-      to: '/admin/game-statistics'
+      label: 'Лучник',
+      icon: 'i-lucide-target',
+      defaultOpen: true,
+      collapsed: true,
+      children: [
+        {
+          label: 'Настройки',
+          to: '/admin/archer/settings',
+        }, {
+          label: 'Промокоды',
+          to: '/admin/archer/promo'
+        },
+        {
+          label: 'Статистика',
+          to: '/admin/archer/statistics'
+        }]
     }]
 }],
 [{
