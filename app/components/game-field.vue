@@ -9,6 +9,10 @@
       <div class="game-field__land">
         <ImagesLandImage />
       </div>
+
+      <div class="game-field__back">
+        <ImagesBackImage />
+      </div>
     </div>
   </div>
 </template>
@@ -36,7 +40,7 @@
   }
 
   &__tree {
-    width: 70%;
+    width: 72%;
     position: absolute;
     right: 0;
     top: 0;
@@ -49,6 +53,14 @@
     bottom: 0;
     left: 0;
     z-index: 40;
+  }
+
+  &__back {
+    width: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 30;
   }
 }
 </style>
