@@ -17,31 +17,31 @@ export const useSettingsStore = defineStore('settings', () => {
     colors: [
       { 
         id: 1, 
-        name: 'Основной цвет', 
+        name: 'Основной', 
         color: '#00BCD4',
         description: 'Главный цвет бренда для логотипа и ключевых элементов'
       },
       { 
         id: 2, 
-        name: 'Дополнительный цвет', 
+        name: 'Доп', 
         color: '#00BFA5',
         description: 'Вторичный цвет для акцентов и кнопок'
       },
       { 
         id: 3, 
-        name: 'Нейтральный цвет', 
+        name: 'Нейтральный', 
         color: '#C27BA0',
         description: 'Цвет для текста и фоновых элементов'
       },
       { 
         id: 4, 
-        name: 'Фоновый цвет', 
+        name: 'Фоновый', 
         color: '#FFFDE7',
         description: 'Основной фоновый цвет интерфейса'
       },
       { 
         id: 5, 
-        name: 'Акцентный цвет', 
+        name: 'Акцентный', 
         color: '#FF6B6B',
         description: 'Цвет для выделения важных элементов'
       }
