@@ -58,8 +58,8 @@
           
           <div class="space-y-4">
             <!-- Логотип/название -->
-            <div class="p-6 rounded-lg" :style="{ backgroundColor: brandSettings.colors[3].color }">
-              <h3 class="text-2xl font-bold" :style="{ color: brandSettings.colors[0].color }">
+            <div class="p-6 rounded-lg" :style="{ backgroundColor: getColor(3) }">
+              <h3 class="text-2xl font-bold" :style="{ color: getColor(0) }">
                 Ваш Бренд
               </h3>
             </div>
@@ -68,15 +68,15 @@
             <div class="flex space-x-3">
               <button 
                 class="px-4 py-2 rounded-lg text-white font-medium"
-                :style="{ backgroundColor: brandSettings.colors[0].color }"
+                :style="{ backgroundColor: getColor(0) }"
               >
                 Основная кнопка
               </button>
               <button 
                 class="px-4 py-2 rounded-lg border-2 font-medium"
                 :style="{ 
-                  borderColor: brandSettings.colors[0].color,
-                  color: brandSettings.colors[0].color 
+                  borderColor: getColor(0),
+                  color: getColor(0)
                 }"
               >
                 Вторичная кнопка
@@ -134,42 +134,17 @@
 </template>
 
 <script setup lang="ts">
+import { useSettingsStore } from '~/stores/settings'
+import { storeToRefs } from 'pinia'
+
 definePageMeta({
   layout: 'admin'
 })
 
-const brandSettings = ref({
-  colors: [
-    { 
-      id: 1, 
-      name: 'Основной цвет', 
-      color: '#00BCD4',
-      description: 'Главный цвет бренда для логотипа и ключевых элементов'
-    },
-    { 
-      id: 2, 
-      name: 'Дополнительный цвет', 
-      color: '#00BFA5',
-      description: 'Вторичный цвет для акцентов и кнопок'
-    },
-    { 
-      id: 3, 
-      name: 'Нейтральный цвет', 
-      color: '#C27BA0',
-      description: 'Цвет для текста и фоновых элементов'
-    },
-    { 
-      id: 4, 
-      name: 'Фоновый цвет', 
-      color: '#FFFDE7',
-      description: 'Основной фоновый цвет интерфейса'
-    },
-    { 
-      id: 5, 
-      name: 'Акцентный цвет', 
-      color: '#FF6B6B',
-      description: 'Цвет для выделения важных элементов'
-    }
-  ]
-})
+const settingsStore = useSettingsStore()
+const { brandSettings } = storeToRefs(settingsStore)
+
+const getColor = (index: number) => {
+  return brandSettings.value?.colors?.[index]?.color || '#000000'
+}
 </script>
