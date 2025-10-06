@@ -11,6 +11,17 @@ export interface BrandSettings {
   colors: BrandColor[]
 }
 
+export interface GameColor {
+  id: string
+  name: string
+  color: string
+  brandColorId: string
+}
+
+export interface GameSettings {
+  colors: GameColor[]
+}
+
 export const useSettingsStore = defineStore('settings', () => {
   // Состояние
   const brandSettings = ref<BrandSettings>({
@@ -19,7 +30,7 @@ export const useSettingsStore = defineStore('settings', () => {
         id: 'main', 
         name: 'Основной', 
         color: '#00BCD4',
-        description: 'Главный цвет бренда для логотипа и ключевых элементов'
+        description: 'Главный цвет бренда'
       },
       { 
         id: 'additional', 
@@ -48,7 +59,43 @@ export const useSettingsStore = defineStore('settings', () => {
     ]
   })
 
+  const getBrandColor = (brandColorId: string) => {
+    return brandSettings.value?.colors?.find(color => color.id === brandColorId)
+  }
+
+  const defaultGameColors = [
+    { id: 'tree', name: 'Дерево', brandColorId: 'main' },
+    { id: 'crown', name: 'Крона', brandColorId: 'additional' },
+    { id: 'trajectory', name: 'Траектория', brandColorId: 'accent' },
+    { id: 'archer', name: 'Майка лучника', brandColorId: 'accent' },
+    { id: 'bow', name: 'Лук', brandColorId: 'neutral' },
+    { id: 'arrow', name: 'Стрела', brandColorId: 'neutral' },
+    { id: 'background', name: 'Фон', brandColorId: 'background' },
+    { id: 'prizes', name: 'Призы', brandColorId: 'accent' },
+    { id: 'interface', name: 'Интерфейс', brandColorId: 'main' },
+    { id: 'buttons', name: 'Кнопки', brandColorId: 'accent' },
+  ].map(color => ({
+    ...color,
+    color: getBrandColor(color.brandColorId)?.color || '#000000'
+  }))
+
+  const gameSettings = ref<GameSettings>({
+    colors: [...defaultGameColors]
+  })
+
+  // Действия
+  const updateGameColor = (gameColorId: string, brandColorId: string) => {
+    const gameColor = gameSettings.value.colors.find(c => c.id === gameColorId)
+    const brandColor = getBrandColor(brandColorId)
+    if (gameColor && brandColor) {
+      gameColor.color = brandColor.color
+      gameColor.brandColorId = brandColor.id
+    }
+  }
+
   return {
-    brandSettings
+    brandSettings,
+    gameSettings,
+    updateGameColor
   }
 })

@@ -22,11 +22,11 @@
                   <label class="block text-sm font-medium text-gray-700">{{ colorItem.name }}</label>
                   <USelect
                     :model-value="colorItem.brandColorId"
-                    @update:model-value="(value) => updateGameColor(colorItem.id, value)"
                     :items="colorOptions"
                     placeholder="Выберите цвет"
                     value-key="brandColorId"
                     class="w-35"
+                    @update:model-value="(value) => settingsStore.updateGameColor(colorItem.id, value)"
                   >
                     <template #leading>
                       <div 
@@ -74,39 +74,14 @@ definePageMeta({
 })
 
 const settingsStore = useSettingsStore()
-const { brandSettings } = storeToRefs(settingsStore)
-
-// Цвета игры с привязкой к бренд-буку
-const gameSettings = ref({
-  colors: [
-    { id: 1, name: 'Дерево', color: brandSettings.value?.colors?.[0]?.color || '#8B4513', brandColorId: 0 },
-    { id: 2, name: 'Крона', color: brandSettings.value?.colors?.[1]?.color || '#228B22', brandColorId: 1 },
-    { id: 3, name: 'Траектория', color: brandSettings.value?.colors?.[4]?.color || '#FFD700', brandColorId: 4 },
-    { id: 4, name: 'Майка лучника', color: brandSettings.value?.colors?.[4]?.color || '#FF6B6B', brandColorId: 4 },
-    { id: 5, name: 'Лук', color: brandSettings.value?.colors?.[2]?.color || '#8B4513', brandColorId: 2 },
-    { id: 6, name: 'Стрела', color: brandSettings.value?.colors?.[2]?.color || '#696969', brandColorId: 2 },
-    { id: 7, name: 'Фон', color: brandSettings.value?.colors?.[3]?.color || '#87CEEB', brandColorId: 3 },
-    { id: 8, name: 'Призы', color: brandSettings.value?.colors?.[4]?.color || '#FF69B4', brandColorId: 4 },
-    { id: 9, name: 'Интерфейс', color: brandSettings.value?.colors?.[0]?.color || '#4682B4', brandColorId: 0 },
-    { id: 10, name: 'Кнопки', color: brandSettings.value?.colors?.[4]?.color || '#DC143C', brandColorId: 4 },
-  ]
-})
+const { brandSettings, gameSettings } = storeToRefs(settingsStore)
 
 // Преобразование цветов бренд-бука в формат для USelect
 const colorOptions = computed(() => {
-  return brandSettings.value?.colors?.map((color, index) => ({
+  return brandSettings.value?.colors?.map((color) => ({
     label: color.name,
     value: color.color,
-    brandColorId: index
+    brandColorId: color.id
   })) || []
 })
-
-const updateGameColor = (gameColorId: number, brandColorId: number) => {
-  const gameColor = gameSettings.value.colors.find(c => c.id === gameColorId)
-  const brandColor = brandSettings.value?.colors?.[brandColorId]
-  if (gameColor && brandColor) {
-    gameColor.color = brandColor.color
-    gameColor.brandColorId = brandColorId
-  }
-}
 </script>
