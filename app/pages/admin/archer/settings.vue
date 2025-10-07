@@ -26,7 +26,7 @@
                     placeholder="Выберите цвет"
                     value-key="brandColorId"
                     class="w-35"
-                    @update:model-value="(value) => settingsStore.updateGameColor(colorItem.id, value)"
+                    @update:model-value="(value: string) => settingsStore.updateGameColor(colorItem.id, value)"
                   >
                     <template #leading>
                       <div 
@@ -59,7 +59,7 @@
       </template>
 
       <div class="lg:col-span-1 w-3xl">
-        <GameField />
+        <ArcherGame />
       </div>
     </UCard>
   </div>
