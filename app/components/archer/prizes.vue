@@ -1,6 +1,9 @@
 <template>
   <div class="prizes">
     <div class="prizes__inner">
+      <div class="prizes__gift">
+        <ArcherImagesGift />
+      </div>
     </div>
   </div>
 </template>
@@ -23,6 +26,14 @@
     left: 0;
     width: 100%;
     height: 100%;
+  }
+
+  &__gift {
+    width: 10%;
+    position: absolute;
+    top: 10%;
+    left: 15%;
+    z-index: 100;
   }
 }
 </style>
