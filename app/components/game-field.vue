@@ -13,12 +13,24 @@
       <div class="game-field__back">
         <ImagesBackImage />
       </div>
+
+      <div
+        class="game-field__box"
+        :style="boxStyle"
+      >
+        <ImagesBoxImage />
+      </div>
     </div>
   </div>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
+import { computed, ref } from 'vue';
+const boxLeft = ref(40);
 
+const boxStyle = computed(() => ({
+  left: `${boxLeft.value}%`,
+}));
 </script>
 
 <style scoped lang="scss">
@@ -61,6 +73,13 @@
     top: 0;
     left: 0;
     z-index: 30;
+  }
+
+  &__box {
+    width: 23%;
+    position: absolute;
+    bottom: 10%;
+    z-index: 50;
   }
 }
 </style>
