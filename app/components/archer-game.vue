@@ -3,22 +3,22 @@
     <div class="game-field__inner">
 
       <div class="game-field__tree">
-        <ImagesTreeImage />
+        <ImagesArcherTree />
       </div>
 
       <div class="game-field__land">
-        <ImagesLandImage />
+        <ImagesArcherLand />
       </div>
 
       <div class="game-field__back">
-        <ImagesBackImage />
+        <ImagesArcherBack />
       </div>
 
       <div
         class="game-field__box"
         :style="boxStyle"
       >
-        <ImagesBoxImage />
+        <ImagesArcherBox />
       </div>
     </div>
   </div>
