@@ -1,24 +1,28 @@
 <template>
-  <div class="game-field__wrapper">
+  <div class="archer-game__wrapper">
     <div class="game-field__inner">
 
-      <div class="game-field__tree">
-        <ImagesArcherTree />
+      <div class="archer-game__tree">
+        <ArcherImagesTree />
       </div>
 
-      <div class="game-field__land">
-        <ImagesArcherLand />
+      <div class="archer-game__land">
+        <ArcherImagesLand />
       </div>
 
-      <div class="game-field__back">
-        <ImagesArcherBack />
+      <div class="archer-game__back">
+        <ArcherImagesBack />
       </div>
 
       <div
-        class="game-field__box"
+        class="archer-game__box"
         :style="boxStyle"
       >
-        <ImagesArcherBox />
+        <ArcherImagesBox />
+      </div>
+
+      <div class="archer-game__prizes">
+        <ArcherPrizes />
       </div>
     </div>
   </div>
@@ -34,7 +38,7 @@ const boxStyle = computed(() => ({
 </script>
 
 <style scoped lang="scss">
-.game-field {
+.archer-game {
   &__wrapper {
     width: 100%;
     position: relative;
@@ -57,6 +61,14 @@ const boxStyle = computed(() => ({
     right: 0;
     top: 0;
     z-index: 50;
+  }
+
+  &__prizes {
+    width: 70%;
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: 80;
   }
 
   &__land {
