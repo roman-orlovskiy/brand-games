@@ -84,9 +84,17 @@ export const useSettingsStore = defineStore('settings', () => {
     colors: [...defaultGameColors]
   })
 
+  // Computed свойство для быстрого доступа к цветам по ID
+  const gameSettingsColorsById = computed(() => {
+    return gameSettings.value.colors.reduce((acc, color) => {
+      acc[color.id] = color
+      return acc
+    }, {} as Record<string, GameColor>)
+  })
+
   // Действия
   const updateGameColor = (gameColorId: string, brandColorId: string) => {
-    const gameColor = gameSettings.value.colors.find(c => c.id === gameColorId)
+    const gameColor = gameSettingsColorsById.value[gameColorId]
     const brandColor = getBrandColor(brandColorId)
     if (gameColor && brandColor) {
       gameColor.color = brandColor.color
@@ -97,6 +105,7 @@ export const useSettingsStore = defineStore('settings', () => {
   return {
     brandSettings,
     gameSettings,
+    gameSettingsColorsById,
     updateGameColor
   }
 })

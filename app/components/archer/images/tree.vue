@@ -100,17 +100,14 @@ import { storeToRefs } from 'pinia'
 import { darkenColor } from '~/utils/colors'
 
 const settingsStore = useSettingsStore()
-const { gameSettings } = storeToRefs(settingsStore)
+const { gameSettingsColorsById } = storeToRefs(settingsStore)
 
 const crownColor = computed(() => {
-  console.log('compute');
-  const crownColorSetting = gameSettings.value?.colors?.find(color => color.id === 'crown')
-  return crownColorSetting?.color || '#228B22'
+  return gameSettingsColorsById.value.crown?.color || '#228B22'
 })
 
 const treeColor = computed(() => {
-  const treeColorSetting = gameSettings.value?.colors?.find(color => color.id === 'tree')
-  return treeColorSetting?.color || '#228B22'
+  return gameSettingsColorsById.value.tree?.color || '#228B22'
 })
 
 const crownColorDark = computed(() => {

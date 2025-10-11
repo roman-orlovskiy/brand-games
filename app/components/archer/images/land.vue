@@ -23,11 +23,10 @@ import { storeToRefs } from 'pinia'
 import { lightenColor } from '~/utils/colors'
 
 const settingsStore = useSettingsStore()
-const { gameSettings } = storeToRefs(settingsStore)
+const { gameSettingsColorsById } = storeToRefs(settingsStore)
 
 const landColor = computed(() => {
-  const landColorSetting = gameSettings.value?.colors?.find(color => color.id === 'land')
-  return landColorSetting?.color || '#00BFA5'
+  return gameSettingsColorsById.value.land?.color || '#00BFA5'
 })
 
 const landColorLight = computed(() => {
