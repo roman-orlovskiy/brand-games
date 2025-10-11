@@ -18,7 +18,6 @@
   padding-bottom: 50%;
   position: relative;
   overflow: hidden;
-  background-color: rgba(255, 0, 0, 0.5);
 
   &__inner {
     position: absolute;
