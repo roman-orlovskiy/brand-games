@@ -20,6 +20,7 @@
 <script setup lang="ts">
 import { useSettingsStore } from '~/stores/settings'
 import { storeToRefs } from 'pinia'
+import { lightenColor } from '~/utils/colors'
 
 const settingsStore = useSettingsStore()
 const { gameSettings } = storeToRefs(settingsStore)
@@ -28,26 +29,6 @@ const landColor = computed(() => {
   const landColorSetting = gameSettings.value?.colors?.find(color => color.id === 'land')
   return landColorSetting?.color || '#00BFA5'
 })
-
-// Функция для осветления цвета (для создания вариации)
-const lightenColor = (color: string, percent: number) => {
-  // Удаляем # если есть
-  const hex = color.replace('#', '')
-  
-  // Конвертируем в RGB
-  const r = parseInt(hex.substr(0, 2), 16)
-  const g = parseInt(hex.substr(2, 2), 16)
-  const b = parseInt(hex.substr(4, 2), 16)
-  
-  // Осветляем на указанный процент
-  const lightenedR = Math.min(255, Math.floor(r + (255 - r) * (percent / 100)))
-  const lightenedG = Math.min(255, Math.floor(g + (255 - g) * (percent / 100)))
-  const lightenedB = Math.min(255, Math.floor(b + (255 - b) * (percent / 100)))
-  
-  // Конвертируем обратно в HEX
-  const toHex = (n: number) => n.toString(16).padStart(2, '0')
-  return `#${toHex(lightenedR)}${toHex(lightenedG)}${toHex(lightenedB)}`
-}
 
 const landColorLight = computed(() => {
   return lightenColor(landColor.value, 15) // Осветляем на 15%

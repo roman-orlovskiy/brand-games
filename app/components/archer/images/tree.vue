@@ -97,6 +97,7 @@
 <script setup lang="ts">
 import { useSettingsStore } from '~/stores/settings'
 import { storeToRefs } from 'pinia'
+import { darkenColor } from '~/utils/colors'
 
 const settingsStore = useSettingsStore()
 const { gameSettings } = storeToRefs(settingsStore)
@@ -111,26 +112,6 @@ const treeColor = computed(() => {
   const treeColorSetting = gameSettings.value?.colors?.find(color => color.id === 'tree')
   return treeColorSetting?.color || '#228B22'
 })
-
-// Функция для затемнения цвета
-const darkenColor = (color: string, percent: number) => {
-  // Удаляем # если есть
-  const hex = color.replace('#', '')
-  
-  // Конвертируем в RGB
-  const r = parseInt(hex.substr(0, 2), 16)
-  const g = parseInt(hex.substr(2, 2), 16)
-  const b = parseInt(hex.substr(4, 2), 16)
-  
-  // Затемняем на указанный процент
-  const darkenedR = Math.max(0, Math.floor(r * (1 - percent / 100)))
-  const darkenedG = Math.max(0, Math.floor(g * (1 - percent / 100)))
-  const darkenedB = Math.max(0, Math.floor(b * (1 - percent / 100)))
-  
-  // Конвертируем обратно в HEX
-  const toHex = (n: number) => n.toString(16).padStart(2, '0')
-  return `#${toHex(darkenedR)}${toHex(darkenedG)}${toHex(darkenedB)}`
-}
 
 const crownColorDark = computed(() => {
   return darkenColor(crownColor.value, 20) // Затемняем на 20%
