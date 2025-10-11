@@ -71,6 +71,7 @@ export const useSettingsStore = defineStore('settings', () => {
     { id: 'bow', name: 'Лук', brandColorId: 'neutral' },
     { id: 'arrow', name: 'Стрела', brandColorId: 'neutral' },
     { id: 'background', name: 'Фон', brandColorId: 'background' },
+    { id: 'land', name: 'Земля', brandColorId: 'additional' },
     { id: 'prizes', name: 'Призы', brandColorId: 'accent' },
     { id: 'interface', name: 'Интерфейс', brandColorId: 'main' },
     { id: 'buttons', name: 'Кнопки', brandColorId: 'accent' },
