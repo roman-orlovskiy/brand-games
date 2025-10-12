@@ -2,6 +2,10 @@
   <div class="archer-game__wrapper">
     <div class="game-field__inner">
 
+      <div class="archer-game__man">
+        <ArcherMan />
+      </div>
+
       <div class="archer-game__tree">
         <ArcherImagesTree />
       </div>
@@ -44,6 +48,14 @@ const boxStyle = computed(() => ({
     position: relative;
     /* Пропорции 1453:1000 = 1000/1453 ≈ 0.688 */
     padding-top: 68.8%; /* 1000/1453 * 100% */
+  }
+
+  &__man {
+    width: 20%;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    z-index: 100;
   }
   
   &__inner {
