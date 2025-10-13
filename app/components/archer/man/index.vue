@@ -20,6 +20,10 @@
       <div class="archer-man__arrows">
         <ArcherManArrows />
       </div>
+
+      <div class="archer-man__line">
+        <ArcherImagesLine />
+      </div>
     </div>
   </div>
   </template>
@@ -154,6 +158,14 @@ defineExpose({
     left: 3%;
     top: 32%;
     z-index: 1;
+  }
+
+  &__line {
+    position: absolute;
+    width: 100%;
+    z-index: 1;
+    bottom: 66%;
+    left: 70%;
   }
 }
 </style>  
