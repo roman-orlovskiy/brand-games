@@ -50,6 +50,28 @@
           </div>
         </UCard>
 
+        <!-- Параметры игры -->
+        <UCard>
+          <template #header>
+            <h2 class="text-lg font-semibold">Параметры игры</h2>
+          </template>
+
+          <div class="space-y-4">
+            <div class="space-y-2">
+              <label class="block text-sm font-medium text-gray-700">Количество подарков</label>
+              <UInput
+                v-model.number="gameSettings.prizesCount"
+                type="number"
+                min="1"
+                max="10"
+                class="w-32"
+                @update:model-value="(value: number) => settingsStore.updatePrizesCount(value)"
+              />
+              <p class="text-xs text-gray-500">От 1 до 10 подарков</p>
+            </div>
+          </div>
+        </UCard>
+
       </div>
     </div>
 

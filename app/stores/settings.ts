@@ -20,6 +20,7 @@ export interface GameColor {
 
 export interface GameSettings {
   colors: GameColor[]
+  prizesCount: number
 }
 
 export const useSettingsStore = defineStore('settings', () => {
@@ -80,7 +81,8 @@ export const useSettingsStore = defineStore('settings', () => {
   }))
 
   const gameSettings = ref<GameSettings>({
-    colors: [...defaultGameColors]
+    colors: [...defaultGameColors],
+    prizesCount: 4
   })
 
   // Computed свойство для быстрого доступа к цветам по ID
@@ -101,10 +103,15 @@ export const useSettingsStore = defineStore('settings', () => {
     }
   }
 
+  const updatePrizesCount = (count: number) => {
+    gameSettings.value.prizesCount = Math.max(1, Math.min(10, count)) // От 1 до 10 подарков
+  }
+
   return {
     brandSettings,
     gameSettings,
     gameSettingsColorsById,
-    updateGameColor
+    updateGameColor,
+    updatePrizesCount
   }
 })
