@@ -73,7 +73,7 @@ const arrowStyle = computed(() => {
   // Стрела движется вместе с рукой и вращается вместе с луком
   const powerOffset = aimPosition.value.power * 2.5 // Движение влево при натяжении
   const horizontalOffset = aimPosition.value.x * 2.5 // Движение влево/вправо вместе с рукой
-  const rotation = aimPosition.value.x * 15 - aimPosition.value.y * 10 // Инвертировано вертикальное вращение
+  const rotation = aimPosition.value.x * 15 - aimPosition.value.y * 16 // Инвертировано вертикальное вращение
   
   return {
     left: `${basePositions.arrow.x - powerOffset + horizontalOffset}%`, // + потому что x отрицательный при движении влево
@@ -87,7 +87,7 @@ const arrowStyle = computed(() => {
 const lineStyle = computed(() => {
   // Линия траектории выходит из кончика стрелы
   // Плавная зависимость: влево = сильное, вправо = слабое (без резких переходов)
-  const directionMultiplier = 0.6 - (aimPosition.value.x * 0.4) // От 1 (влево) до 0.2 (вправо)
+  const directionMultiplier = 0.2 + ((aimPosition.value.x + 1) * 0.4) // От 0.2 (вправо) до 1 (влево), точка отсчёта справа
   const powerOffset = aimPosition.value.power * directionMultiplier * 2.5
   const horizontalOffset = aimPosition.value.x * 2.5
   const rotation = aimPosition.value.x * 25 - aimPosition.value.y * 60 // Инвертировано вертикальное вращение
