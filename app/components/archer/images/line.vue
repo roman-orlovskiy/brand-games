@@ -1,5 +1,58 @@
 <template>
-  <svg width="100%" viewBox="0 0 282 124" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <path d="M1 123C41.7651 96.893 128.354 43.1728 281 1" stroke="#FF335F" stroke-width="2" stroke-dasharray="16 16"/>
+  <svg :width="svgWidth" :viewBox="`0 0 ${svgWidth} ${svgHeight}`" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path :d="pathData" stroke="#FF335F" stroke-width="2" stroke-dasharray="16 16"/>
   </svg>
 </template>
+
+<script setup lang="ts">
+import { computed } from 'vue'
+
+interface Props {
+  power?: number // 0-1, сила натяжения
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  power: 0
+})
+
+// Размеры SVG зависят от силы натяжения
+const svgWidth = computed(() => {
+  // При слабом натяжении - короткая траектория (100px), при сильном - длинная (400px)
+  return Math.round(100 + props.power * 300)
+})
+
+const svgHeight = computed(() => {
+  // Высота также немного меняется
+  return 124
+})
+
+// Генерация кривой Безье для параболы
+const pathData = computed(() => {
+  const width = svgWidth.value
+  const height = svgHeight.value
+  
+  // Начальная точка (левый край, по центру вертикали) - выходит из стрелы
+  const startX = 1
+  const startY = height / 2 - 20 // Поднимаем выше, чтобы совпадало с кончиком стрелы
+  
+  // Конечная точка траектории
+  const endX = width - 1
+  const endY = height - 10 // Приземление внизу
+  
+  // Контрольные точки для параболы
+  // При слабом натяжении - крутая парабола
+  // При сильном натяжении - пологая парабола (ближе к прямой)
+  
+  const curvature = 0.7 - (props.power * 0.5) // От 0.7 (крутая) до 0.2 (пологая)
+  
+  // Первая контрольная точка - определяет начальный угол вылета
+  const cp1X = startX + (width * 0.3)
+  const cp1Y = startY - (height * curvature * 0.5)
+  
+  // Вторая контрольная точка - определяет форму падения
+  const cp2X = startX + (width * 0.7)
+  const cp2Y = startY - (height * curvature * 0.3)
+  
+  return `M${startX} ${startY} C${cp1X} ${cp1Y}, ${cp2X} ${cp2Y}, ${endX} ${endY}`
+})
+</script>

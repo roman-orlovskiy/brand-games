@@ -21,8 +21,8 @@
         <ArcherManArrows />
       </div>
 
-      <div class="archer-man__line">
-        <ArcherImagesLine />
+      <div class="archer-man__line" :style="lineStyle">
+        <ArcherImagesLine :power="aimPosition.power" />
       </div>
     </div>
   </div>
@@ -81,6 +81,24 @@ const arrowStyle = computed(() => {
     transform: `rotate(${rotation}deg)`,
     transformOrigin: 'left center',
     opacity: 0.7 + (aimPosition.value.power * 0.3) // Более видимая при натяжении
+  }
+})
+
+const lineStyle = computed(() => {
+  // Линия траектории выходит из кончика стрелы
+  const powerOffset = aimPosition.value.power * 2.5
+  const horizontalOffset = aimPosition.value.x * 2.5
+  const rotation = aimPosition.value.x * 15 + aimPosition.value.y * 10
+  
+  // Кончик стрелы находится справа от её позиции (стрела длиной 50%)
+  const arrowTipOffset = 50 // 50% ширины стрелы
+  
+  return {
+    left: `${basePositions.arrow.x - powerOffset + horizontalOffset + arrowTipOffset}%`,
+    top: `${basePositions.arrow.y - 21}%`, // Поднимаем вверх, чтобы совпадало с кончиком стрелы
+    transform: `rotate(${rotation}deg)`,
+    transformOrigin: 'left left', // Вращение от точки начала траектории
+    opacity: 0.5 + (aimPosition.value.power * 0.3) // Более видимая при натяжении
   }
 })
 
@@ -162,10 +180,10 @@ defineExpose({
 
   &__line {
     position: absolute;
-    width: 100%;
+    width: 50%;
     z-index: 1;
-    bottom: 66%;
-    left: 70%;
+    transition: all 0.1s ease-out;
+    pointer-events: none; // Линия не должна перехватывать клики
   }
 }
 </style>  
