@@ -8,7 +8,7 @@
       <div class="archer-man__legs">
         <ArcherManLegs />
       </div>
-      <div class="archer-man__arrow" :style="arrowStyle">
+      <div v-if="!isShooting" class="archer-man__arrow" :style="arrowStyle">
         <ArcherManArrow />
       </div>
       <div class="archer-man__hand" :style="handStyle">
@@ -22,7 +22,27 @@
       </div>
 
       <div class="archer-man__line" :style="lineStyle">
-        <ArcherImagesLine :power="aimPosition.power" :direction="aimPosition.x" />
+        <ArcherImagesLine ref="lineRef" :power="displayPower" :direction="displayDirection" />
+        
+        <!-- Летящая стрела прямо внутри SVG -->
+        <svg v-if="isShooting" class="flying-arrow-svg" :style="flyingSvgStyle">
+          <defs>
+            <path :id="pathId" :d="flyingPathData" />
+          </defs>
+          <g>
+            <foreignObject :width="arrowWidth" :height="arrowHeight" class="arrow-foreign-object">
+              <ArcherManArrow />
+            </foreignObject>
+            <animateMotion 
+              :dur="`${animationDuration}ms`"
+              fill="freeze"
+              rotate="auto"
+              @end="onAnimationEnd"
+            >
+              <mpath :href="`#${pathId}`" />
+            </animateMotion>
+          </g>
+        </svg>
       </div>
     </div>
   </div>
@@ -33,6 +53,21 @@ import { ref, computed } from 'vue'
 
 // Позиция прицела и сила натяжения
 const aimPosition = ref({ x: 0, y: 0, power: 0 })
+
+// Состояние выстрела
+const isShooting = ref(false)
+const frozenAimPosition = ref({ x: 0, y: 0, power: 0 })
+const animationDuration = ref(1500) // Длительность анимации в мс
+const pathId = ref('arrow-path-' + Math.random().toString(36).substr(2, 9)) // Уникальный ID для path
+const lineRef = ref<{ 
+  pathData: string,
+  svgWidth: number,
+  svgHeight: number
+} | null>(null)
+
+// Для отображения используем либо текущую позицию, либо замороженную
+const displayPower = computed(() => isShooting.value ? frozenAimPosition.value.power : aimPosition.value.power)
+const displayDirection = computed(() => isShooting.value ? frozenAimPosition.value.x : aimPosition.value.x)
 
 // Базовые позиции компонентов
 const basePositions = {
@@ -85,8 +120,11 @@ const arrowStyle = computed(() => {
 })
 
 const lineStyle = computed(() => {
+  // Используем замороженную позицию, если стреляем, иначе текущую
+  const currentAim = isShooting.value ? frozenAimPosition.value : aimPosition.value
+  
   // Скрываем траекторию, пока джойстик не начали двигать
-  const isJoystickActive = aimPosition.value.x !== 0 || aimPosition.value.y !== 0 || aimPosition.value.power > 0
+  const isJoystickActive = currentAim.x !== 0 || currentAim.y !== 0 || currentAim.power > 0
   
   if (!isJoystickActive) {
     return {
@@ -97,13 +135,13 @@ const lineStyle = computed(() => {
   
   // Линия траектории выходит из кончика стрелы
   // Плавная зависимость: влево = сильное, вправо = слабое (без резких переходов)
-  const directionMultiplier = 0.2 + ((aimPosition.value.x + 1) * 0.4) // От 0.2 (вправо) до 1 (влево), точка отсчёта справа
-  const powerOffset = aimPosition.value.power * directionMultiplier * 2.5
-  const horizontalOffset = aimPosition.value.x * 2.5
-  let rotation = aimPosition.value.x * 25 - aimPosition.value.y * 60 // Инвертировано вертикальное вращение
+  const directionMultiplier = 0.2 + ((currentAim.x + 1) * 0.4) // От 0.2 (вправо) до 1 (влево), точка отсчёта справа
+  const powerOffset = currentAim.power * directionMultiplier * 2.5
+  const horizontalOffset = currentAim.x * 2.5
+  let rotation = currentAim.x * 25 - currentAim.y * 60 // Инвертировано вертикальное вращение
   
   if (rotation > 20) {
-    rotation = rotation * 0.1 - aimPosition.value.y * 1
+    rotation = rotation * 0.1 - currentAim.y * 1
   }
 
   // Кончик стрелы находится справа от её позиции (стрела длиной 50%)
@@ -114,19 +152,77 @@ const lineStyle = computed(() => {
     top: `${basePositions.arrow.y - 21}%`, // Поднимаем вверх, чтобы совпадало с кончиком стрелы
     transform: `rotate(${rotation}deg) translateY(${rotation * 0.8}%) translateX(${- rotation * 1.2}%)`,
     transformOrigin: 'left left', // Вращение от точки начала траектории
-    opacity: 0.5 + (aimPosition.value.power * directionMultiplier * 0.3), // Видимость зависит от направления натяжения
+    opacity: 0.5 + (currentAim.power * directionMultiplier * 0.3), // Видимость зависит от направления натяжения
     pointerEvents: 'none' as const
   }
 })
 
-// Обработчик изменения прицела
-const handleAimChange = (position: { x: number, y: number, power: number }) => {
-  aimPosition.value = position
+// Path данные для анимации стрелы (берем из lineRef)
+const flyingPathData = computed(() => {
+  if (lineRef.value && lineRef.value.pathData) {
+    return lineRef.value.pathData
+  }
+  return ''
+})
+
+// Стиль для SVG с летящей стрелой
+const flyingSvgStyle = computed(() => {
+  if (!lineRef.value) return {}
+  
+  return {
+    position: 'absolute' as const,
+    top: '0',
+    left: '0',
+    width: '100%',
+    height: '100%',
+    overflow: 'visible',
+    pointerEvents: 'none' as const,
+    zIndex: '200'
+  }
+})
+
+// Размеры стрелы для foreignObject
+const arrowWidth = computed(() => {
+  if (!lineRef.value) return 100
+  return lineRef.value.svgWidth * 0.3 // Стрела занимает примерно 30% от ширины траектории
+})
+
+const arrowHeight = computed(() => {
+  return arrowWidth.value * 0.5 // Пропорции стрелы
+})
+
+// Обработчик окончания анимации
+const onAnimationEnd = () => {
+  setTimeout(() => {
+    isShooting.value = false
+    frozenAimPosition.value = { x: 0, y: 0, power: 0 }
+  }, 100)
 }
 
-// Экспортируем функцию для внешнего использования
+// Обработчик изменения прицела
+const handleAimChange = (position: { x: number, y: number, power: number }) => {
+  if (!isShooting.value) {
+    aimPosition.value = position
+  }
+}
+
+// Функция выстрела
+const shoot = (position: { x: number, y: number, power: number }) => {
+  if (isShooting.value) return
+  
+  // Замораживаем текущую позицию
+  frozenAimPosition.value = { ...position }
+  
+  // Длительность полёта зависит от силы (0.8-2 секунды)
+  animationDuration.value = 800 + (1 - position.power) * 1200
+  
+  isShooting.value = true
+}
+
+// Экспортируем функции для внешнего использования
 defineExpose({
-  handleAimChange
+  handleAimChange,
+  shoot
 })
 </script>
 
@@ -202,5 +298,28 @@ defineExpose({
     transition: all 0.1s ease-out;
     pointer-events: none; // Линия не должна перехватывать клики
   }
+
+  &__flying-arrow {
+    position: absolute;
+    width: 50%;
+    z-index: 200;
+    pointer-events: none;
+  }
 }
+
+.flying-arrow-svg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+  z-index: 200;
+}
+
+.arrow-foreign-object {
+  overflow: visible;
+}
+
 </style>  

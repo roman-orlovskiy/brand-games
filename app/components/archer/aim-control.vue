@@ -10,7 +10,7 @@
         @touchstart="startDrag"
       >
         <!-- Центральная точка для визуального центрирования -->
-        <div class="aim-control__center-dot"></div>
+        <div class="aim-control__center-dot" />
       </div>
     </div>
   </div>
@@ -21,6 +21,7 @@ import { ref, computed, onUnmounted } from 'vue'
 
 const emit = defineEmits<{
   aimChange: [position: { x: number, y: number, power: number }]
+  shoot: [position: { x: number, y: number, power: number }]
 }>()
 
 const outerRadius = 60 // Радиус внешнего круга
@@ -41,11 +42,15 @@ const innerCircleStyle = computed(() => {
 const startDrag = (e: MouseEvent | TouchEvent) => {
   isDragging.value = true
   
-  const rect = (e.target as HTMLElement).closest('.aim-control__outer-circle')?.getBoundingClientRect()
-  if (!rect) return
+  const outerCircle = (e.target as HTMLElement).closest('.aim-control__outer-circle')
+  if (!outerCircle) return
   
-  const clientX = 'touches' in e ? e.touches[0].clientX : e.clientX
-  const clientY = 'touches' in e ? e.touches[0].clientY : e.clientY
+  const rect = outerCircle.getBoundingClientRect()
+  
+  const clientX = 'touches' in e ? e.touches[0]?.clientX : e.clientX
+  const clientY = 'touches' in e ? e.touches[0]?.clientY : e.clientY
+  
+  if (clientX === undefined || clientY === undefined) return
   
   dragStart.value = {
     x: clientX - rect.left - rect.width / 2,
@@ -64,11 +69,15 @@ const startDrag = (e: MouseEvent | TouchEvent) => {
 const handleDrag = (e: MouseEvent | TouchEvent) => {
   if (!isDragging.value) return
   
-  const rect = document.querySelector('.aim-control__outer-circle')?.getBoundingClientRect()
-  if (!rect) return
+  const outerCircle = document.querySelector('.aim-control__outer-circle')
+  if (!outerCircle) return
   
-  const clientX = 'touches' in e ? e.touches[0].clientX : e.clientX
-  const clientY = 'touches' in e ? e.touches[0].clientY : e.clientY
+  const rect = outerCircle.getBoundingClientRect()
+  
+  const clientX = 'touches' in e ? e.touches[0]?.clientX : e.clientX
+  const clientY = 'touches' in e ? e.touches[0]?.clientY : e.clientY
+  
+  if (clientX === undefined || clientY === undefined) return
   
   const x = clientX - rect.left - rect.width / 2
   const y = clientY - rect.top - rect.height / 2
@@ -93,6 +102,21 @@ const handleDrag = (e: MouseEvent | TouchEvent) => {
 
 const endDrag = () => {
   isDragging.value = false
+  
+  // Если была сила натяжения, выстреливаем
+  const x = currentPosition.value.x
+  const y = currentPosition.value.y
+  const normalizedX = x / (outerRadius - innerRadius)
+  const normalizedY = y / (outerRadius - innerRadius)
+  const power = Math.sqrt(normalizedX * normalizedX + normalizedY * normalizedY)
+  
+  if (power > 0.1) {
+    emit('shoot', {
+      x: normalizedX,
+      y: normalizedY,
+      power: Math.min(power, 1)
+    })
+  }
   
   // Возвращаем джойстик в центр
   currentPosition.value = { x: 0, y: 0 }

@@ -1,11 +1,11 @@
 <template>
-  <svg :width="svgWidth" :viewBox="`0 0 ${svgWidth} ${svgHeight}`" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <path :d="pathData" stroke="#FF335F" stroke-width="2" stroke-dasharray="16 16"/>
+  <svg ref="svgRef" :width="svgWidth" :viewBox="`0 0 ${svgWidth} ${svgHeight}`" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path ref="pathRef" :d="pathData" stroke="#FF335F" stroke-width="2" stroke-dasharray="16 16"/>
   </svg>
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 
 interface Props {
   power?: number // 0-1, сила натяжения
@@ -14,6 +14,9 @@ interface Props {
 const props = withDefaults(defineProps<Props>(), {
   power: 0
 })
+
+const svgRef = ref<SVGSVGElement>()
+const pathRef = ref<SVGPathElement>()
 
 // Размеры SVG зависят от силы натяжения
 const svgWidth = computed(() => {
@@ -54,5 +57,12 @@ const pathData = computed(() => {
   const cp2Y = startY - (height * curvature * 0.3)
   
   return `M${startX} ${startY} C${cp1X} ${cp1Y}, ${cp2X} ${cp2Y}, ${endX} ${endY}`
+})
+
+// Экспортируем данные для использования в родительском компоненте
+defineExpose({
+  get pathData() { return pathData.value },
+  get svgWidth() { return svgWidth.value },
+  get svgHeight() { return svgHeight.value }
 })
 </script>

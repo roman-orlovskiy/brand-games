@@ -7,7 +7,7 @@
       </div>
 
       <!-- Управление прицелом -->
-      <ArcherAimControl @aim-change="handleAimChange" />
+      <ArcherAimControl @aim-change="handleAimChange" @shoot="handleShoot" />
 
       <div class="archer-game__tree">
         <ArcherImagesTree />
@@ -49,6 +49,13 @@ const boxStyle = computed(() => ({
 const handleAimChange = (position: { x: number, y: number, power: number }) => {
   if (archerManRef.value && archerManRef.value.handleAimChange) {
     archerManRef.value.handleAimChange(position);
+  }
+};
+
+// Обработчик выстрела
+const handleShoot = (position: { x: number, y: number, power: number }) => {
+  if (archerManRef.value && archerManRef.value.shoot) {
+    archerManRef.value.shoot(position);
   }
 };
 </script>
