@@ -1,7 +1,7 @@
 <template>
   <div class="aim-control">
     <!-- Внешний круг -->
-    <div class="aim-control__outer-circle">
+    <div class="aim-control__outer-circle" :style="outerCircleStyle">
       <!-- Внутренний круг (джойстик) -->
       <div 
         class="aim-control__inner-circle"
@@ -27,39 +27,49 @@ const emit = defineEmits<{
 const outerRadius = 48 // Радиус внешнего круга
 const innerRadius = 16 // Радиус внутреннего круга
 const isDragging = ref(false)
-const dragStart = ref({ x: 0, y: 0 })
+const dragStartPoint = ref({ x: 0, y: 0 }) // Точка, где начали тащить
 const currentPosition = ref({ x: 0, y: 0 })
+
+const interfaceColor = computed(() => {
+  return settingsStore.gameSettingsColorsById.interface?.color || '#00BCD4'
+})
+
+const outerCircleStyle = computed(() => {
+  return {
+    borderColor: interfaceColor.value
+  }
+})
 
 const innerCircleStyle = computed(() => {
   const x = currentPosition.value.x
   const y = currentPosition.value.y
-  const interfaceColor = settingsStore.gameSettingsColorsById.interface?.color || '#00BCD4'
   return {
     transform: `translate(${x}px, ${y}px)`,
     transition: isDragging.value ? 'none' : 'transform 0.2s ease-out',
-    background: interfaceColor
+    background: interfaceColor.value
   }
 })
 
-const startDrag = (e: MouseEvent | TouchEvent) => {
+// Метод для начала драга из любой точки экрана (вызывается из archer-game)
+const startDragFromAnywhere = (e: MouseEvent | TouchEvent) => {
+  e.preventDefault()
+  e.stopPropagation()
+  
   isDragging.value = true
-  
-  const outerCircle = (e.target as HTMLElement).closest('.aim-control__outer-circle')
-  if (!outerCircle) return
-  
-  const rect = outerCircle.getBoundingClientRect()
   
   const clientX = 'touches' in e ? e.touches[0]?.clientX : e.clientX
   const clientY = 'touches' in e ? e.touches[0]?.clientY : e.clientY
   
   if (clientX === undefined || clientY === undefined) return
   
-  dragStart.value = {
-    x: clientX - rect.left - rect.width / 2,
-    y: clientY - rect.top - rect.height / 2
+  // Запоминаем начальную точку клика как виртуальный центр джойстика
+  dragStartPoint.value = {
+    x: clientX,
+    y: clientY
   }
   
-  currentPosition.value = { ...dragStart.value }
+  // Начинаем с нулевой позиции
+  currentPosition.value = { x: 0, y: 0 }
   emitAimChange()
   
   document.addEventListener('mousemove', handleDrag)
@@ -68,23 +78,26 @@ const startDrag = (e: MouseEvent | TouchEvent) => {
   document.addEventListener('touchend', endDrag)
 }
 
+// Метод для начала драга с самого джойстика (оставляем для совместимости)
+const startDrag = (e: MouseEvent | TouchEvent) => {
+  e.preventDefault()
+  e.stopPropagation()
+  startDragFromAnywhere(e)
+}
+
 const handleDrag = (e: MouseEvent | TouchEvent) => {
   if (!isDragging.value) return
-  
-  const outerCircle = document.querySelector('.aim-control__outer-circle')
-  if (!outerCircle) return
-  
-  const rect = outerCircle.getBoundingClientRect()
   
   const clientX = 'touches' in e ? e.touches[0]?.clientX : e.clientX
   const clientY = 'touches' in e ? e.touches[0]?.clientY : e.clientY
   
   if (clientX === undefined || clientY === undefined) return
   
-  const x = clientX - rect.left - rect.width / 2
-  const y = clientY - rect.top - rect.height / 2
+  // Вычисляем смещение от начальной точки клика
+  const x = clientX - dragStartPoint.value.x
+  const y = clientY - dragStartPoint.value.y
   
-  // Ограничиваем движение внутри внешнего круга
+  // Ограничиваем движение внутри виртуального круга
   const distance = Math.sqrt(x * x + y * y)
   const maxDistance = outerRadius - innerRadius
   
@@ -154,12 +167,17 @@ onUnmounted(() => {
   document.removeEventListener('touchmove', handleDrag)
   document.removeEventListener('touchend', endDrag)
 })
+
+// Экспонируем метод для использования из родительского компонента
+defineExpose({
+  startDragFromAnywhere
+})
 </script>
 
 <style scoped lang="scss">
 .aim-control {
   position: absolute;
-  top: 30%;
+  top: 40%;
   left: 20px;
   transform: translateY(-50%);
   z-index: 200;
@@ -167,7 +185,7 @@ onUnmounted(() => {
   &__outer-circle {
     width: 96px;
     height: 96px;
-    border: 3px solid #333;
+    border: 3px solid;
     border-radius: 50%;
     background: rgba(255, 255, 255, 0.1);
     position: relative;

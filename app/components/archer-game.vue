@@ -1,5 +1,9 @@
 <template>
-  <div class="archer-game__wrapper">
+  <div 
+    class="archer-game__wrapper"
+    @mousedown="handleWrapperMouseDown"
+    @touchstart="handleWrapperTouchStart"
+  >
     <div class="game-field__inner">
 
       <div class="archer-game__man">
@@ -7,7 +11,7 @@
       </div>
 
       <!-- Управление прицелом -->
-      <ArcherAimControl @aim-change="handleAimChange" @shoot="handleShoot" />
+      <ArcherAimControl ref="aimControlRef" @aim-change="handleAimChange" @shoot="handleShoot" />
 
       <div class="archer-game__tree">
         <ArcherImagesTree />
@@ -40,6 +44,7 @@ import { computed, ref } from 'vue';
 
 const boxLeft = ref(40);
 const archerManRef = ref();
+const aimControlRef = ref();
 
 const boxStyle = computed(() => ({
   left: `${boxLeft.value}%`,
@@ -56,6 +61,19 @@ const handleAimChange = (position: { x: number, y: number, power: number }) => {
 const handleShoot = (position: { x: number, y: number, power: number }) => {
   if (archerManRef.value && archerManRef.value.shoot) {
     archerManRef.value.shoot(position);
+  }
+};
+
+// Обработчик клика на wrapper для начала драга
+const handleWrapperMouseDown = (e: MouseEvent) => {
+  if (aimControlRef.value && aimControlRef.value.startDragFromAnywhere) {
+    aimControlRef.value.startDragFromAnywhere(e);
+  }
+};
+
+const handleWrapperTouchStart = (e: TouchEvent) => {
+  if (aimControlRef.value && aimControlRef.value.startDragFromAnywhere) {
+    aimControlRef.value.startDragFromAnywhere(e);
   }
 };
 </script>
