@@ -45,65 +45,54 @@
   &__body {
     position: absolute;
     width: 35%;
-    height: 35%;
-    left: 20%;
-    top: 10%;
-    z-index: 2;
+    left: 0;
+    bottom: 31%;
+    z-index: 10;
   }
 
   // Ноги (legs): скорректированные размеры и позиция
   &__legs {
     position: absolute;
-    width: 40%;
-    height: 30%;
+    width: 35%;
     left: 10%;
-    top: 65%;
-    z-index: 1;
-  }
-
-  // Лук (bow): пока скрыт, так как нет компонента лука
-  &__bow {
-    display: none;
+    bottom: 0;
+    z-index: 10;
   }
 
   // Стрела (arrow): скорректированные размеры и позиция
   &__arrow {
     position: absolute;
-    width: 30%;
-    height: auto;
-    left: 50%;
-    top: 25%;
-    z-index: 4;
+    width: 50%;
+    left: 20%;
+    top: 35%;
+    z-index: 15;
   }
 
   // Левая рука (hand): скорректированные размеры и позиция
   &__hand {
     position: absolute;
-    width: 15%;
-    height: 20%;
-    left: 0%;
-    top: 5%;
-    z-index: 3;
+    width: 26%;
+    left: 2%;
+    top: 49%;
+    z-index: 15;
   }
 
   // Правая рука (hand2): скорректированные размеры и позиция
   &__hand2 {
     position: absolute;
-    width: 15%;
-    height: 20%;
-    left: 55%;
-    top: 25%;
+    width: 60%;
+    left: 14%;
+    top: 23%;
     z-index: 5;
   }
 
   // Стрелы в колчане (arrows): скорректированные размеры и позиция
   &__arrows {
     position: absolute;
-    width: 15%;
-    height: 20%;
-    left: 0%;
-    top: 5%;
-    z-index: 3;
+    width: 18%;
+    left: 3%;
+    top: 32%;
+    z-index: 1;
   }
 }
 </style>  
