@@ -8,24 +8,24 @@
         :style="innerCircleStyle"
         @mousedown="startDrag"
         @touchstart="startDrag"
-      >
-        <!-- Центральная точка для визуального центрирования -->
-        <div class="aim-control__center-dot" />
-      </div>
+      />
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, computed, onUnmounted } from 'vue'
+import { useSettingsStore } from '~/stores/settings'
+
+const settingsStore = useSettingsStore()
 
 const emit = defineEmits<{
   aimChange: [position: { x: number, y: number, power: number }]
   shoot: [position: { x: number, y: number, power: number }]
 }>()
 
-const outerRadius = 60 // Радиус внешнего круга
-const innerRadius = 20 // Радиус внутреннего круга
+const outerRadius = 48 // Радиус внешнего круга
+const innerRadius = 16 // Радиус внутреннего круга
 const isDragging = ref(false)
 const dragStart = ref({ x: 0, y: 0 })
 const currentPosition = ref({ x: 0, y: 0 })
@@ -33,9 +33,11 @@ const currentPosition = ref({ x: 0, y: 0 })
 const innerCircleStyle = computed(() => {
   const x = currentPosition.value.x
   const y = currentPosition.value.y
+  const interfaceColor = settingsStore.gameSettingsColorsById.interface?.color || '#00BCD4'
   return {
     transform: `translate(${x}px, ${y}px)`,
-    transition: isDragging.value ? 'none' : 'transform 0.2s ease-out'
+    transition: isDragging.value ? 'none' : 'transform 0.2s ease-out',
+    background: interfaceColor
   }
 })
 
@@ -157,13 +159,14 @@ onUnmounted(() => {
 <style scoped lang="scss">
 .aim-control {
   position: absolute;
-  top: 20px;
-  right: 20px;
+  top: 30%;
+  left: 20px;
+  transform: translateY(-50%);
   z-index: 200;
 
   &__outer-circle {
-    width: 120px;
-    height: 120px;
+    width: 96px;
+    height: 96px;
     border: 3px solid #333;
     border-radius: 50%;
     background: rgba(255, 255, 255, 0.1);
@@ -173,34 +176,20 @@ onUnmounted(() => {
   }
 
   &__inner-circle {
-    width: 40px;
-    height: 40px;
-    background: #007bff;
-    border: 2px solid #fff;
+    width: 32px;
+    height: 32px;
     border-radius: 50%;
     position: absolute;
     top: 50%;
     left: 50%;
-    margin-left: -20px;
-    margin-top: -20px;
+    margin-left: -16px;
+    margin-top: -16px;
     cursor: grab;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
     
     &:active {
       cursor: grabbing;
     }
-  }
-
-  &__center-dot {
-    width: 6px;
-    height: 6px;
-    background: #fff;
-    border-radius: 50%;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    margin-left: -3px;
-    margin-top: -3px;
   }
 }
 </style>

@@ -74,7 +74,6 @@ export const useSettingsStore = defineStore('settings', () => {
     { id: 'land', name: 'Земля', brandColorId: 'additional' },
     { id: 'prizes', name: 'Призы', brandColorId: 'accent' },
     { id: 'interface', name: 'Интерфейс', brandColorId: 'main' },
-    { id: 'buttons', name: 'Кнопки', brandColorId: 'accent' },
   ].map(color => ({
     ...color,
     color: getBrandColor(color.brandColorId)?.color || '#000000'
