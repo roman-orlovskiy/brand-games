@@ -51,10 +51,10 @@ const boxStyle = computed(() => ({
   }
 
   &__man {
-    width: 30%;
+    width: 22%;
     position: absolute;
-    bottom: 0;
-    left: 0;
+    bottom: 8%;
+    left: 6%;
     z-index: 100;
   }
   
