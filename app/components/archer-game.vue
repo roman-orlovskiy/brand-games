@@ -67,6 +67,7 @@ const handleShoot = (position: { x: number, y: number, power: number }) => {
     position: relative;
     /* Пропорции 1453:1000 = 1000/1453 ≈ 0.688 */
     padding-top: 68.8%; /* 1000/1453 * 100% */
+    overflow: hidden;
   }
 
   &__man {
