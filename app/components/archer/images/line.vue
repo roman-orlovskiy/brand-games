@@ -1,11 +1,14 @@
 <template>
   <svg ref="svgRef" :width="svgWidth" :viewBox="`0 0 ${svgWidth} ${svgHeight}`" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <path ref="pathRef" :d="pathData" stroke="#FF335F" stroke-width="2" stroke-dasharray="16 16"/>
+    <path ref="pathRef" :d="pathData" :stroke="trajectoryColor" stroke-width="2" stroke-dasharray="16 16"/>
   </svg>
 </template>
 
 <script setup lang="ts">
 import { computed, ref } from 'vue'
+import { useSettingsStore } from '~/stores/settings'
+
+const settingsStore = useSettingsStore()
 
 interface Props {
   power?: number // 0-1, сила натяжения
@@ -13,6 +16,10 @@ interface Props {
 
 const props = withDefaults(defineProps<Props>(), {
   power: 0
+})
+
+const trajectoryColor = computed(() => {
+  return settingsStore.gameSettingsColorsById.trajectory?.color || '#FF335F'
 })
 
 const svgRef = ref<SVGSVGElement>()
