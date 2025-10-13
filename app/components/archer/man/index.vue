@@ -35,9 +35,8 @@
             </foreignObject>
             <animateMotion 
               :dur="`${animationDuration}ms`"
-              fill="freeze"
               rotate="auto"
-              @end="onAnimationEnd"
+              fill="freeze"
             >
               <mpath :href="`#${pathId}`" />
             </animateMotion>
@@ -192,11 +191,10 @@ const arrowHeight = computed(() => {
 })
 
 // Обработчик окончания анимации
-const onAnimationEnd = () => {
-  setTimeout(() => {
-    isShooting.value = false
-    frozenAimPosition.value = { x: 0, y: 0, power: 0 }
-  }, 100)
+const resetAfterShot = () => {
+  isShooting.value = false
+  aimPosition.value = { x: 0, y: 0, power: 0 }
+  frozenAimPosition.value = { x: 0, y: 0, power: 0 }
 }
 
 // Обработчик изменения прицела
@@ -214,9 +212,15 @@ const shoot = (position: { x: number, y: number, power: number }) => {
   frozenAimPosition.value = { ...position }
   
   // Длительность полёта зависит от силы (0.8-2 секунды)
-  animationDuration.value = 800 + (1 - position.power) * 1200
+  const duration = 800 + (1 - position.power) * 1200
+  animationDuration.value = duration
   
   isShooting.value = true
+  
+  // Сбрасываем позицию после окончания анимации
+  setTimeout(() => {
+    resetAfterShot()
+  }, duration + 500)
 }
 
 // Экспортируем функции для внешнего использования
@@ -320,6 +324,7 @@ defineExpose({
 
 .arrow-foreign-object {
   overflow: visible;
+  transform: rotate(9deg) translateY(-30%);
 }
 
 </style>  
