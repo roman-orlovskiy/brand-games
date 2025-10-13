@@ -40,12 +40,13 @@ const basePositions = {
 // Вычисляемые позиции с учетом прицела
 const handStyle = computed(() => {
   // Левая рука движется влево при натяжении и следует движению джойстика
-  const powerOffset = aimPosition.value.power * 10 // Максимум 10% влево при натяжении
-  const horizontalOffset = aimPosition.value.x * 8 // Движение влево/вправо (отрицательный x = влево, положительный = вправо)
+  const powerOffset = aimPosition.value.power * 2.5 // Максимум 10% влево при натяжении
+  const horizontalOffset = aimPosition.value.x * 2.5 // Движение влево/вправо (отрицательный x = влево, положительный = вправо)
   
   return {
     left: `${basePositions.hand.x - powerOffset + horizontalOffset}%`, // + потому что x отрицательный при движении влево
     top: `${basePositions.hand.y}%`,
+    transformOrigin: 'right center',
     transform: `rotate(${aimPosition.value.y * 5}deg)` // Небольшой наклон при прицеливании
   }
 })
@@ -53,8 +54,8 @@ const handStyle = computed(() => {
 const hand2Style = computed(() => {
   // Правая рука (лук) НЕ движется, только вращается от точки плеча
   // Вращение зависит от горизонтального и вертикального прицеливания
-  const horizontalRotation = aimPosition.value.x * 15 // Поворот при горизонтальном прицеливании
-  const verticalRotation = aimPosition.value.y * 10 // Дополнительный поворот при вертикальном прицеливании
+  const horizontalRotation = aimPosition.value.x * 10 // Поворот при горизонтальном прицеливании
+  const verticalRotation = aimPosition.value.y * 6 // Дополнительный поворот при вертикальном прицеливании
   
   return {
     left: `${basePositions.hand2.x}%`,
@@ -66,14 +67,15 @@ const hand2Style = computed(() => {
 
 const arrowStyle = computed(() => {
   // Стрела движется вместе с рукой и вращается вместе с луком
-  const powerOffset = aimPosition.value.power * 8 // Движение влево при натяжении
-  const horizontalOffset = aimPosition.value.x * 8 // Движение влево/вправо вместе с рукой
+  const powerOffset = aimPosition.value.power * 2.5 // Движение влево при натяжении
+  const horizontalOffset = aimPosition.value.x * 2.5 // Движение влево/вправо вместе с рукой
   const rotation = aimPosition.value.x * 15 + aimPosition.value.y * 10 // Вращение синхронизировано с луком
   
   return {
     left: `${basePositions.arrow.x - powerOffset + horizontalOffset}%`, // + потому что x отрицательный при движении влево
     top: `${basePositions.arrow.y}%`,
     transform: `rotate(${rotation}deg)`,
+    transformOrigin: 'left center',
     opacity: 0.7 + (aimPosition.value.power * 0.3) // Более видимая при натяжении
   }
 })
