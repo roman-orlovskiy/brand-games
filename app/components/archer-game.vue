@@ -3,8 +3,11 @@
     <div class="game-field__inner">
 
       <div class="archer-game__man">
-        <ArcherMan />
+        <ArcherMan ref="archerManRef" />
       </div>
+
+      <!-- Управление прицелом -->
+      <ArcherAimControl @aim-change="handleAimChange" />
 
       <div class="archer-game__tree">
         <ArcherImagesTree />
@@ -34,11 +37,20 @@
 
 <script setup lang="ts">
 import { computed, ref } from 'vue';
+
 const boxLeft = ref(40);
+const archerManRef = ref();
 
 const boxStyle = computed(() => ({
   left: `${boxLeft.value}%`,
 }));
+
+// Обработчик изменения прицела
+const handleAimChange = (position: { x: number, y: number, power: number }) => {
+  if (archerManRef.value && archerManRef.value.handleAimChange) {
+    archerManRef.value.handleAimChange(position);
+  }
+};
 </script>
 
 <style scoped lang="scss">

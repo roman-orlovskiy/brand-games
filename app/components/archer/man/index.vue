@@ -8,13 +8,13 @@
       <div class="archer-man__legs">
         <ArcherManLegs />
       </div>
-      <div class="archer-man__arrow">
+      <div class="archer-man__arrow" :style="arrowStyle">
         <ArcherManArrow />
       </div>
-      <div class="archer-man__hand">
+      <div class="archer-man__hand" :style="handStyle">
         <ArcherManHand />
       </div>
-      <div class="archer-man__hand2">
+      <div class="archer-man__hand2" :style="hand2Style">
         <ArcherManHand2 />
       </div>
       <div class="archer-man__arrows">
@@ -25,6 +25,68 @@
   </template>
 
 <script setup lang="ts">
+import { ref, computed } from 'vue'
+
+// Позиция прицела и сила натяжения
+const aimPosition = ref({ x: 0, y: 0, power: 0 })
+
+// Базовые позиции компонентов
+const basePositions = {
+  hand: { x: 2, y: 49 },
+  hand2: { x: 14, y: 23 },
+  arrow: { x: 20, y: 35 }
+}
+
+// Вычисляемые позиции с учетом прицела
+const handStyle = computed(() => {
+  // Левая рука движется влево при натяжении и следует движению джойстика
+  const powerOffset = aimPosition.value.power * 10 // Максимум 10% влево при натяжении
+  const horizontalOffset = aimPosition.value.x * 8 // Движение влево/вправо (отрицательный x = влево, положительный = вправо)
+  
+  return {
+    left: `${basePositions.hand.x - powerOffset + horizontalOffset}%`, // + потому что x отрицательный при движении влево
+    top: `${basePositions.hand.y}%`,
+    transform: `rotate(${aimPosition.value.y * 5}deg)` // Небольшой наклон при прицеливании
+  }
+})
+
+const hand2Style = computed(() => {
+  // Правая рука (лук) НЕ движется, только вращается от точки плеча
+  // Вращение зависит от горизонтального и вертикального прицеливания
+  const horizontalRotation = aimPosition.value.x * 15 // Поворот при горизонтальном прицеливании
+  const verticalRotation = aimPosition.value.y * 10 // Дополнительный поворот при вертикальном прицеливании
+  
+  return {
+    left: `${basePositions.hand2.x}%`,
+    top: `${basePositions.hand2.y}%`,
+    transform: `rotate(${horizontalRotation + verticalRotation}deg)`,
+    transformOrigin: 'left center' // Вращение от левой точки (плеча)
+  }
+})
+
+const arrowStyle = computed(() => {
+  // Стрела движется вместе с рукой и вращается вместе с луком
+  const powerOffset = aimPosition.value.power * 8 // Движение влево при натяжении
+  const horizontalOffset = aimPosition.value.x * 8 // Движение влево/вправо вместе с рукой
+  const rotation = aimPosition.value.x * 15 + aimPosition.value.y * 10 // Вращение синхронизировано с луком
+  
+  return {
+    left: `${basePositions.arrow.x - powerOffset + horizontalOffset}%`, // + потому что x отрицательный при движении влево
+    top: `${basePositions.arrow.y}%`,
+    transform: `rotate(${rotation}deg)`,
+    opacity: 0.7 + (aimPosition.value.power * 0.3) // Более видимая при натяжении
+  }
+})
+
+// Обработчик изменения прицела
+const handleAimChange = (position: { x: number, y: number, power: number }) => {
+  aimPosition.value = position
+}
+
+// Экспортируем функцию для внешнего использования
+defineExpose({
+  handleAimChange
+})
 </script>
 
 <style scoped lang="scss">
@@ -59,31 +121,28 @@
     z-index: 10;
   }
 
-  // Стрела (arrow): скорректированные размеры и позиция
+  // Стрела (arrow): базовые размеры, позиция через динамические стили
   &__arrow {
     position: absolute;
     width: 50%;
-    left: 20%;
-    top: 35%;
     z-index: 15;
+    transition: all 0.1s ease-out;
   }
 
-  // Левая рука (hand): скорректированные размеры и позиция
+  // Левая рука (hand): базовые размеры, позиция через динамические стили
   &__hand {
     position: absolute;
     width: 26%;
-    left: 2%;
-    top: 49%;
     z-index: 15;
+    transition: all 0.1s ease-out;
   }
 
-  // Правая рука (hand2): скорректированные размеры и позиция
+  // Правая рука (hand2): базовые размеры, позиция через динамические стили
   &__hand2 {
     position: absolute;
     width: 60%;
-    left: 14%;
-    top: 23%;
     z-index: 5;
+    transition: all 0.1s ease-out;
   }
 
   // Стрелы в колчане (arrows): скорректированные размеры и позиция
