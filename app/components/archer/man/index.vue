@@ -30,7 +30,7 @@
             <path :id="pathId" :d="flyingPathData" />
           </defs>
           <g>
-            <foreignObject :width="arrowWidth" :height="arrowHeight" class="arrow-foreign-object">
+            <foreignObject :width="arrowWidth" class="arrow-foreign-object">
               <ArcherManArrow />
             </foreignObject>
             <animateMotion 
@@ -114,7 +114,6 @@ const arrowStyle = computed(() => {
     top: `${basePositions.arrow.y}%`,
     transform: `rotate(${rotation}deg)`,
     transformOrigin: 'left center',
-    opacity: 0.7 + (aimPosition.value.power * 0.3) // Более видимая при натяжении
   }
 })
 
@@ -151,7 +150,6 @@ const lineStyle = computed(() => {
     top: `${basePositions.arrow.y - 21}%`, // Поднимаем вверх, чтобы совпадало с кончиком стрелы
     transform: `rotate(${rotation}deg) translateY(${rotation * 0.8}%) translateX(${- rotation * 1.2}%)`,
     transformOrigin: 'left left', // Вращение от точки начала траектории
-    opacity: 0.5 + (currentAim.power * directionMultiplier * 0.3), // Видимость зависит от направления натяжения
     pointerEvents: 'none' as const
   }
 })
@@ -182,12 +180,7 @@ const flyingSvgStyle = computed(() => {
 
 // Размеры стрелы для foreignObject
 const arrowWidth = computed(() => {
-  if (!lineRef.value) return 100
-  return lineRef.value.svgWidth * 0.3 // Стрела занимает примерно 30% от ширины траектории
-})
-
-const arrowHeight = computed(() => {
-  return arrowWidth.value * 0.5 // Пропорции стрелы
+  return 100 // Стрела занимает примерно 30% от ширины траектории
 })
 
 // Обработчик окончания анимации
