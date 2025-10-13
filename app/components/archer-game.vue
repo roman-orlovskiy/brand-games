@@ -112,7 +112,7 @@ const handleAimChange = (position: { x: number, y: number, power: number }) => {
   }
 
   &__box {
-    width: 23%;
+    width: 14%; // Уменьшено в два раза (23% / 2)
     position: absolute;
     bottom: 10%;
     z-index: 50;

@@ -85,13 +85,27 @@ const arrowStyle = computed(() => {
 })
 
 const lineStyle = computed(() => {
+  // Скрываем траекторию, пока джойстик не начали двигать
+  const isJoystickActive = aimPosition.value.x !== 0 || aimPosition.value.y !== 0 || aimPosition.value.power > 0
+  
+  if (!isJoystickActive) {
+    return {
+      opacity: 0,
+      pointerEvents: 'none' as const
+    }
+  }
+  
   // Линия траектории выходит из кончика стрелы
   // Плавная зависимость: влево = сильное, вправо = слабое (без резких переходов)
   const directionMultiplier = 0.2 + ((aimPosition.value.x + 1) * 0.4) // От 0.2 (вправо) до 1 (влево), точка отсчёта справа
   const powerOffset = aimPosition.value.power * directionMultiplier * 2.5
   const horizontalOffset = aimPosition.value.x * 2.5
-  const rotation = aimPosition.value.x * 25 - aimPosition.value.y * 60 // Инвертировано вертикальное вращение
+  let rotation = aimPosition.value.x * 25 - aimPosition.value.y * 60 // Инвертировано вертикальное вращение
   
+  if (rotation > 20) {
+    rotation = rotation * 0.1 - aimPosition.value.y * 1
+  }
+
   // Кончик стрелы находится справа от её позиции (стрела длиной 50%)
   const arrowTipOffset = 50 // 50% ширины стрелы
   
@@ -100,7 +114,8 @@ const lineStyle = computed(() => {
     top: `${basePositions.arrow.y - 21}%`, // Поднимаем вверх, чтобы совпадало с кончиком стрелы
     transform: `rotate(${rotation}deg) translateY(${rotation * 0.8}%) translateX(${- rotation * 1.2}%)`,
     transformOrigin: 'left left', // Вращение от точки начала траектории
-    opacity: 0.5 + (aimPosition.value.power * directionMultiplier * 0.3) // Видимость зависит от направления натяжения
+    opacity: 0.5 + (aimPosition.value.power * directionMultiplier * 0.3), // Видимость зависит от направления натяжения
+    pointerEvents: 'none' as const
   }
 })
 

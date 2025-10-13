@@ -17,7 +17,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { ref, computed, onUnmounted } from 'vue'
 
 const emit = defineEmits<{
   aimChange: [position: { x: number, y: number, power: number }]
@@ -114,7 +114,7 @@ const emitAimChange = () => {
   
   // Сила натяжения зависит от расстояния от центра
   const power = Math.sqrt(normalizedX * normalizedX + normalizedY * normalizedY)
-  
+
   emit('aimChange', {
     x: normalizedX,
     y: normalizedY,
