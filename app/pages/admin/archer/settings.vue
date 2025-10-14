@@ -77,11 +77,22 @@
 
     <UCard>
       <template #header>
-        <h2 class="text-lg font-semibold">Предпросмотр игры</h2>
+        <div class="flex items-center justify-between">
+          <h2 class="text-lg font-semibold">Предпросмотр игры</h2>
+          <UButton
+            color="primary"
+            variant="soft"
+            icon="i-heroicons-arrow-path"
+            class="cursor-pointer"
+            @click="reloadGame"
+          >
+            Обновить игру
+          </UButton>
+        </div>
       </template>
 
       <div class="game-preview">
-        <ArcherGame />
+        <ArcherGame :key="gameKey" />
       </div>
     </UCard>
   </div>
@@ -97,6 +108,14 @@ definePageMeta({
 
 const settingsStore = useSettingsStore()
 const { brandSettings, gameSettings } = storeToRefs(settingsStore)
+
+// Ключ для перезагрузки игры
+const gameKey = ref(0)
+
+// Функция перезагрузки игры
+const reloadGame = () => {
+  gameKey.value++
+}
 
 // Преобразование цветов бренд-бука в формат для USelect
 const colorOptions = computed(() => {
