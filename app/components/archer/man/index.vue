@@ -30,7 +30,7 @@
             <path :id="pathId" :d="flyingPathData" />
           </defs>
           <g ref="flyingArrowGroup">
-            <foreignObject :width="arrowWidth" class="arrow-foreign-object">
+            <foreignObject :width="arrowWidth" :height="arrowHeight" class="arrow-foreign-object">
               <ArcherManArrow />
             </foreignObject>
             <animateMotion 
@@ -197,6 +197,12 @@ const arrowWidth = computed(() => {
   // Базовая ширина для scale=1 (800px контейнер)
   const baseWidth = 100
   return Math.round(baseWidth * gameScale.value)
+})
+
+const arrowHeight = computed(() => {
+  // Базовая высота для scale=1 (800px контейнер)
+  const baseHeight = 30
+  return Math.round(baseHeight * gameScale.value)
 })
 
 // Функция для проверки коллизий во время полета стрелы
