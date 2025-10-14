@@ -20,10 +20,12 @@ const settingsStore = useSettingsStore()
 
 interface Props {
   power?: number // 0-1, сила натяжения
+  aimPosition?: { x: number, y: number, power: number } // Позиция джойстика
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  power: 0
+  power: 0,
+  aimPosition: () => ({ x: 0, y: 0, power: 0 })
 })
 
 const trajectoryColor = computed(() => {
@@ -81,18 +83,25 @@ const pathData = computed(() => {
   const endY = height - 10 // Приземление внизу
   
   // Контрольные точки для параболы
-  // При слабом натяжении - крутая парабола
-  // При сильном натяжении - пологая парабола (ближе к прямой)
+  // Изгиб зависит от вертикального положения джойстика
+  // Джойстик вниз (y > 0) - сильнее парабола (как тело, брошенное под углом)
+  // Джойстик вверх (y < 0) - более пологая траектория
   
-  const curvature = 0.7 - (props.power * 0.5) // От 0.7 (крутая) до 0.2 (пологая)
+  const baseCurvature = 0.7 - (props.power * 0.5) // Базовый изгиб от силы
+  const verticalInfluence = (props.aimPosition?.y || 0) * 1.1 // Вертикальное влияние в 10 раз сильнее (0.35 * 10)
+  const curvature = Math.max(0.1, baseCurvature + verticalInfluence) // Ограничиваем минимум, чтобы не переворачивалась
   
-  // Первая контрольная точка - определяет начальный угол вылета
-  const cp1X = startX + (width * 0.3)
-  const cp1Y = startY - (height * curvature * 0.5)
+  // Для симметричной параболы контрольные точки располагаем симметрично
+  // относительно вертикали через центр и на одинаковой высоте
+  const peakHeight = height * curvature
   
-  // Вторая контрольная точка - определяет форму падения
-  const cp2X = startX + (width * 0.7)
-  const cp2Y = startY - (height * curvature * 0.3)
+  // Первая контрольная точка - на 1/3 пути по горизонтали
+  const cp1X = startX + (width * 0.33)
+  const cp1Y = startY - peakHeight
+  
+  // Вторая контрольная точка - симметрично первой относительно центра
+  const cp2X = endX - (width * 0.33)
+  const cp2Y = startY - peakHeight
   
   return `M${startX} ${startY} C${cp1X} ${cp1Y}, ${cp2X} ${cp2Y}, ${endX} ${endY}`
 })
