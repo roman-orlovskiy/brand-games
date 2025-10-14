@@ -6,7 +6,7 @@
         :key="index" 
         ref="prizeRefs"
         class="prizes__gift"
-        :class="{ 'prizes__gift--hidden': !prize.visible }"
+        :class="{ 'prizes__gift--hidden': !prize.visible, 'prizes__gift--falling': prize.falling }"
         :style="prize.style"
       >
         <ArcherImagesGift />
@@ -29,6 +29,8 @@ interface Prize {
     left: string
   }
   visible: boolean
+  falling: boolean
+  leftPosition: number // Позиция в процентах для передачи в корзину
 }
 
 // Генерируем рандомные позиции для подарков
@@ -41,12 +43,15 @@ const initializePrizes = () => {
   for (let i = 0; i < count; i++) {
     // Генерируем позиции в верхней части (10-40% по высоте)
     // И распределяем по ширине (10-90%)
+    const leftPos = 10 + Math.random() * 80
     result.push({
       style: {
         top: `${10 + Math.random() * 30}%`,
-        left: `${10 + Math.random() * 80}%`
+        left: `${leftPos}%`
       },
-      visible: true
+      visible: true,
+      falling: false,
+      leftPosition: leftPos
     })
   }
   
@@ -61,7 +66,7 @@ onMounted(() => {
 const prizes = computed(() => prizesData.value)
 
 // Функция для проверки коллизии с точкой
-const checkCollision = (x: number, y: number): boolean => {
+const checkCollision = (x: number, y: number, onPrizeHit?: (leftPosition: number) => void): boolean => {
   if (!prizesContainerRef.value || !prizeRefs.value.length) return false
   
   for (let i = 0; i < prizeRefs.value.length; i++) {
@@ -78,9 +83,21 @@ const checkCollision = (x: number, y: number): boolean => {
       y >= prizeRect.top &&
       y <= prizeRect.bottom
     ) {
-      // Скрываем подарок
+      // Запускаем падение подарка
       const prizeData = prizesData.value[i]
-      if (prizeData) prizeData.visible = false
+      if (prizeData) {
+        prizeData.falling = true
+        
+        // Вызываем колбэк с позицией подарка
+        if (onPrizeHit) {
+          onPrizeHit(prizeData.leftPosition)
+        }
+        
+        // Скрываем подарок после завершения анимации падения
+        setTimeout(() => {
+          prizeData.visible = false
+        }, 1500) // Длительность анимации падения
+      }
       return true
     }
   }
@@ -105,7 +122,6 @@ defineExpose({
   width: 100%;
   padding-bottom: 50%;
   position: relative;
-  overflow: hidden;
 
   &__inner {
     position: absolute;
@@ -123,11 +139,29 @@ defineExpose({
     transform: scale(1);
     transition: opacity 0.3s ease-out, transform 0.3s ease-out;
     
+    &--falling {
+      animation: prizeFall 1.5s cubic-bezier(0.5, 0, 0.75, 0) forwards;
+    }
+    
     &--hidden {
       opacity: 0;
-      transform: scale(0.5) rotate(180deg);
       pointer-events: none;
     }
+  }
+}
+
+@keyframes prizeFall {
+  0% {
+    transform: translateY(0) rotate(0deg) scale(1);
+    opacity: 1;
+  }
+  70% {
+    transform: translateY(350px) rotate(270deg) scale(0.8);
+    opacity: 0.6;
+  }
+  100% {
+    transform: translateY(450px) rotate(360deg) scale(0.3);
+    opacity: 0;
   }
 }
 </style>
