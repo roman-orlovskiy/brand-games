@@ -16,7 +16,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed, ref, onMounted } from 'vue'
 import { useSettingsStore } from '~/stores/settings'
 
 const settingsStore = useSettingsStore()
@@ -53,8 +53,10 @@ const initializePrizes = () => {
   prizesData.value = result
 }
 
-// Инициализируем при создании компонента
-initializePrizes()
+// Инициализируем только на клиенте после монтирования
+onMounted(() => {
+  initializePrizes()
+})
 
 const prizes = computed(() => prizesData.value)
 
