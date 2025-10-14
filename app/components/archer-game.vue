@@ -7,7 +7,7 @@
     <div class="game-field__inner">
 
       <div class="archer-game__man">
-        <ArcherMan ref="archerManRef" />
+        <ArcherMan ref="archerManRef" :on-collision-check="handleCollisionCheck" />
       </div>
 
       <!-- Управление прицелом -->
@@ -33,7 +33,7 @@
       </div>
 
       <div class="archer-game__prizes">
-        <ArcherPrizes />
+        <ArcherPrizes ref="prizesRef" />
       </div>
     </div>
   </div>
@@ -45,6 +45,7 @@ import { computed, ref } from 'vue';
 const boxLeft = ref(40);
 const archerManRef = ref();
 const aimControlRef = ref();
+const prizesRef = ref();
 
 const boxStyle = computed(() => ({
   left: `${boxLeft.value}%`,
@@ -75,6 +76,14 @@ const handleWrapperTouchStart = (e: TouchEvent) => {
   if (aimControlRef.value && aimControlRef.value.startDragFromAnywhere) {
     aimControlRef.value.startDragFromAnywhere(e);
   }
+};
+
+// Обработчик проверки коллизий
+const handleCollisionCheck = (x: number, y: number): boolean => {
+  if (prizesRef.value && prizesRef.value.checkCollision) {
+    return prizesRef.value.checkCollision(x, y);
+  }
+  return false;
 };
 </script>
 

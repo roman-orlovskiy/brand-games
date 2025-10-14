@@ -25,11 +25,11 @@
         <ArcherImagesLine ref="lineRef" :power="displayPower" :direction="displayDirection" />
         
         <!-- Летящая стрела прямо внутри SVG -->
-        <svg v-if="isShooting" class="flying-arrow-svg" :style="flyingSvgStyle">
+        <svg v-if="isShooting" ref="flyingArrowRef" class="flying-arrow-svg" :style="flyingSvgStyle">
           <defs>
             <path :id="pathId" :d="flyingPathData" />
           </defs>
-          <g>
+          <g ref="flyingArrowGroup">
             <foreignObject :width="arrowWidth" class="arrow-foreign-object">
               <ArcherManArrow />
             </foreignObject>
@@ -50,6 +50,15 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 
+// Пропс для функции проверки коллизий
+interface Props {
+  onCollisionCheck?: (x: number, y: number) => boolean
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  onCollisionCheck: undefined
+})
+
 // Позиция прицела и сила натяжения
 const aimPosition = ref({ x: 0, y: 0, power: 0 })
 
@@ -63,6 +72,8 @@ const lineRef = ref<{
   svgWidth: number,
   svgHeight: number
 } | null>(null)
+const flyingArrowRef = ref<SVGSVGElement | null>(null)
+const animationFrameId = ref<number | null>(null)
 
 // Для отображения используем либо текущую позицию, либо замороженную
 const displayPower = computed(() => isShooting.value ? frozenAimPosition.value.power : aimPosition.value.power)
@@ -183,8 +194,45 @@ const arrowWidth = computed(() => {
   return 100 // Стрела занимает примерно 30% от ширины траектории
 })
 
+// Функция для проверки коллизий во время полета стрелы
+const checkCollisionDuringFlight = () => {
+  if (!isShooting.value || !flyingArrowRef.value || !props.onCollisionCheck) {
+    return
+  }
+
+  const foreignObject = flyingArrowRef.value.querySelector('foreignObject')
+  if (!foreignObject) {
+    // Продолжаем проверку в следующем кадре
+    if (isShooting.value) {
+      animationFrameId.value = requestAnimationFrame(checkCollisionDuringFlight)
+    }
+    return
+  }
+
+  // Получаем bounding box foreignObject относительно viewport
+  const arrowRect = foreignObject.getBoundingClientRect()
+  
+  // Центр стрелы (можно использовать кончик стрелы - правую сторону)
+  const arrowX = arrowRect.right - 10 // Кончик стрелы
+  const arrowY = arrowRect.top + arrowRect.height / 2 // Центр по вертикали
+  
+  // Проверяем коллизию
+  props.onCollisionCheck(arrowX, arrowY)
+
+  // Продолжаем проверку в следующем кадре
+  if (isShooting.value) {
+    animationFrameId.value = requestAnimationFrame(checkCollisionDuringFlight)
+  }
+}
+
 // Обработчик окончания анимации
 const resetAfterShot = () => {
+  // Отменяем проверку коллизий
+  if (animationFrameId.value !== null) {
+    cancelAnimationFrame(animationFrameId.value)
+    animationFrameId.value = null
+  }
+  
   isShooting.value = false
   aimPosition.value = { x: 0, y: 0, power: 0 }
   frozenAimPosition.value = { x: 0, y: 0, power: 0 }
@@ -209,6 +257,11 @@ const shoot = (position: { x: number, y: number, power: number }) => {
   animationDuration.value = duration
   
   isShooting.value = true
+  
+  // Запускаем проверку коллизий
+  setTimeout(() => {
+    checkCollisionDuringFlight()
+  }, 50) // Небольшая задержка для инициализации SVG
   
   // Сбрасываем позицию после окончания анимации
   setTimeout(() => {
