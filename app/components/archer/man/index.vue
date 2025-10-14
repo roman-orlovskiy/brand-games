@@ -34,9 +34,11 @@
               <ArcherManArrow />
             </foreignObject>
             <animateMotion 
+              ref="animateMotionRef"
               :dur="`${animationDuration}ms`"
               rotate="auto"
               fill="freeze"
+              begin="indefinite"
             >
               <mpath :href="`#${pathId}`" />
             </animateMotion>
@@ -48,7 +50,7 @@
   </template>
 
 <script setup lang="ts">
-import { ref, computed, inject } from 'vue'
+import { ref, computed, inject, nextTick } from 'vue'
 
 // Пропс для функции проверки коллизий
 interface Props {
@@ -76,6 +78,7 @@ const lineRef = ref<{
   svgHeight: number
 } | null>(null)
 const flyingArrowRef = ref<SVGSVGElement | null>(null)
+const animateMotionRef = ref<SVGAnimateMotionElement | null>(null)
 const animationFrameId = ref<number | null>(null)
 
 // Для отображения используем либо текущую позицию, либо замороженную
@@ -264,7 +267,7 @@ const handleAimChange = (position: { x: number, y: number, power: number }) => {
 }
 
 // Функция выстрела
-const shoot = (position: { x: number, y: number, power: number }) => {
+const shoot = async (position: { x: number, y: number, power: number }) => {
   if (isShooting.value) return
   
   // Замораживаем текущую позицию
@@ -276,8 +279,21 @@ const shoot = (position: { x: number, y: number, power: number }) => {
   
   isShooting.value = true
   
-  // Запускаем проверку коллизий
+  // Ждем обновления DOM перед запуском анимации
+  await nextTick()
+  
+  // Дополнительная задержка для гарантии полного рендера (особенно важно для мобильных)
   setTimeout(() => {
+    // Программно запускаем SVG анимацию (необходимо для мобильных браузеров)
+    if (animateMotionRef.value) {
+      try {
+        animateMotionRef.value.beginElement()
+      } catch (e) {
+        console.warn('Failed to start SVG animation:', e)
+      }
+    }
+    
+    // Запускаем проверку коллизий
     checkCollisionDuringFlight()
   }, 50) // Небольшая задержка для инициализации SVG
   
