@@ -5,7 +5,7 @@
       <p class="text-gray-600 mt-1">Здесь можно настроить дизайн игры</p>
     </div>
 
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-3">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
       <!-- Основные настройки -->
       <div class="lg:col-span-2 space-y-6">
         <!-- Цветовая палитра -->
@@ -71,29 +71,29 @@
           </div>
         </UCard>
 
+        <!-- Предпросмотр игры -->
+        <UCard>
+          <template #header>
+            <div class="flex items-center justify-between">
+              <h2 class="text-lg font-semibold">Предпросмотр игры</h2>
+              <UButton
+                color="primary"
+                variant="soft"
+                icon="i-heroicons-arrow-path"
+                class="cursor-pointer"
+                @click="reloadGame"
+              >
+                Обновить игру
+              </UButton>
+            </div>
+          </template>
+
+          <div class="game-preview">
+            <ArcherGame :key="gameKey" />
+          </div>
+        </UCard>
       </div>
     </div>
-
-    <UCard>
-      <template #header>
-        <div class="flex items-center justify-between">
-          <h2 class="text-lg font-semibold">Предпросмотр игры</h2>
-          <UButton
-            color="primary"
-            variant="soft"
-            icon="i-heroicons-arrow-path"
-            class="cursor-pointer"
-            @click="reloadGame"
-          >
-            Обновить игру
-          </UButton>
-        </div>
-      </template>
-
-      <div class="game-preview">
-        <ArcherGame :key="gameKey" />
-      </div>
-    </UCard>
   </div>
 </template>
 
