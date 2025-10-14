@@ -217,7 +217,13 @@ const checkCollisionDuringFlight = () => {
   const arrowY = arrowRect.top + arrowRect.height / 2 // Центр по вертикали
   
   // Проверяем коллизию
-  props.onCollisionCheck(arrowX, arrowY)
+  const hitTarget = props.onCollisionCheck(arrowX, arrowY)
+  
+  // Если попали в цель, останавливаем стрелу
+  if (hitTarget) {
+    resetAfterShot()
+    return
+  }
 
   // Продолжаем проверку в следующем кадре
   if (isShooting.value) {
