@@ -123,7 +123,8 @@ const endDrag = () => {
   const y = currentPosition.value.y
   const normalizedX = x / (outerRadius - innerRadius)
   const normalizedY = y / (outerRadius - innerRadius)
-  const power = Math.sqrt(normalizedX * normalizedX + normalizedY * normalizedY)
+  // Сила натяжения зависит только от горизонтального смещения
+  const power = Math.abs(normalizedX)
   
   if (power > 0.1) {
     emit('shoot', {
@@ -151,8 +152,8 @@ const emitAimChange = () => {
   const normalizedX = x / (outerRadius - innerRadius)
   const normalizedY = y / (outerRadius - innerRadius)
   
-  // Сила натяжения зависит от расстояния от центра
-  const power = Math.sqrt(normalizedX * normalizedX + normalizedY * normalizedY)
+  // Сила натяжения зависит только от горизонтального смещения (абсолютное значение)
+  const power = Math.abs(normalizedX)
 
   emit('aimChange', {
     x: normalizedX,

@@ -37,12 +37,12 @@ const pathRef = ref<SVGPathElement>()
 const svgWidth = computed(() => {
   // При слабом натяжении - короткая траектория (195px), при сильном - длинная (780px)
   // Увеличено на 95% (1.5 * 1.3)
-  return Math.round((100 + props.power * 300) * 1.95)
+  return Math.round((170 + props.power * 150) * 1.95)
 })
 
 const svgHeight = computed(() => {
   // Высота также немного меняется
-  return 124
+  return 180
 })
 
 // Генерация кривой Безье для параболы
