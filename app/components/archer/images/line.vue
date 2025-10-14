@@ -59,7 +59,11 @@ const strokeWidth = computed(() => {
 })
 
 const strokeDasharray = computed(() => {
-  const dash = 8 * gameScale.value
+  // Базовый размер пунктира увеличен в 2 раза (с 8 до 16)
+  // Пунктир уменьшается при увеличении силы натяжения
+  const baseDash = 16
+  const powerMultiplier = 1 - (props.power * 0.6) // От 1 (слабая сила) до 0.5 (сильная сила)
+  const dash = baseDash * gameScale.value * powerMultiplier
   return `${dash} ${dash}`
 })
 
