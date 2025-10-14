@@ -125,7 +125,7 @@ const arrowStyle = computed(() => {
   // Стрела движется вместе с рукой и вращается вместе с луком
   const powerOffset = aimPosition.value.power * 2.5 // Движение влево при натяжении
   const horizontalOffset = aimPosition.value.x * 2.5 // Движение влево/вправо вместе с рукой
-  const rotation = aimPosition.value.x * 15 - aimPosition.value.y * 16 // Инвертировано вертикальное вращение
+  const rotation = -aimPosition.value.y * 20 + aimPosition.value.x * 20 // Инвертировано вертикальное вращение
   
   return {
     left: `${basePositions.arrow.x - powerOffset + horizontalOffset}%`, // + потому что x отрицательный при движении влево
@@ -154,11 +154,8 @@ const lineStyle = computed(() => {
   const directionMultiplier = 0.2 + ((currentAim.x + 1) * 0.4) // От 0.2 (вправо) до 1 (влево), точка отсчёта справа
   const powerOffset = currentAim.power * directionMultiplier * 2.5
   const horizontalOffset = currentAim.x * 2.5
-  let rotation = currentAim.x * 25 - currentAim.y * 60 // Инвертировано вертикальное вращение
-  
-  if (rotation > 20) {
-    rotation = rotation * 0.1 - currentAim.y * 1
-  }
+  const rotation = -currentAim.y * 20 + currentAim.x * 20 - 20 // Инвертировано вертикальное вращение
+
 
   // Кончик стрелы находится справа от её позиции (стрела длиной 50%)
   const arrowTipOffset = 50 // 50% ширины стрелы
