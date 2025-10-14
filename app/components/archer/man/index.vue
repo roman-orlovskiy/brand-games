@@ -376,7 +376,7 @@ defineExpose({
 
 .arrow-foreign-object {
   overflow: visible;
-  transform: rotate(9deg) translateY(-30%);
+  transform: rotate(31deg) translateY(-30%);
 }
 
 </style>  
