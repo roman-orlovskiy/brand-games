@@ -48,7 +48,7 @@
   </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, inject } from 'vue'
 
 // Пропс для функции проверки коллизий
 interface Props {
@@ -58,6 +58,9 @@ interface Props {
 const props = withDefaults(defineProps<Props>(), {
   onCollisionCheck: undefined
 })
+
+// Получаем scale из родительского компонента (800px = scale 1)
+const gameScale = inject<{ value: number }>('gameScale', { value: 1 })
 
 // Позиция прицела и сила натяжения
 const aimPosition = ref({ x: 0, y: 0, power: 0 })
@@ -189,9 +192,11 @@ const flyingSvgStyle = computed(() => {
   }
 })
 
-// Размеры стрелы для foreignObject
+// Размеры стрелы для foreignObject с учетом scale
 const arrowWidth = computed(() => {
-  return 100 // Стрела занимает примерно 30% от ширины траектории
+  // Базовая ширина для scale=1 (800px контейнер)
+  const baseWidth = 100
+  return Math.round(baseWidth * gameScale.value)
 })
 
 // Функция для проверки коллизий во время полета стрелы
@@ -213,7 +218,8 @@ const checkCollisionDuringFlight = () => {
   const arrowRect = foreignObject.getBoundingClientRect()
   
   // Центр стрелы (можно использовать кончик стрелы - правую сторону)
-  const arrowX = arrowRect.right - 10 // Кончик стрелы
+  // Смещение масштабируется вместе с игрой
+  const arrowX = arrowRect.right - (10 * gameScale.value) // Кончик стрелы
   const arrowY = arrowRect.top + arrowRect.height / 2 // Центр по вертикали
   
   // Проверяем коллизию

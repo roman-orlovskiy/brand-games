@@ -8,12 +8,12 @@
         <stop offset="100%" :stop-color="trajectoryColor" stop-opacity="0"/>
       </linearGradient>
     </defs>
-    <path ref="pathRef" :d="pathData" stroke="url(#trajectoryGradient)" stroke-width="2" stroke-dasharray="8 8"/>
+    <path ref="pathRef" :d="pathData" stroke="url(#trajectoryGradient)" :stroke-width="strokeWidth" :stroke-dasharray="strokeDasharray"/>
   </svg>
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed, ref, inject } from 'vue'
 import { useSettingsStore } from '~/stores/settings'
 
 const settingsStore = useSettingsStore()
@@ -33,16 +33,34 @@ const trajectoryColor = computed(() => {
 const svgRef = ref<SVGSVGElement>()
 const pathRef = ref<SVGPathElement>()
 
-// Размеры SVG зависят от силы натяжения
+// Получаем scale из родительского компонента (800px = scale 1)
+const gameScale = inject<{ value: number }>('gameScale', { value: 1 })
+
+// Базовые размеры SVG для масштаба 1 (800px)
+const baseWidth = computed(() => {
+  // При слабом натяжении - короткая траектория, при сильном - длинная
+  return (170 + props.power * 150) * 1.95
+})
+
+const baseHeight = 180
+
+// Размеры SVG с учетом scale
 const svgWidth = computed(() => {
-  // При слабом натяжении - короткая траектория (195px), при сильном - длинная (780px)
-  // Увеличено на 95% (1.5 * 1.3)
-  return Math.round((170 + props.power * 150) * 1.95)
+  return Math.round(baseWidth.value * gameScale.value)
 })
 
 const svgHeight = computed(() => {
-  // Высота также немного меняется
-  return 180
+  return Math.round(baseHeight * gameScale.value)
+})
+
+// Толщина линии и пунктир с учетом scale
+const strokeWidth = computed(() => {
+  return 2 * gameScale.value
+})
+
+const strokeDasharray = computed(() => {
+  const dash = 8 * gameScale.value
+  return `${dash} ${dash}`
 })
 
 // Генерация кривой Безье для параболы
