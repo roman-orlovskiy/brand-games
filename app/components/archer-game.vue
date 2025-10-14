@@ -78,10 +78,30 @@ const handleWrapperTouchStart = (e: TouchEvent) => {
   }
 };
 
+// Обработчик попадания в подарок - перемещаем корзину
+const handlePrizeHit = (leftPosition: number) => {
+  // Конвертируем позицию подарка в позицию корзины
+  // Подарки находятся в контейнере шириной 70%, начиная с 30% справа
+  // leftPosition - позиция подарка внутри контейнера призов (в процентах)
+  
+  // Левый край подарка относительно игрового поля
+  const prizeLeft = 30 + (leftPosition * 0.7)
+  
+  // Подарок занимает 10% от контейнера призов = 7% от игрового поля
+  // Центр подарка: левый край + половина ширины
+  const prizeCenter = prizeLeft + 3.5
+  
+  // Корзина имеет ширину 14%, центрируем её под подарком
+  const boxTargetPosition = prizeCenter - 7
+  
+  // Плавно перемещаем корзину
+  boxLeft.value = boxTargetPosition
+}
+
 // Обработчик проверки коллизий
 const handleCollisionCheck = (x: number, y: number): boolean => {
   if (prizesRef.value && prizesRef.value.checkCollision) {
-    return prizesRef.value.checkCollision(x, y);
+    return prizesRef.value.checkCollision(x, y, handlePrizeHit);
   }
   return false;
 };
@@ -151,6 +171,7 @@ const handleCollisionCheck = (x: number, y: number): boolean => {
     position: absolute;
     bottom: 10%;
     z-index: 50;
+    transition: left 1s ease-out;
   }
 }
 </style>
