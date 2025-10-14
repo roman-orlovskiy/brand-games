@@ -1,5 +1,5 @@
 <template>
-  <div class="aim-control">
+  <div class="aim-control" :style="aimControlStyle">
     <!-- Внешний круг -->
     <div class="aim-control__outer-circle" :style="outerCircleStyle">
       <!-- Внутренний круг (джойстик) -->
@@ -14,7 +14,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onUnmounted } from 'vue'
+import { ref, computed, onUnmounted, inject } from 'vue'
 import { useSettingsStore } from '~/stores/settings'
 
 const settingsStore = useSettingsStore()
@@ -24,8 +24,17 @@ const emit = defineEmits<{
   shoot: [position: { x: number, y: number, power: number }]
 }>()
 
-const outerRadius = 48 // Радиус внешнего круга
-const innerRadius = 16 // Радиус внутреннего круга
+// Получаем scale из родительского компонента (800px = scale 1)
+const gameScale = inject<{ value: number }>('gameScale', { value: 1 })
+
+// Базовые радиусы для масштаба 1 (800px)
+const baseOuterRadius = 48
+const baseInnerRadius = 16
+
+// Радиусы с учетом scale
+const outerRadius = computed(() => baseOuterRadius * gameScale.value)
+const innerRadius = computed(() => baseInnerRadius * gameScale.value)
+
 const isDragging = ref(false)
 const dragStartPoint = ref({ x: 0, y: 0 }) // Точка, где начали тащить
 const currentPosition = ref({ x: 0, y: 0 })
@@ -34,9 +43,18 @@ const interfaceColor = computed(() => {
   return settingsStore.gameSettingsColorsById.interface?.color || '#00BCD4'
 })
 
+const aimControlStyle = computed(() => {
+  // Масштабируем отступ слева (базовый 20px)
+  const baseLeft = 20
+  return {
+    left: `${baseLeft * gameScale.value}px`
+  }
+})
+
 const outerCircleStyle = computed(() => {
   return {
-    borderColor: interfaceColor.value
+    borderColor: interfaceColor.value,
+    transform: `scale(${gameScale.value})`
   }
 })
 
@@ -99,7 +117,7 @@ const handleDrag = (e: MouseEvent | TouchEvent) => {
   
   // Ограничиваем движение внутри виртуального круга
   const distance = Math.sqrt(x * x + y * y)
-  const maxDistance = outerRadius - innerRadius
+  const maxDistance = outerRadius.value - innerRadius.value
   
   if (distance <= maxDistance) {
     currentPosition.value = { x, y }
@@ -121,8 +139,8 @@ const endDrag = () => {
   // Если была сила натяжения, выстреливаем
   const x = currentPosition.value.x
   const y = currentPosition.value.y
-  const normalizedX = x / (outerRadius - innerRadius)
-  const normalizedY = y / (outerRadius - innerRadius)
+  const normalizedX = x / (outerRadius.value - innerRadius.value)
+  const normalizedY = y / (outerRadius.value - innerRadius.value)
   // Сила натяжения: справа = 0, центр = 0.5, слева = 1
   const power = (1 - normalizedX) / 2
   
@@ -149,8 +167,8 @@ const emitAimChange = () => {
   const y = currentPosition.value.y
   
   // Нормализуем значения от -1 до 1
-  const normalizedX = x / (outerRadius - innerRadius)
-  const normalizedY = y / (outerRadius - innerRadius)
+  const normalizedX = x / (outerRadius.value - innerRadius.value)
+  const normalizedY = y / (outerRadius.value - innerRadius.value)
   
   // Сила натяжения:
   // - В правой точке (x = 1) → power = 0
@@ -195,6 +213,7 @@ defineExpose({
     position: relative;
     cursor: pointer;
     user-select: none;
+    transform-origin: center center;
   }
 
   &__inner-circle {
