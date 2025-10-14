@@ -29,7 +29,7 @@
           <defs>
             <path :id="pathId" :d="flyingPathData" />
           </defs>
-          <g ref="flyingArrowGroup">
+          <g ref="flyingArrowGroup" :style="arrowGroupStyle">
             <foreignObject :width="arrowWidth" :height="arrowHeight" class="arrow-foreign-object">
               <ArcherManArrow />
             </foreignObject>
@@ -69,6 +69,7 @@ const aimPosition = ref({ x: 0, y: 0, power: 0 })
 
 // Состояние выстрела
 const isShooting = ref(false)
+const animationStarted = ref(false) // Флаг для отслеживания старта анимации
 const frozenAimPosition = ref({ x: 0, y: 0, power: 0 })
 const animationDuration = ref(1500) // Длительность анимации в мс
 const pathId = ref('arrow-path-' + Math.random().toString(36).substr(2, 9)) // Уникальный ID для path
@@ -195,6 +196,13 @@ const flyingSvgStyle = computed(() => {
   }
 })
 
+// Стиль для группы стрелы - скрываем до начала анимации
+const arrowGroupStyle = computed(() => {
+  return {
+    opacity: animationStarted.value ? '1' : '0'
+  }
+})
+
 // Размеры стрелы для foreignObject с учетом scale
 const arrowWidth = computed(() => {
   // Базовая ширина для scale=1 (800px контейнер)
@@ -255,6 +263,7 @@ const resetAfterShot = () => {
   }
   
   isShooting.value = false
+  animationStarted.value = false
   aimPosition.value = { x: 0, y: 0, power: 0 }
   frozenAimPosition.value = { x: 0, y: 0, power: 0 }
 }
@@ -278,6 +287,7 @@ const shoot = async (position: { x: number, y: number, power: number }) => {
   animationDuration.value = duration
   
   isShooting.value = true
+  animationStarted.value = false // Сбрасываем флаг перед началом
   
   // Ждем обновления DOM перед запуском анимации
   await nextTick()
@@ -287,6 +297,8 @@ const shoot = async (position: { x: number, y: number, power: number }) => {
     // Программно запускаем SVG анимацию (необходимо для мобильных браузеров)
     if (animateMotionRef.value) {
       try {
+        // Показываем стрелу и сразу запускаем анимацию
+        animationStarted.value = true
         animateMotionRef.value.beginElement()
       } catch (e) {
         console.warn('Failed to start SVG animation:', e)
