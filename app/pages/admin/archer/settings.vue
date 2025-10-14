@@ -80,7 +80,7 @@
         <h2 class="text-lg font-semibold">Предпросмотр игры</h2>
       </template>
 
-      <div class="lg:col-span-1 w-3xl">
+      <div class="game-preview">
         <ArcherGame />
       </div>
     </UCard>
@@ -107,3 +107,10 @@ const colorOptions = computed(() => {
   })) || []
 })
 </script>
+
+<style scoped lang="scss" >
+.game-preview {
+  width: 100%;
+  max-width: 50rem;
+}
+</style>
