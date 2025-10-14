@@ -1,6 +1,14 @@
 <template>
   <svg ref="svgRef" :width="svgWidth" :viewBox="`0 0 ${svgWidth} ${svgHeight}`" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <path ref="pathRef" :d="pathData" :stroke="trajectoryColor" stroke-width="2" stroke-dasharray="16 16"/>
+    <defs>
+      <linearGradient id="trajectoryGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" :stop-color="trajectoryColor" stop-opacity="1"/>
+        <stop offset="15%" :stop-color="trajectoryColor" stop-opacity="1"/>
+        <stop offset="15%" :stop-color="trajectoryColor" stop-opacity="0"/>
+        <stop offset="100%" :stop-color="trajectoryColor" stop-opacity="0"/>
+      </linearGradient>
+    </defs>
+    <path ref="pathRef" :d="pathData" stroke="url(#trajectoryGradient)" stroke-width="2" stroke-dasharray="8 8"/>
   </svg>
 </template>
 
@@ -27,8 +35,9 @@ const pathRef = ref<SVGPathElement>()
 
 // Размеры SVG зависят от силы натяжения
 const svgWidth = computed(() => {
-  // При слабом натяжении - короткая траектория (100px), при сильном - длинная (400px)
-  return Math.round(100 + props.power * 300)
+  // При слабом натяжении - короткая траектория (195px), при сильном - длинная (780px)
+  // Увеличено на 95% (1.5 * 1.3)
+  return Math.round((100 + props.power * 300) * 1.95)
 })
 
 const svgHeight = computed(() => {
