@@ -22,7 +22,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, onMounted, watch } from 'vue'
+import { computed, ref, onMounted, } from 'vue'
 import { useSettingsStore } from '~/stores/settings'
 
 const settingsStore = useSettingsStore()
@@ -318,7 +318,7 @@ defineExpose({
   }
 
   &__gift {
-    width: 10%;
+    width: 14%;
     position: absolute;
     z-index: 100;
     opacity: 1;
@@ -338,6 +338,7 @@ defineExpose({
       filter: grayscale(0.4) brightness(0.7) saturate(0.8);
       opacity: 0.9;
       z-index: 99; // Немного ниже хороших призов
+      width: 10%;
     }
     
     &--bad-disappearing {
