@@ -16,10 +16,10 @@
     </svg>
 
     <div class="gift__number gift__number--left">
-      18
+      <span>18</span>
     </div>
     <div class="gift__number gift__number--right">
-      %
+      <span>%</span>
     </div>
   </div>
 </template>
@@ -34,8 +34,11 @@
     width: 50%;
     height: 50%;
     position: absolute;
-    top: 50%;
+    top: 49%;
     font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     text-align: center;
     font-weight: bold;
 
