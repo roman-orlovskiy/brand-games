@@ -354,11 +354,11 @@ defineExpose({
     opacity: 1;
   }
   80% {
-    transform: translateY(610%) rotate(360deg) scale(0.7);
+    transform: translateY(620%) rotate(360deg) scale(0.7);
     opacity: 1;
   }
   100% {
-    transform: translateY(610%) rotate(0deg) scale(0.3);
+    transform: translateY(620%) rotate(0deg) scale(0.3);
     opacity: 0;
   }
 }
