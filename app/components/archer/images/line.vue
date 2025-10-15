@@ -87,8 +87,8 @@ const pathData = computed(() => {
   // Джойстик вниз (y > 0) - сильнее парабола (как тело, брошенное под углом)
   // Джойстик вверх (y < 0) - более пологая траектория
   
-  const baseCurvature = 0.7 - (props.power * 0.5) // Базовый изгиб от силы
-  const verticalInfluence = (props.aimPosition?.y || 0) * 0.9 // Вертикальное влияние в 10 раз сильнее (0.35 * 10)
+  const baseCurvature = 0.9 - (props.power * 0.4) // Базовый изгиб от силы
+  const verticalInfluence = (props.aimPosition?.y || 0) * 0.8 // Вертикальное влияние в 10 раз сильнее (0.35 * 10)
   const curvature = Math.max(0.1, baseCurvature + verticalInfluence) // Ограничиваем минимум, чтобы не переворачивалась
   
   // Для симметричной параболы контрольные точки располагаем симметрично
