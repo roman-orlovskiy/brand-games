@@ -45,13 +45,26 @@ let giftIdCounter = 0
 
 // Функция для добавления нового подарка в коробку
 const addGiftToBox = () => {
-  // Генерируем случайную позицию в коробке с отступами 20% слева и справа
-  const left = 30 + Math.random() * 40 // 30-70% по горизонтали
-  const top = 5 + Math.random() * 20 // 5-55% по вертикали (поднимаем выше)
-  const rotation = (Math.random() - 0.5) * 90 // -30 до +30 градусов
-  const zIndex = collectedGifts.value.length + 1 // Слои для наложения
+  const totalGifts = collectedGifts.value.length
   
-  console.log(left)
+  // Единый алгоритм зацикливания
+  const positions = [
+    { left: 30 },   // Центр
+    { left: 1 },  // Левый верх
+    { left: 15 },  
+    { left: 55 },  // Правый низ 
+    { left: 70 },  // Правый верх
+    { left: 40 },   // Левый низ
+  ]
+  
+  const position = positions[totalGifts % positions.length] || positions[0]
+  const left = position?.left || 30
+  const top = 5 + Math.random() * 20 // Случайный top
+  
+  const rotation = (Math.random() - 0.5) * 90 // -45 до +45 градусов
+  const zIndex = collectedGifts.value.length + 1
+  
+  console.log(`Подарок ${totalGifts + 1} на позиции:`, left, top)
   const newGift: CollectedGift = {
       id: giftIdCounter++,
       style: {
