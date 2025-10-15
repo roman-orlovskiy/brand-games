@@ -285,8 +285,8 @@ const handleAimChange = (position: { x: number, y: number, power: number }) => {
 const shoot = async (position: { x: number, y: number, power: number }) => {
   if (isShooting.value) return
   
-  // Запрещаем выстрел, если джойстик отклонен вверх (отрицательный Y)
-  if (position.y < 0) return
+  // Запрещаем выстрел, если джойстик отклонен вверх (Y меньше -0.5)
+  if (position.y < -0.5) return
   
   // Замораживаем текущую позицию
   frozenAimPosition.value = { ...position }
