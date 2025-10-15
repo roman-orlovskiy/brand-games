@@ -45,46 +45,173 @@ const prizesData = ref<Prize[]>([])
 const initializePrizes = () => {
   const goodPrizesCount = settingsStore.gameSettings.prizesCount
   const badPrizesCount = settingsStore.gameSettings.badPrizesCount
-  const totalCount = goodPrizesCount + badPrizesCount
   const result: Prize[] = []
   
-  // Создаем массив индексов для случайного распределения
-  const indices = Array.from({ length: totalCount }, (_, i) => i)
+  // Сначала размещаем хорошие призы равномерно
+  const goodPrizes = generateGoodPrizes(goodPrizesCount)
   
-  // Перемешиваем индексы
-  for (let i = indices.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [indices[i], indices[j]] = [indices[j], indices[i]]
-  }
+  // Затем размещаем плохие призы вокруг хороших
+  const badPrizes = generateBadPrizes(badPrizesCount, goodPrizes)
   
-  // Первые badPrizesCount индексов будут плохими призами
-  const badPrizeIndices = new Set(indices.slice(0, badPrizesCount))
+  // Объединяем все призы
+  result.push(...goodPrizes, ...badPrizes)
   
-  for (let i = 0; i < totalCount; i++) {
-    // Генерируем позиции в верхней части (10-40% по высоте)
-    // И распределяем по ширине (10-90%)
-    const leftPos = 10 + Math.random() * 80
-    const isBad = badPrizeIndices.has(i)
+  prizesData.value = result
+}
+
+// Генерируем хорошие призы с равномерным распределением
+const generateGoodPrizes = (count: number): Prize[] => {
+  const prizes: Prize[] = []
+  const minDistance = 15 // Минимальное расстояние между призами в процентах
+  const maxAttempts = 100 // Максимальное количество попыток размещения
+  
+  for (let i = 0; i < count; i++) {
+    let attempts = 0
+    let position: { top: number; left: number } | null = null
     
-    result.push({
+    while (attempts < maxAttempts) {
+      const candidateTop = 15 + Math.random() * 25 // 15-40% по высоте
+      const candidateLeft = 15 + Math.random() * 70 // 15-85% по ширине
+      
+      // Проверяем, не слишком ли близко к другим призам
+      const tooClose = prizes.some(prize => {
+        const distance = Math.sqrt(
+          Math.pow(prize.leftPosition - candidateLeft, 2) + 
+          Math.pow(parseFloat(prize.style.top) - candidateTop, 2)
+        )
+        return distance < minDistance
+      })
+      
+      if (!tooClose) {
+        position = { top: candidateTop, left: candidateLeft }
+        break
+      }
+      
+      attempts++
+    }
+    
+    // Если не удалось найти подходящее место, размещаем случайно
+    if (!position) {
+      position = {
+        top: 15 + Math.random() * 25,
+        left: 15 + Math.random() * 70
+      }
+    }
+    
+    prizes.push({
       style: {
-        top: `${10 + Math.random() * 30}%`,
-        left: `${leftPos}%`
+        top: `${position.top}%`,
+        left: `${position.left}%`
       },
       visible: true,
       falling: false,
-      leftPosition: leftPos,
-      isBad
+      leftPosition: position.left,
+      isBad: false
     })
   }
   
-  prizesData.value = result
+  return prizes
+}
+
+// Генерируем плохие призы вокруг хороших
+const generateBadPrizes = (count: number, goodPrizes: Prize[]): Prize[] => {
+  const prizes: Prize[] = []
+  const minDistance = 12 // Минимальное расстояние между призами
+  const maxAttempts = 150
+  
+  for (let i = 0; i < count; i++) {
+    let attempts = 0
+    let position: { top: number; left: number } | null = null
+    
+    while (attempts < maxAttempts) {
+      // Выбираем случайный хороший приз для размещения рядом
+      const targetPrize = goodPrizes[Math.floor(Math.random() * goodPrizes.length)]
+      const targetTop = parseFloat(targetPrize.style.top)
+      const targetLeft = targetPrize.leftPosition
+      
+      // Определяем направление размещения (левее, правее, выше, ниже)
+      const directions = ['left', 'right', 'top', 'bottom']
+      const direction = directions[Math.floor(Math.random() * directions.length)]
+      
+      let candidateTop: number
+      let candidateLeft: number
+      
+      switch (direction) {
+        case 'left':
+          candidateTop = targetTop + (Math.random() - 0.5) * 20 // ±10% по вертикали
+          candidateLeft = Math.max(5, targetLeft - 20 - Math.random() * 15) // левее на 20-35%
+          break
+        case 'right':
+          candidateTop = targetTop + (Math.random() - 0.5) * 20
+          candidateLeft = Math.min(90, targetLeft + 20 + Math.random() * 15) // правее на 20-35%
+          break
+        case 'top':
+          candidateTop = Math.max(5, targetTop - 15 - Math.random() * 10) // выше на 15-25%
+          candidateLeft = targetLeft + (Math.random() - 0.5) * 20 // ±10% по горизонтали
+          break
+        case 'bottom':
+          candidateTop = Math.min(45, targetTop + 15 + Math.random() * 10) // ниже на 15-25%
+          candidateLeft = targetLeft + (Math.random() - 0.5) * 20
+          break
+        default:
+          candidateTop = targetTop + (Math.random() - 0.5) * 20
+          candidateLeft = targetLeft + (Math.random() - 0.5) * 20
+      }
+      
+      // Ограничиваем позиции в пределах игровой области
+      candidateTop = Math.max(5, Math.min(45, candidateTop))
+      candidateLeft = Math.max(5, Math.min(90, candidateLeft))
+      
+      // Проверяем, не слишком ли близко к другим призам
+      const allPrizes = [...goodPrizes, ...prizes]
+      const tooClose = allPrizes.some(prize => {
+        const distance = Math.sqrt(
+          Math.pow(prize.leftPosition - candidateLeft, 2) + 
+          Math.pow(parseFloat(prize.style.top) - candidateTop, 2)
+        )
+        return distance < minDistance
+      })
+      
+      if (!tooClose) {
+        position = { top: candidateTop, left: candidateLeft }
+        break
+      }
+      
+      attempts++
+    }
+    
+    // Если не удалось найти подходящее место, размещаем случайно
+    if (!position) {
+      position = {
+        top: 5 + Math.random() * 40,
+        left: 5 + Math.random() * 85
+      }
+    }
+    
+    prizes.push({
+      style: {
+        top: `${position.top}%`,
+        left: `${position.left}%`
+      },
+      visible: true,
+      falling: false,
+      leftPosition: position.left,
+      isBad: true
+    })
+  }
+  
+  return prizes
 }
 
 // Инициализируем только на клиенте после монтирования
 onMounted(() => {
   initializePrizes()
 })
+
+// Пересчитываем призы при изменении настроек
+watch(() => [settingsStore.gameSettings.prizesCount, settingsStore.gameSettings.badPrizesCount], () => {
+  initializePrizes()
+}, { deep: true })
 
 const prizes = computed(() => prizesData.value)
 
@@ -172,7 +299,9 @@ defineExpose({
     }
     
     &--bad {
-      filter: grayscale(0.3) brightness(0.8);
+      filter: grayscale(0.4) brightness(0.7) saturate(0.8);
+      opacity: 0.9;
+      z-index: 99; // Немного ниже хороших призов
     }
   }
 }
