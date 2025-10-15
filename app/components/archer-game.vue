@@ -30,7 +30,7 @@
         class="archer-game__box"
         :style="boxStyle"
       >
-        <ArcherImagesBox />
+        <ArcherImagesBox ref="boxRef" />
       </div>
 
       <div class="archer-game__prizes">
@@ -47,6 +47,7 @@ const boxLeft = ref(40);
 const archerManRef = ref();
 const aimControlRef = ref();
 const prizesRef = ref();
+const boxRef = ref();
 const wrapperRef = ref<HTMLDivElement>();
 
 // Размеры контейнера для расчетов траектории
@@ -145,7 +146,14 @@ const handlePrizeHit = (leftPosition: number, isBad: boolean = false) => {
     // Плавно перемещаем корзину
     boxLeft.value = boxTargetPosition
     
-    console.log('Попал в хороший приз! Корзина подъехала.')
+    // Добавляем подарок в коробку с небольшой задержкой
+    setTimeout(() => {
+      if (boxRef.value && boxRef.value.addGiftToBox) {
+        boxRef.value.addGiftToBox()
+      }
+    }, 1200) // Задержка, чтобы подарок успел упасть в корзину
+    
+    console.log('Попал в хороший приз! Корзина подъехала и добавила подарок.')
   } else {
     console.log('Попал в плохой приз (мусор)! Корзина остается на месте.')
     // TODO: Добавить логику для плохих призов (например, штрафные очки)
@@ -159,6 +167,27 @@ const handleCollisionCheck = (x: number, y: number): boolean => {
   }
   return false;
 };
+
+// Функция для сброса игры
+const resetGame = () => {
+  // Сбрасываем призы
+  if (prizesRef.value && prizesRef.value.resetPrizes) {
+    prizesRef.value.resetPrizes();
+  }
+  
+  // Очищаем подарки в коробке
+  if (boxRef.value && boxRef.value.clearGifts) {
+    boxRef.value.clearGifts();
+  }
+  
+  // Сбрасываем позицию коробки
+  boxLeft.value = 40;
+};
+
+// Экспортируем функцию сброса для внешнего использования
+defineExpose({
+  resetGame
+});
 </script>
 
 <style scoped lang="scss">

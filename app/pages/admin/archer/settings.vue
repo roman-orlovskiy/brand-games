@@ -100,7 +100,7 @@
           </template>
 
           <div class="game-preview">
-            <ArcherGame :key="gameKey" />
+            <ArcherGame ref="gameRef" :key="gameKey" />
           </div>
         </UCard>
       </div>
@@ -134,11 +134,20 @@ watch(badPrizesCount, (newValue) => {
   settingsStore.updateBadPrizesCount(newValue)
 })
 
+// Ссылка на игровой компонент
+const gameRef = ref()
+
 // Ключ для перезагрузки игры
 const gameKey = ref(0)
 
 // Функция перезагрузки игры
 const reloadGame = () => {
+  // Сбрасываем игру перед перезагрузкой
+  if (gameRef.value && gameRef.value.resetGame) {
+    gameRef.value.resetGame()
+  }
+  
+  // Перезагружаем компонент
   gameKey.value++
 }
 

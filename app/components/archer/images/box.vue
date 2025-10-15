@@ -12,12 +12,72 @@
     </svg>
 
     <div class="box__gifts">
-      <div class="box__gift">
-        <ArcherImagesGift />
-      </div>
+      <TransitionGroup name="gift" tag="div" class="box__gifts-container">
+        <div 
+          v-for="gift in collectedGifts" 
+          :key="gift.id"
+          class="box__gift"
+          :style="gift.style"
+        >
+          <ArcherImagesGift />
+        </div>
+      </TransitionGroup>
     </div>
   </div>
 </template>
+
+<script setup lang="ts">
+import { ref, defineExpose } from 'vue'
+
+interface CollectedGift {
+  id: number
+  style: {
+    left: string
+    top: string
+    transform: string
+    zIndex: number
+  }
+  appearing: boolean
+}
+
+const collectedGifts = ref<CollectedGift[]>([])
+let giftIdCounter = 0
+
+// Функция для добавления нового подарка в коробку
+const addGiftToBox = () => {
+  // Генерируем случайную позицию в коробке с отступами 20% слева и справа
+  const left = 30 + Math.random() * 40 // 30-70% по горизонтали
+  const top = 5 + Math.random() * 20 // 5-55% по вертикали (поднимаем выше)
+  const rotation = (Math.random() - 0.5) * 90 // -30 до +30 градусов
+  const zIndex = collectedGifts.value.length + 1 // Слои для наложения
+  
+  console.log(left)
+  const newGift: CollectedGift = {
+      id: giftIdCounter++,
+      style: {
+        left: `${left}%`,
+        top: `${top}%`,
+        transform: `rotate(${rotation}deg)`,
+        zIndex: zIndex
+      },
+      appearing: false
+    }
+    
+    collectedGifts.value.push(newGift)
+}
+
+// Функция для очистки всех подарков
+const clearGifts = () => {
+  collectedGifts.value = []
+  giftIdCounter = 0
+}
+
+// Экспортируем функции для внешнего использования
+defineExpose({
+  addGiftToBox,
+  clearGifts
+})
+</script>
 
 <style scoped lang="scss">
 .box {
@@ -25,20 +85,54 @@
   position: relative;
 
   &__gifts {
-    width: 90%;
+    width: 80%;
     height: 60%;
     position: absolute;
     top: -30%;
-    left: 5%;
+    left: 10%;
     z-index: 10;
     overflow: hidden;
+  }
+
+  &__gifts-container {
+    width: 100%;
+    height: 100%;
+    position: relative;
   }
 
   &__gift {
     width: 40%;
     position: absolute;
-    top: 0;
-    left: 0;
+    transition: all 0.3s ease-out;
   }
+}
+
+// Анимации для TransitionGroup
+.gift-enter-active {
+  transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.gift-enter-from {
+  opacity: 0;
+  transform: scale(0.3) rotate(-180deg);
+}
+
+.gift-enter-to {
+  opacity: 1;
+  transform: scale(1) rotate(0deg);
+}
+
+.gift-leave-active {
+  transition: all 0.3s ease-in;
+}
+
+.gift-leave-from {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.gift-leave-to {
+  opacity: 0;
+  transform: scale(0.3);
 }
 </style>
