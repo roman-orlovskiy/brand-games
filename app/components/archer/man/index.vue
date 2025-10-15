@@ -22,7 +22,7 @@
       </div>
 
       <div class="archer-man__line" :style="lineStyle">
-        <ArcherImagesLine ref="lineRef" :power="displayPower" :direction="displayDirection" />
+        <ArcherImagesLine ref="lineRef" :power="displayPower" :direction="displayDirection" :aim-position="displayAimPosition" />
         
         <!-- Летящая стрела прямо внутри SVG -->
         <svg v-if="isShooting" ref="flyingArrowRef" class="flying-arrow-svg" :style="flyingSvgStyle">
@@ -85,6 +85,7 @@ const animationFrameId = ref<number | null>(null)
 // Для отображения используем либо текущую позицию, либо замороженную
 const displayPower = computed(() => isShooting.value ? frozenAimPosition.value.power : aimPosition.value.power)
 const displayDirection = computed(() => isShooting.value ? frozenAimPosition.value.x : aimPosition.value.x)
+const displayAimPosition = computed(() => isShooting.value ? frozenAimPosition.value : aimPosition.value)
 
 // Базовые позиции компонентов
 const basePositions = {
