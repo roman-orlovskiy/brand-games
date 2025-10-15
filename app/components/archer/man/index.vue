@@ -126,7 +126,7 @@ const arrowStyle = computed(() => {
   // Стрела движется вместе с рукой и вращается вместе с луком
   const powerOffset = aimPosition.value.power * 2.5 // Движение влево при натяжении
   const horizontalOffset = aimPosition.value.x * 2.5 // Движение влево/вправо вместе с рукой
-  const rotation = -aimPosition.value.y * 20 + aimPosition.value.x * 20 // Инвертировано вертикальное вращение
+  const rotation = -aimPosition.value.y * 35 + aimPosition.value.x * 20 // Инвертировано вертикальное вращение
   
   return {
     left: `${basePositions.arrow.x - powerOffset + horizontalOffset}%`, // + потому что x отрицательный при движении влево
