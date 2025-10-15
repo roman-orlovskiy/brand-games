@@ -245,10 +245,8 @@ onMounted(() => {
   initializePrizes()
 })
 
-// Пересчитываем призы при изменении настроек
-watch(() => [settingsStore.gameSettings.prizesCount, settingsStore.gameSettings.badPrizesCount], () => {
-  initializePrizes()
-}, { deep: true })
+// Убираем автоматическое обновление призов при изменении настроек
+// Теперь призы обновляются только при вызове resetPrizes() или initializePrizes()
 
 const prizes = computed(() => prizesData.value)
 

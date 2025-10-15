@@ -119,20 +119,15 @@ definePageMeta({
 const settingsStore = useSettingsStore()
 const { brandSettings, gameSettings } = storeToRefs(settingsStore)
 
-// Локальные значения для количества подарков
+// Локальные значения для количества подарков (без автоматического обновления store)
 const prizesCount = ref(gameSettings.value.prizesCount)
-console.log(gameSettings.value.badPrizesCount)
 const badPrizesCount = ref(gameSettings.value.badPrizesCount)
 
-
-// Следим за изменениями и обновляем store
-watch(prizesCount, (newValue) => {
-  settingsStore.updatePrizesCount(newValue)
-})
-
-watch(badPrizesCount, (newValue) => {
-  settingsStore.updateBadPrizesCount(newValue)
-})
+// Функция применения изменений (вызывается из reloadGame)
+const applyChanges = () => {
+  settingsStore.updatePrizesCount(prizesCount.value)
+  settingsStore.updateBadPrizesCount(badPrizesCount.value)
+}
 
 // Ссылка на игровой компонент
 const gameRef = ref()
@@ -142,6 +137,9 @@ const gameKey = ref(0)
 
 // Функция перезагрузки игры
 const reloadGame = () => {
+  // Применяем изменения из локальных переменных
+  applyChanges()
+  
   // Сбрасываем игру перед перезагрузкой
   if (gameRef.value && gameRef.value.resetGame) {
     gameRef.value.resetGame()
