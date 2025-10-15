@@ -8,8 +8,9 @@
         class="prizes__gift"
         :class="{ 
           'prizes__gift--hidden': !prize.visible, 
-          'prizes__gift--falling': prize.falling,
-          'prizes__gift--bad': prize.isBad
+          'prizes__gift--falling': prize.falling && !prize.isBad,
+          'prizes__gift--bad': prize.isBad,
+          'prizes__gift--bad-disappearing': prize.falling && prize.isBad
         }"
         :style="prize.style"
       >
@@ -279,10 +280,11 @@ const checkCollision = (x: number, y: number, onPrizeHit?: (leftPosition: number
           onPrizeHit(prizeData.leftPosition, prizeData.isBad)
         }
         
-        // Скрываем подарок после завершения анимации падения
+        // Скрываем подарок после завершения анимации
+        const animationDuration = prizeData.isBad ? 1200 : 1500 // Плохие призы исчезают быстрее
         setTimeout(() => {
           prizeData.visible = false
-        }, 1500) // Длительность анимации падения
+        }, animationDuration)
       }
       return true
     }
@@ -339,6 +341,10 @@ defineExpose({
       opacity: 0.9;
       z-index: 99; // Немного ниже хороших призов
     }
+    
+    &--bad-disappearing {
+      animation: badPrizeDisappear 1.2s ease-out forwards;
+    }
   }
 }
 
@@ -353,6 +359,21 @@ defineExpose({
   }
   100% {
     transform: translateY(450px) rotate(360deg) scale(0.3);
+    opacity: 0;
+  }
+}
+
+@keyframes badPrizeDisappear {
+  0% {
+    transform: rotate(0deg) scale(1);
+    opacity: 0.9;
+  }
+  50% {
+    transform: rotate(180deg) scale(1.1);
+    opacity: 0.6;
+  }
+  100% {
+    transform: rotate(360deg) scale(0);
     opacity: 0;
   }
 }
