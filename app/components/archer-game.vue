@@ -125,7 +125,7 @@ const handleWrapperTouchStart = (e: TouchEvent) => {
 };
 
 // Обработчик попадания в подарок - перемещаем корзину
-const handlePrizeHit = (leftPosition: number) => {
+const handlePrizeHit = (leftPosition: number, isBad: boolean = false) => {
   // Конвертируем позицию подарка в позицию корзины
   // Подарки находятся в контейнере шириной 70%, начиная с 30% справа
   // leftPosition - позиция подарка внутри контейнера призов (в процентах)
@@ -142,6 +142,16 @@ const handlePrizeHit = (leftPosition: number) => {
   
   // Плавно перемещаем корзину
   boxLeft.value = boxTargetPosition
+  
+  // Здесь можно добавить логику для обработки плохих призов
+  // Например, показать сообщение или изменить счет
+  if (isBad) {
+    console.log('Попал в плохой приз (мусор)!')
+    // TODO: Добавить логику для плохих призов
+  } else {
+    console.log('Попал в хороший приз!')
+    // TODO: Добавить логику для хороших призов
+  }
 }
 
 // Обработчик проверки коллизий

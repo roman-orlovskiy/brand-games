@@ -6,10 +6,15 @@
         :key="index" 
         ref="prizeRefs"
         class="prizes__gift"
-        :class="{ 'prizes__gift--hidden': !prize.visible, 'prizes__gift--falling': prize.falling }"
+        :class="{ 
+          'prizes__gift--hidden': !prize.visible, 
+          'prizes__gift--falling': prize.falling,
+          'prizes__gift--bad': prize.isBad
+        }"
         :style="prize.style"
       >
-        <ArcherImagesGift />
+        <ArcherImagesGift v-if="!prize.isBad" />
+        <ArcherImagesTrash v-else />
       </div>
     </div>
   </div>
@@ -31,19 +36,36 @@ interface Prize {
   visible: boolean
   falling: boolean
   leftPosition: number // Позиция в процентах для передачи в корзину
+  isBad: boolean // Флаг плохого приза (мусор)
 }
 
 // Генерируем рандомные позиции для подарков
 const prizesData = ref<Prize[]>([])
 
 const initializePrizes = () => {
-  const count = settingsStore.gameSettings.prizesCount
+  const goodPrizesCount = settingsStore.gameSettings.prizesCount
+  const badPrizesCount = settingsStore.gameSettings.badPrizesCount
+  const totalCount = goodPrizesCount + badPrizesCount
   const result: Prize[] = []
   
-  for (let i = 0; i < count; i++) {
+  // Создаем массив индексов для случайного распределения
+  const indices = Array.from({ length: totalCount }, (_, i) => i)
+  
+  // Перемешиваем индексы
+  for (let i = indices.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [indices[i], indices[j]] = [indices[j], indices[i]]
+  }
+  
+  // Первые badPrizesCount индексов будут плохими призами
+  const badPrizeIndices = new Set(indices.slice(0, badPrizesCount))
+  
+  for (let i = 0; i < totalCount; i++) {
     // Генерируем позиции в верхней части (10-40% по высоте)
     // И распределяем по ширине (10-90%)
     const leftPos = 10 + Math.random() * 80
+    const isBad = badPrizeIndices.has(i)
+    
     result.push({
       style: {
         top: `${10 + Math.random() * 30}%`,
@@ -51,7 +73,8 @@ const initializePrizes = () => {
       },
       visible: true,
       falling: false,
-      leftPosition: leftPos
+      leftPosition: leftPos,
+      isBad
     })
   }
   
@@ -66,7 +89,7 @@ onMounted(() => {
 const prizes = computed(() => prizesData.value)
 
 // Функция для проверки коллизии с точкой
-const checkCollision = (x: number, y: number, onPrizeHit?: (leftPosition: number) => void): boolean => {
+const checkCollision = (x: number, y: number, onPrizeHit?: (leftPosition: number, isBad: boolean) => void): boolean => {
   if (!prizesContainerRef.value || !prizeRefs.value.length) return false
   
   for (let i = 0; i < prizeRefs.value.length; i++) {
@@ -88,9 +111,9 @@ const checkCollision = (x: number, y: number, onPrizeHit?: (leftPosition: number
       if (prizeData) {
         prizeData.falling = true
         
-        // Вызываем колбэк с позицией подарка
+        // Вызываем колбэк с позицией подарка и информацией о том, плохой ли он
         if (onPrizeHit) {
-          onPrizeHit(prizeData.leftPosition)
+          onPrizeHit(prizeData.leftPosition, prizeData.isBad)
         }
         
         // Скрываем подарок после завершения анимации падения
@@ -146,6 +169,10 @@ defineExpose({
     &--hidden {
       opacity: 0;
       pointer-events: none;
+    }
+    
+    &--bad {
+      filter: grayscale(0.3) brightness(0.8);
     }
   }
 }

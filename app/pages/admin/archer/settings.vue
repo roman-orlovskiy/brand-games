@@ -68,6 +68,17 @@
               />
               <p class="text-xs text-gray-500">От 1 до 10 подарков</p>
             </div>
+            <div class="space-y-2">
+              <label class="block text-sm font-medium text-gray-700">Количество плохих призов</label>
+              <UInput
+                v-model.number="badPrizesCount"
+                type="number"
+                min="0"
+                max="5"
+                class="w-32"
+              />
+              <p class="text-xs text-gray-500">От 0 до 5 плохих призов (мусор)</p>
+            </div>
           </div>
         </UCard>
 
@@ -108,12 +119,17 @@ definePageMeta({
 const settingsStore = useSettingsStore()
 const { brandSettings, gameSettings } = storeToRefs(settingsStore)
 
-// Локальное значение для количества подарков
+// Локальные значения для количества подарков
 const prizesCount = ref(gameSettings.value.prizesCount)
+const badPrizesCount = ref(gameSettings.value.badPrizesCount)
 
 // Следим за изменениями и обновляем store
 watch(prizesCount, (newValue) => {
   settingsStore.updatePrizesCount(newValue)
+})
+
+watch(badPrizesCount, (newValue) => {
+  settingsStore.updateBadPrizesCount(newValue)
 })
 
 // Ключ для перезагрузки игры
