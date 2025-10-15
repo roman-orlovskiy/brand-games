@@ -224,7 +224,7 @@ const handleCollisionCheck = (x: number, y: number): boolean => {
     width: 14%; // Уменьшено в два раза (23% / 2)
     position: absolute;
     bottom: 10%;
-    z-index: 50;
+    z-index: 90;
     transition: left 1s ease-out;
   }
 }
