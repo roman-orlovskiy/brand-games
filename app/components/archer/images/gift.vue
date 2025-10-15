@@ -28,6 +28,7 @@
 .gift {
   width: 100%;
   position: relative;
+  container-type: inline-size; /* Включаем container queries */
 
   &__number {
     width: 50%;
@@ -44,6 +45,37 @@
 
     &--right {
       right: 2%;
+    }
+  }
+
+  // Container queries для разных размеров подарка
+  @container (min-width: 25px) {
+    .gift__number {
+      font-size: 0.5rem;
+    }
+  }
+
+  @container (min-width: 30px) {
+    .gift__number {
+      font-size: 0.6rem;
+    }
+  }
+
+  @container (min-width: 40px) {
+    .gift__number {
+      font-size: 0.7rem;
+    }
+  }
+
+  @container (min-width: 50px) {
+    .gift__number {
+      font-size: 0.8rem;
+    }
+  }
+
+  @container (min-width: 60px) {
+    .gift__number {
+      font-size: 0.9rem;
     }
   }
 }
