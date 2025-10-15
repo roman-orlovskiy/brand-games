@@ -69,7 +69,7 @@
               <p class="text-xs text-gray-500">От 1 до 10 подарков</p>
             </div>
             <div class="space-y-2">
-              <label class="block text-sm font-medium text-gray-700">Количество плохих призов</label>
+              <label class="block text-sm font-medium text-gray-700">Количество мусора</label>
               <UInput
                 v-model.number="badPrizesCount"
                 type="number"
@@ -121,7 +121,9 @@ const { brandSettings, gameSettings } = storeToRefs(settingsStore)
 
 // Локальные значения для количества подарков
 const prizesCount = ref(gameSettings.value.prizesCount)
+console.log(gameSettings.value.badPrizesCount)
 const badPrizesCount = ref(gameSettings.value.badPrizesCount)
+
 
 // Следим за изменениями и обновляем store
 watch(prizesCount, (newValue) => {

@@ -84,7 +84,7 @@ export const useSettingsStore = defineStore('settings', () => {
   const gameSettings = ref<GameSettings>({
     colors: [...defaultGameColors],
     prizesCount: 4,
-    badPrizesCount: 1
+    badPrizesCount: 3
   })
 
   // Computed свойство для быстрого доступа к цветам по ID
