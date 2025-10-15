@@ -70,8 +70,20 @@ const generateGoodPrizes = (count: number): Prize[] => {
     let position: { top: number; left: number } | null = null
     
     while (attempts < maxAttempts) {
-      const candidateTop = 15 + Math.random() * 25 // 15-40% по высоте
-      const candidateLeft = 15 + Math.random() * 70 // 15-85% по ширине
+      let candidateTop: number
+      let candidateLeft: number
+      
+      // Проверяем, есть ли уже призы в левой части (15-40% по ширине)
+      const hasLeftPrize = prizes.some(prize => prize.leftPosition >= 15 && prize.leftPosition <= 40)
+      
+      // Если нет призов слева и это последний приз, принудительно размещаем слева
+      if (!hasLeftPrize && i === count - 1) {
+        candidateTop = 15 + Math.random() * 25 // 15-40% по высоте
+        candidateLeft = 15 + Math.random() * 25 // 15-40% по ширине (левая часть)
+      } else {
+        candidateTop = 15 + Math.random() * 25 // 15-40% по высоте
+        candidateLeft = 15 + Math.random() * 70 // 15-85% по ширине
+      }
       
       // Проверяем, не слишком ли близко к другим призам
       const tooClose = prizes.some(prize => {
@@ -92,9 +104,20 @@ const generateGoodPrizes = (count: number): Prize[] => {
     
     // Если не удалось найти подходящее место, размещаем случайно
     if (!position) {
-      position = {
-        top: 15 + Math.random() * 25,
-        left: 15 + Math.random() * 70
+      // Проверяем, есть ли уже призы в левой части
+      const hasLeftPrize = prizes.some(prize => prize.leftPosition >= 15 && prize.leftPosition <= 40)
+      
+      // Если нет призов слева, принудительно размещаем слева
+      if (!hasLeftPrize) {
+        position = {
+          top: 15 + Math.random() * 25,
+          left: 15 + Math.random() * 25
+        }
+      } else {
+        position = {
+          top: 15 + Math.random() * 25,
+          left: 15 + Math.random() * 70
+        }
       }
     }
     
@@ -108,6 +131,17 @@ const generateGoodPrizes = (count: number): Prize[] => {
       leftPosition: position.left,
       isBad: false
     })
+  }
+  
+  // Финальная проверка: если все призы размещены и ни одного нет слева, перемещаем один приз влево
+  const hasLeftPrize = prizes.some(prize => prize.leftPosition >= 15 && prize.leftPosition <= 40)
+  if (!hasLeftPrize && prizes.length > 0) {
+    // Находим приз, который можно переместить влево
+    const prizeToMove = prizes.find(prize => prize.leftPosition > 40)
+    if (prizeToMove) {
+      prizeToMove.leftPosition = 15 + Math.random() * 25
+      prizeToMove.style.left = `${prizeToMove.leftPosition}%`
+    }
   }
   
   return prizes
@@ -126,6 +160,8 @@ const generateBadPrizes = (count: number, goodPrizes: Prize[]): Prize[] => {
     while (attempts < maxAttempts) {
       // Выбираем случайный хороший приз для размещения рядом
       const targetPrize = goodPrizes[Math.floor(Math.random() * goodPrizes.length)]
+      if (!targetPrize) break // Если нет хороших призов, выходим
+      
       const targetTop = parseFloat(targetPrize.style.top)
       const targetLeft = targetPrize.leftPosition
       
