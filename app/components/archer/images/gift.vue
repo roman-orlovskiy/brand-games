@@ -16,7 +16,7 @@
     </svg>
 
     <div class="gift__number gift__number--left">
-      8
+      18
     </div>
     <div class="gift__number gift__number--right">
       %
@@ -36,6 +36,7 @@
     top: 50%;
     font-size: 0.9rem;
     text-align: center;
+    font-weight: bold;
 
     &--left {
       left: 2%;
