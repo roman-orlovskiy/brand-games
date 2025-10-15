@@ -153,6 +153,11 @@ const lineStyle = computed(() => {
     }
   }
   
+  // Устанавливаем прозрачность в зависимости от направления прицеливания
+  // Если джойстик отклонен вверх (отрицательный Y) - делаем линию прозрачной
+  const isAimingUp = currentAim.y < 0
+  const lineOpacity = isAimingUp ? 0 : 1
+  
   // Линия траектории начинается из единой точки вращения
   // Плавная зависимость: влево = сильное, вправо = слабое (без резких переходов)
   const directionMultiplier = 0.2 + ((currentAim.x + 1) * 0.4) // От 0.2 (вправо) до 1 (влево), точка отсчёта справа
@@ -168,6 +173,7 @@ const lineStyle = computed(() => {
     top: `${rotationPoint.y - 21}%`, // Поднимаем вверх, чтобы совпадало с кончиком стрелы
     transform: `rotate(${rotation}deg)`,
     transformOrigin: 'left center', // Вращение от единой точки (левая сторона линии)
+    opacity: lineOpacity,
     pointerEvents: 'none' as const
   }
 })
@@ -278,6 +284,9 @@ const handleAimChange = (position: { x: number, y: number, power: number }) => {
 // Функция выстрела
 const shoot = async (position: { x: number, y: number, power: number }) => {
   if (isShooting.value) return
+  
+  // Запрещаем выстрел, если джойстик отклонен вверх (отрицательный Y)
+  if (position.y < 0) return
   
   // Замораживаем текущую позицию
   frozenAimPosition.value = { ...position }
