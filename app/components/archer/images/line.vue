@@ -2,7 +2,7 @@
   <svg ref="svgRef" :width="svgWidth" :viewBox="`0 0 ${svgWidth} ${svgHeight}`" fill="none" xmlns="http://www.w3.org/2000/svg">
     <defs>
       <linearGradient id="trajectoryGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-        <stop offset="0%" :stop-color="trajectoryColor" stop-opacity="1"/>
+        <stop offset="0%" :stop-color="trajectoryColor" stop-opacity="0"/>
         <stop offset="35%" :stop-color="trajectoryColor" stop-opacity="1"/>
         <stop offset="35%" :stop-color="trajectoryColor" stop-opacity="0"/>
         <stop offset="100%" :stop-color="trajectoryColor" stop-opacity="0"/>
@@ -41,7 +41,7 @@ const gameScale = inject<{ value: number }>('gameScale', { value: 1 })
 // Базовые размеры SVG для масштаба 1 (800px)
 const baseWidth = computed(() => {
   // При слабом натяжении - короткая траектория, при сильном - длинная
-  return (220 + props.power * 150) * 1.95
+  return (240 + props.power * 220) * 1.95
 })
 
 const baseHeight = 220

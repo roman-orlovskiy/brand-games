@@ -94,6 +94,9 @@ const basePositions = {
   arrow: { x: 20, y: 35 }
 }
 
+// Единая точка вращения для arrow и line
+const rotationPoint = { x: 25, y: 35 } // Общая точка слева для вращения
+
 // Вычисляемые позиции с учетом прицела
 const handStyle = computed(() => {
   // Левая рука движется влево при натяжении и следует движению джойстика
@@ -126,7 +129,7 @@ const arrowStyle = computed(() => {
   // Стрела движется вместе с рукой и вращается вместе с луком
   const powerOffset = aimPosition.value.power * 2.5 // Движение влево при натяжении
   const horizontalOffset = aimPosition.value.x * 2.5 // Движение влево/вправо вместе с рукой
-  const rotation = -aimPosition.value.y * 35 + aimPosition.value.x * 20 // Инвертировано вертикальное вращение
+  const rotation = -aimPosition.value.y * 40 + aimPosition.value.x * 20 // Инвертировано вертикальное вращение
   
   return {
     left: `${basePositions.arrow.x - powerOffset + horizontalOffset}%`, // + потому что x отрицательный при движении влево
@@ -150,22 +153,21 @@ const lineStyle = computed(() => {
     }
   }
   
-  // Линия траектории выходит из кончика стрелы
+  // Линия траектории начинается из единой точки вращения
   // Плавная зависимость: влево = сильное, вправо = слабое (без резких переходов)
   const directionMultiplier = 0.2 + ((currentAim.x + 1) * 0.4) // От 0.2 (вправо) до 1 (влево), точка отсчёта справа
   const powerOffset = currentAim.power * directionMultiplier * 2.5
   const horizontalOffset = currentAim.x * 2.5
-  const rotation = -currentAim.y * 20 + currentAim.x * 20 - 20 // Инвертировано вертикальное вращение
+  const rotation = -currentAim.y * 10 + currentAim.x * 20 // Инвертировано вертикальное вращение
 
-
-  // Кончик стрелы находится справа от её позиции (стрела длиной 50%)
-  const arrowTipOffset = 50 // 50% ширины стрелы
+  // Линия начинается из единой точки вращения (кончик стрелы)
+  const lineOffsetFromRotationPoint = 5 // Линия начинается на 5% правее точки вращения (кончик стрелы)
   
   return {
-    left: `${basePositions.arrow.x - powerOffset + horizontalOffset + arrowTipOffset}%`,
-    top: `${basePositions.arrow.y - 21}%`, // Поднимаем вверх, чтобы совпадало с кончиком стрелы
-    transform: `rotate(${rotation}deg) translateY(${rotation * 0.8}%) translateX(${- rotation * 1.2}%)`,
-    transformOrigin: 'left left', // Вращение от точки начала траектории
+    left: `${rotationPoint.x + lineOffsetFromRotationPoint - powerOffset + horizontalOffset}%`,
+    top: `${rotationPoint.y - 21}%`, // Поднимаем вверх, чтобы совпадало с кончиком стрелы
+    transform: `rotate(${rotation}deg)`,
+    transformOrigin: 'left center', // Вращение от единой точки (левая сторона линии)
     pointerEvents: 'none' as const
   }
 })
