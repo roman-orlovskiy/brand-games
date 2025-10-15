@@ -2,9 +2,9 @@
   <svg ref="svgRef" :width="svgWidth" :viewBox="`0 0 ${svgWidth} ${svgHeight}`" fill="none" xmlns="http://www.w3.org/2000/svg">
     <defs>
       <linearGradient id="trajectoryGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-        <stop offset="0%" :stop-color="trajectoryColor" stop-opacity="0"/>
-        <stop offset="35%" :stop-color="trajectoryColor" stop-opacity="1"/>
-        <stop offset="35%" :stop-color="trajectoryColor" stop-opacity="0"/>
+        <stop offset="0%" :stop-color="trajectoryColor" stop-opacity="1"/>
+        <stop offset="50%" :stop-color="trajectoryColor" stop-opacity="1"/>
+        <stop offset="50%" :stop-color="trajectoryColor" stop-opacity="0"/>
         <stop offset="100%" :stop-color="trajectoryColor" stop-opacity="0"/>
       </linearGradient>
     </defs>
