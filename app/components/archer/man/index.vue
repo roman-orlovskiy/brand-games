@@ -155,7 +155,7 @@ const lineStyle = computed(() => {
   
   // Устанавливаем прозрачность в зависимости от направления прицеливания
   // Если джойстик отклонен вверх (отрицательный Y) - делаем линию прозрачной
-  const isAimingUp = currentAim.y < 0
+  const isAimingUp = currentAim.y < -0.5
   const lineOpacity = isAimingUp ? 0 : 1
   
   // Линия траектории начинается из единой точки вращения

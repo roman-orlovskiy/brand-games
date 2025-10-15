@@ -41,10 +41,10 @@ const gameScale = inject<{ value: number }>('gameScale', { value: 1 })
 // Базовые размеры SVG для масштаба 1 (800px)
 const baseWidth = computed(() => {
   // При слабом натяжении - короткая траектория, при сильном - длинная
-  return (240 + props.power * 220) * 1.95
+  return (240 + props.power * 250) * 1.95
 })
 
-const baseHeight = 220
+const baseHeight = 260
 
 // Размеры SVG с учетом scale
 const svgWidth = computed(() => {
