@@ -24,10 +24,9 @@
       </TransitionGroup>
     </div>
 
-    <!-- Отображение итоговой скидки -->
-    <div v-if="collectedGifts.length > 0" class="box__discount">
-      <div class="box__discount-label">Итого скидка:</div>
-      <div class="box__discount-value">{{ totalDiscount }}%</div>
+    <!-- Анимация скидки при падении подарка -->
+    <div v-if="showingDiscount" class="box__discount-animation">
+      {{ currentDiscount }}%
     </div>
   </div>
 </template>
@@ -68,20 +67,10 @@ interface CollectedGift {
 const collectedGifts = ref<CollectedGift[]>([])
 let giftIdCounter = 0
 
-// Вычисляем итоговую скидку в зависимости от режима
-const totalDiscount = computed(() => {
-  if (collectedGifts.value.length === 0) return 0
-  
-  const discounts = collectedGifts.value.map(gift => gift.discount)
-  
-  if (settingsStore.gameSettings.discountMode === 'sum') {
-    // Суммируем все скидки
-    return discounts.reduce((sum, discount) => sum + discount, 0)
-  } else {
-    // Выбираем максимальную скидку
-    return Math.max(...discounts)
-  }
-})
+// Переменные для анимации скидки
+const showingDiscount = ref(false)
+const currentDiscount = ref(0)
+
 
 // Функция для добавления нового подарка в коробку
 const addGiftToBox = (discount: number = 3) => {
@@ -118,6 +107,20 @@ const addGiftToBox = (discount: number = 3) => {
     }
     
     collectedGifts.value.push(newGift)
+    
+    // Запускаем анимацию скидки
+    showDiscountAnimation(discount)
+}
+
+// Функция для показа анимации скидки
+const showDiscountAnimation = (discount: number) => {
+  currentDiscount.value = discount
+  showingDiscount.value = true
+  
+  // Скрываем элемент после завершения анимации (1 секунда)
+  setTimeout(() => {
+    showingDiscount.value = false
+  }, 1000)
 }
 
 // Функция для очистки всех подарков
@@ -160,31 +163,19 @@ defineExpose({
     transition: all 0.3s ease-out;
   }
 
-  &__discount {
+
+  &__discount-animation {
     position: absolute;
-    bottom: -40px;
+    top: -60px;
     left: 50%;
     transform: translateX(-50%);
-    background: rgba(255, 255, 255, 0.95);
-    border: 2px solid #333;
-    border-radius: 8px;
-    padding: 8px 12px;
-    text-align: center;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-    z-index: 1000;
-    min-width: 120px;
-  }
-
-  &__discount-label {
-    font-size: 12px;
-    color: #666;
-    margin-bottom: 2px;
-  }
-
-  &__discount-value {
-    font-size: 18px;
+    font-size: 24px;
     font-weight: bold;
-    color: #333;
+    color: #FF6B6B;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    z-index: 1001;
+    pointer-events: none;
+    animation: discountPopup 1s ease-out forwards;
   }
 }
 
@@ -216,4 +207,19 @@ defineExpose({
   opacity: 0;
   transform: scale(0.3);
 }
+
+// Анимации для скидки
+
+@keyframes discountPopup {
+  0% {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0%) scale(1) rotate(-30deg);
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-200%) scale(0.7) rotate(55deg);
+    visibility: hidden;
+  }
+}
+
 </style>
