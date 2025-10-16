@@ -27,6 +27,12 @@
       </div>
 
       <div class="archer-game__back-logo">
+        <img
+          v-if="logoUrl"
+          :src="logoUrl"
+          alt="Логотип"
+          class="max-h-full max-w-full object-contain"
+        >
       </div>
 
       <div
@@ -45,6 +51,8 @@
 
 <script setup lang="ts">
 import { computed, ref, provide, onMounted, onUnmounted } from 'vue';
+import { useSettingsStore } from '~/stores/settings';
+import { storeToRefs } from 'pinia';
 
 const boxLeft = ref(40);
 const archerManRef = ref();
@@ -52,6 +60,12 @@ const aimControlRef = ref();
 const prizesRef = ref();
 const boxRef = ref();
 const wrapperRef = ref<HTMLDivElement>();
+
+// Настройки игры
+const settingsStore = useSettingsStore();
+const { gameSettings } = storeToRefs(settingsStore);
+
+const logoUrl = computed(() => gameSettings.value.logoUrl);
 
 // Размеры контейнера для расчетов траектории
 const containerSize = ref({ width: 0, height: 0 });

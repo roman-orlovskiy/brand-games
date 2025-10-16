@@ -23,6 +23,7 @@ export interface GameSettings {
   colors: GameColor[]
   prizesCount: number
   badPrizesCount: number
+  logoUrl?: string
 }
 
 export const useSettingsStore = defineStore('settings', () => {
@@ -87,7 +88,8 @@ export const useSettingsStore = defineStore('settings', () => {
   const gameSettings = ref<GameSettings>({
     colors: [...defaultGameColors],
     prizesCount: 4,
-    badPrizesCount: 3
+    badPrizesCount: 3,
+    logoUrl: undefined
   })
 
   // Computed свойство для быстрого доступа к цветам по ID
@@ -116,12 +118,22 @@ export const useSettingsStore = defineStore('settings', () => {
     gameSettings.value.badPrizesCount = Math.max(0, Math.min(5, count)) // От 0 до 5 плохих призов
   }
 
+  const updateLogoUrl = (url: string) => {
+    gameSettings.value.logoUrl = url
+  }
+
+  const removeLogo = () => {
+    gameSettings.value.logoUrl = undefined
+  }
+
   return {
     brandSettings,
     gameSettings,
     gameSettingsColorsById,
     updateGameColor,
     updatePrizesCount,
-    updateBadPrizesCount
+    updateBadPrizesCount,
+    updateLogoUrl,
+    removeLogo
   }
 })

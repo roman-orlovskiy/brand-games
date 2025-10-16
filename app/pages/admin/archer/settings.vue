@@ -50,6 +50,15 @@
           </div>
         </UCard>
 
+        <!-- Логотип -->
+        <UCard>
+          <template #header>
+            <h2 class="text-lg font-semibold">Логотип</h2>
+          </template>
+
+          <LogoUpload />
+        </UCard>
+
         <!-- Параметры игры -->
         <UCard>
           <template #header>
