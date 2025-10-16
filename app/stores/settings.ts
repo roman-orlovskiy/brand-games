@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia'
+import { ref, computed } from 'vue'
 
 export interface BrandColor {
   id: string
@@ -76,6 +77,7 @@ export const useSettingsStore = defineStore('settings', () => {
     { id: 'land', name: 'Земля', brandColorId: 'additional' },
     { id: 'prizes', name: 'Призы', brandColorId: 'accent' },
     { id: 'box', name: 'Корзина', brandColorId: 'neutral' },
+    { id: 'trash', name: 'Мусор', brandColorId: 'neutral' },
     { id: 'interface', name: 'Интерфейс', brandColorId: 'main' },
   ].map(color => ({
     ...color,
