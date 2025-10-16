@@ -109,6 +109,7 @@
                 color="primary"
                 variant="solid"
                 icon="i-heroicons-check"
+                class="cursor-pointer"
                 @click="applyGameSettings"
               >
                 Применить изменения
