@@ -132,9 +132,10 @@ export const useSettingsStore = defineStore('settings', () => {
     const newPrizes: Prize[] = []
     
     for (let i = 0; i < newCount; i++) {
-      if (currentPrizes[i]) {
+      const existingPrize = currentPrizes[i]
+      if (existingPrize) {
         // Используем существующий подарок
-        newPrizes.push(currentPrizes[i])
+        newPrizes.push({ ...existingPrize })
       } else {
         // Создаем новый подарок
         newPrizes.push({
@@ -147,6 +148,7 @@ export const useSettingsStore = defineStore('settings', () => {
     
     gameSettings.value.prizes = newPrizes
   }
+
 
   const updateBadPrizesCount = (count: number) => {
     gameSettings.value.badPrizesCount = Math.max(0, Math.min(5, count)) // От 0 до 5 плохих призов
@@ -174,6 +176,36 @@ export const useSettingsStore = defineStore('settings', () => {
     }
   }
 
+  const applyGameSettings = (prizesCount: number, badPrizesCount: number) => {
+    // Сохраняем текущие подарки перед изменением количества
+    const currentPrizes = [...gameSettings.value.prizes]
+    
+    // Применяем изменения количества
+    gameSettings.value.prizesCount = Math.max(1, Math.min(10, prizesCount))
+    gameSettings.value.badPrizesCount = Math.max(0, Math.min(5, badPrizesCount))
+    
+    // Пересчитываем список подарков с сохранением существующих значений
+    const newPrizes: Prize[] = []
+    
+    for (let i = 0; i < prizesCount; i++) {
+      const existingPrize = currentPrizes[i]
+      if (existingPrize) {
+        // Используем существующий подарок с сохранением его данных
+        newPrizes.push({ ...existingPrize })
+      } else {
+        // Создаем новый подарок
+        newPrizes.push({
+          id: (i + 1).toString(),
+          name: `Подарок ${i + 1}`,
+          discount: 3
+        })
+      }
+    }
+    
+    // Обновляем список подарков в сторе
+    gameSettings.value.prizes = newPrizes
+  }
+
   return {
     brandSettings,
     gameSettings,
@@ -184,6 +216,7 @@ export const useSettingsStore = defineStore('settings', () => {
     updateLogoUrl,
     removeLogo,
     updatePrizeName,
-    updatePrizeDiscount
+    updatePrizeDiscount,
+    applyGameSettings
   }
 })

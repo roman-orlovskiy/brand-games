@@ -88,6 +88,17 @@
               />
               <p class="text-xs text-gray-500">От 0 до 5 плохих призов (мусор)</p>
             </div>
+            
+            <div class="pt-2">
+              <UButton
+                color="primary"
+                variant="solid"
+                icon="i-heroicons-check"
+                @click="applyGameSettings"
+              >
+                Применить изменения
+              </UButton>
+            </div>
           </div>
         </UCard>
 
@@ -176,6 +187,15 @@ const badPrizesCount = ref(gameSettings.value.badPrizesCount)
 const applyChanges = () => {
   settingsStore.updatePrizesCount(prizesCount.value)
   settingsStore.updateBadPrizesCount(badPrizesCount.value)
+}
+
+// Функция применения изменений параметров игры
+const applyGameSettings = () => {
+  // Применяем изменения через стор
+  settingsStore.applyGameSettings(prizesCount.value, badPrizesCount.value)
+  
+  // Перезагружаем игру для применения изменений
+  reloadGame()
 }
 
 // Ссылка на игровой компонент
