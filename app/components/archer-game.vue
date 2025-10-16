@@ -26,6 +26,9 @@
         <ArcherImagesBack />
       </div>
 
+      <div class="archer-game__back-logo">
+      </div>
+
       <div
         class="archer-game__box"
         :style="boxStyle"
@@ -247,6 +250,19 @@ defineExpose({
     top: 0;
     left: 0;
     z-index: 30;
+  }
+
+  &__back-logo {
+    width: 30%;
+    height: 15%;
+    background-color: red;
+    position: absolute;
+    top: 60%;
+    left: 40%;
+    z-index: 35;
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
 
   &__box {
