@@ -26,9 +26,11 @@
         <ArcherImagesBack />
       </div>
 
-      <div class="archer-game__back-logo">
+      <div
+        v-if="logoUrl"
+        class="archer-game__back-logo"
+      >
         <img
-          v-if="logoUrl"
           :src="logoUrl"
           alt="Логотип"
           class="max-h-full max-w-full object-contain"
@@ -267,16 +269,15 @@ defineExpose({
   }
 
   &__back-logo {
-    width: 30%;
-    height: 15%;
-    background-color: red;
+    width: 25%;
     position: absolute;
-    top: 60%;
-    left: 40%;
+    bottom: 24%;
+    left: 42%;
     z-index: 35;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+
+    img {
+      width: 100%;
+    }
   }
 
   &__box {
