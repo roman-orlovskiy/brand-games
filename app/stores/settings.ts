@@ -19,11 +19,18 @@ export interface GameColor {
   brandColorId: string
 }
 
+export interface Prize {
+  id: string
+  name: string
+  discount: number
+}
+
 export interface GameSettings {
   colors: GameColor[]
   prizesCount: number
   badPrizesCount: number
   logoUrl?: string
+  prizes: Prize[]
 }
 
 export const useSettingsStore = defineStore('settings', () => {
@@ -89,7 +96,13 @@ export const useSettingsStore = defineStore('settings', () => {
     colors: [...defaultGameColors],
     prizesCount: 4,
     badPrizesCount: 3,
-    logoUrl: undefined
+    logoUrl: undefined,
+    prizes: [
+      { id: '1', name: 'Подарок 1', discount: 3 },
+      { id: '2', name: 'Подарок 2', discount: 3 },
+      { id: '3', name: 'Подарок 3', discount: 3 },
+      { id: '4', name: 'Подарок 4', discount: 3 }
+    ]
   })
 
   // Computed свойство для быстрого доступа к цветам по ID
@@ -111,7 +124,28 @@ export const useSettingsStore = defineStore('settings', () => {
   }
 
   const updatePrizesCount = (count: number) => {
-    gameSettings.value.prizesCount = Math.max(1, Math.min(10, count)) // От 1 до 10 подарков
+    const newCount = Math.max(1, Math.min(10, count)) // От 1 до 10 подарков
+    gameSettings.value.prizesCount = newCount
+    
+    // Обновляем список подарков в зависимости от количества
+    const currentPrizes = gameSettings.value.prizes
+    const newPrizes: Prize[] = []
+    
+    for (let i = 0; i < newCount; i++) {
+      if (currentPrizes[i]) {
+        // Используем существующий подарок
+        newPrizes.push(currentPrizes[i])
+      } else {
+        // Создаем новый подарок
+        newPrizes.push({
+          id: (i + 1).toString(),
+          name: `Подарок ${i + 1}`,
+          discount: 3
+        })
+      }
+    }
+    
+    gameSettings.value.prizes = newPrizes
   }
 
   const updateBadPrizesCount = (count: number) => {
@@ -126,6 +160,20 @@ export const useSettingsStore = defineStore('settings', () => {
     gameSettings.value.logoUrl = undefined
   }
 
+  const updatePrizeName = (prizeId: string, name: string) => {
+    const prize = gameSettings.value.prizes.find(p => p.id === prizeId)
+    if (prize) {
+      prize.name = name
+    }
+  }
+
+  const updatePrizeDiscount = (prizeId: string, discount: number) => {
+    const prize = gameSettings.value.prizes.find(p => p.id === prizeId)
+    if (prize) {
+      prize.discount = Math.max(0, Math.min(100, discount)) // От 0 до 100 процентов
+    }
+  }
+
   return {
     brandSettings,
     gameSettings,
@@ -134,6 +182,8 @@ export const useSettingsStore = defineStore('settings', () => {
     updatePrizesCount,
     updateBadPrizesCount,
     updateLogoUrl,
-    removeLogo
+    removeLogo,
+    updatePrizeName,
+    updatePrizeDiscount
   }
 })

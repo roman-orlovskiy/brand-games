@@ -91,6 +91,46 @@
           </div>
         </UCard>
 
+        <!-- Список подарков -->
+        <UCard>
+          <template #header>
+            <h2 class="text-lg font-semibold">Список подарков</h2>
+          </template>
+
+          <div class="space-y-4">
+            <div 
+              v-for="(prize, index) in gameSettings.prizes" 
+              :key="prize.id"
+              class="flex items-center space-x-4 p-4 border border-gray-200 rounded-lg"
+            >
+              <div class="flex-shrink-0">
+                <span class="text-sm font-medium text-gray-500">#{{ index + 1 }}</span>
+              </div>
+              
+              <div class="flex-1">
+                <label class="block text-sm font-medium text-gray-700 mb-1">Название подарка</label>
+                <UInput
+                  :model-value="prize.name"
+                  placeholder="Введите название подарка"
+                  @update:model-value="(value: string) => settingsStore.updatePrizeName(prize.id, value)"
+                />
+              </div>
+              
+              <div class="w-24">
+                <label class="block text-sm font-medium text-gray-700 mb-1">Скидка (%)</label>
+                <UInput
+                  :model-value="prize.discount"
+                  type="number"
+                  min="0"
+                  max="100"
+                  placeholder="3"
+                  @update:model-value="(value: number) => settingsStore.updatePrizeDiscount(prize.id, value)"
+                />
+              </div>
+            </div>
+          </div>
+        </UCard>
+
         <!-- Предпросмотр игры -->
         <UCard>
           <template #header>
