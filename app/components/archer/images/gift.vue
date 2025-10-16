@@ -16,7 +16,7 @@
     </svg>
 
     <div class="gift__number gift__number--left">
-      <span>18</span>
+      <span>{{ props.discount }}</span>
     </div>
     <div class="gift__number gift__number--right">
       <span>%</span>
@@ -28,6 +28,15 @@
 import { useSettingsStore } from '~/stores/settings'
 import { storeToRefs } from 'pinia'
 import { darkenColor, lightenColor } from '~/utils/colors'
+
+// Пропсы
+interface Props {
+  discount?: number
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  discount: 3
+})
 
 const settingsStore = useSettingsStore()
 const { gameSettingsColorsById } = storeToRefs(settingsStore)

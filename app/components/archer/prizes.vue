@@ -14,7 +14,10 @@
         }"
         :style="prize.style"
       >
-        <ArcherImagesGift v-if="!prize.isBad" />
+        <ArcherImagesGift 
+          v-if="!prize.isBad" 
+          :discount="getPrizeDiscount(index)"
+        />
         <ArcherImagesTrash v-else />
       </div>
     </div>
@@ -249,6 +252,28 @@ onMounted(() => {
 // Теперь призы обновляются только при вызове resetPrizes() или initializePrizes()
 
 const prizes = computed(() => prizesData.value)
+
+// Функция для получения скидки подарка по индексу
+const getPrizeDiscount = (index: number): number => {
+  const goodPrizesCount = settingsStore.gameSettings.prizesCount
+  const prizesSettings = settingsStore.gameSettings.prizes
+  
+  // Находим индекс среди хороших подарков
+  let goodPrizeIndex = 0
+  for (let i = 0; i < index; i++) {
+    if (!prizesData.value[i]?.isBad) {
+      goodPrizeIndex++
+    }
+  }
+  
+  // Если это хороший подарок, возвращаем скидку из настроек
+  if (goodPrizeIndex < goodPrizesCount && goodPrizeIndex < prizesSettings.length) {
+    return prizesSettings[goodPrizeIndex].discount
+  }
+  
+  // Возвращаем значение по умолчанию
+  return 3
+}
 
 // Функция для проверки коллизии с точкой
 const checkCollision = (x: number, y: number, onPrizeHit?: (leftPosition: number, isBad: boolean) => void): boolean => {
