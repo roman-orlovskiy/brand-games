@@ -89,6 +89,21 @@
               <p class="text-xs text-gray-500">От 0 до 5 плохих призов (мусор)</p>
             </div>
             
+            <div class="space-y-2">
+              <label class="block text-sm font-medium text-gray-700">Режим скидок</label>
+              <USelect
+                :model-value="gameSettings.discountMode"
+                :items="discountModeOptions"
+                placeholder="Выберите режим"
+                class="w-64"
+                @update:model-value="(value: string) => settingsStore.updateDiscountMode(value as 'sum' | 'max')"
+              />
+              <p class="text-xs text-gray-500">
+                <span v-if="gameSettings.discountMode === 'sum'">Суммировать все скидки сбитых подарков</span>
+                <span v-else>Выбирать самую большую скидку из сбитых подарков</span>
+              </p>
+            </div>
+            
             <div class="pt-2">
               <UButton
                 color="primary"
@@ -226,6 +241,12 @@ const colorOptions = computed(() => {
     brandColorId: color.id
   })) || []
 })
+
+// Опции для выбора режима скидок
+const discountModeOptions = [
+  { label: 'Суммировать скидки', value: 'sum' },
+  { label: 'Максимальная скидка', value: 'max' }
+]
 </script>
 
 <style scoped lang="scss" >

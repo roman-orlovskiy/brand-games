@@ -276,7 +276,7 @@ const getPrizeDiscount = (index: number): number => {
 }
 
 // Функция для проверки коллизии с точкой
-const checkCollision = (x: number, y: number, onPrizeHit?: (leftPosition: number, isBad: boolean) => void): boolean => {
+const checkCollision = (x: number, y: number, onPrizeHit?: (leftPosition: number, isBad: boolean, discount: number) => void): boolean => {
   if (!prizesContainerRef.value || !prizeRefs.value.length) return false
   
   for (let i = 0; i < prizeRefs.value.length; i++) {
@@ -298,9 +298,10 @@ const checkCollision = (x: number, y: number, onPrizeHit?: (leftPosition: number
       if (prizeData) {
         prizeData.falling = true
         
-        // Вызываем колбэк с позицией подарка и информацией о том, плохой ли он
+        // Вызываем колбэк с позицией подарка, информацией о том, плохой ли он, и скидкой
         if (onPrizeHit) {
-          onPrizeHit(prizeData.leftPosition, prizeData.isBad)
+          const discount = prizeData.isBad ? 0 : getPrizeDiscount(i)
+          onPrizeHit(prizeData.leftPosition, prizeData.isBad, discount)
         }
         
         // Скрываем подарок после завершения анимации

@@ -23,6 +23,12 @@
         </div>
       </TransitionGroup>
     </div>
+
+    <!-- Отображение итоговой скидки -->
+    <div v-if="collectedGifts.length > 0" class="box__discount">
+      <div class="box__discount-label">Итого скидка:</div>
+      <div class="box__discount-value">{{ totalDiscount }}%</div>
+    </div>
   </div>
 </template>
 
@@ -56,13 +62,29 @@ interface CollectedGift {
     zIndex: number
   }
   appearing: boolean
+  discount: number // Скидка этого подарка
 }
 
 const collectedGifts = ref<CollectedGift[]>([])
 let giftIdCounter = 0
 
+// Вычисляем итоговую скидку в зависимости от режима
+const totalDiscount = computed(() => {
+  if (collectedGifts.value.length === 0) return 0
+  
+  const discounts = collectedGifts.value.map(gift => gift.discount)
+  
+  if (settingsStore.gameSettings.discountMode === 'sum') {
+    // Суммируем все скидки
+    return discounts.reduce((sum, discount) => sum + discount, 0)
+  } else {
+    // Выбираем максимальную скидку
+    return Math.max(...discounts)
+  }
+})
+
 // Функция для добавления нового подарка в коробку
-const addGiftToBox = () => {
+const addGiftToBox = (discount: number = 3) => {
   const totalGifts = collectedGifts.value.length
   
   // Единый алгоритм зацикливания
@@ -91,7 +113,8 @@ const addGiftToBox = () => {
         transform: `rotate(${rotation}deg)`,
         zIndex: zIndex
       },
-      appearing: false
+      appearing: false,
+      discount: discount
     }
     
     collectedGifts.value.push(newGift)
@@ -135,6 +158,33 @@ defineExpose({
     width: 40%;
     position: absolute;
     transition: all 0.3s ease-out;
+  }
+
+  &__discount {
+    position: absolute;
+    bottom: -40px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(255, 255, 255, 0.95);
+    border: 2px solid #333;
+    border-radius: 8px;
+    padding: 8px 12px;
+    text-align: center;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    min-width: 120px;
+  }
+
+  &__discount-label {
+    font-size: 12px;
+    color: #666;
+    margin-bottom: 2px;
+  }
+
+  &__discount-value {
+    font-size: 18px;
+    font-weight: bold;
+    color: #333;
   }
 }
 

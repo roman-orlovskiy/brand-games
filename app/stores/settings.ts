@@ -31,6 +31,7 @@ export interface GameSettings {
   badPrizesCount: number
   logoUrl?: string
   prizes: Prize[]
+  discountMode: 'sum' | 'max' // Режим скидок: суммировать или выбирать максимальную
 }
 
 export const useSettingsStore = defineStore('settings', () => {
@@ -102,7 +103,8 @@ export const useSettingsStore = defineStore('settings', () => {
       { id: '2', name: 'Подарок 2', discount: 3 },
       { id: '3', name: 'Подарок 3', discount: 3 },
       { id: '4', name: 'Подарок 4', discount: 3 }
-    ]
+    ],
+    discountMode: 'max' // По умолчанию выбираем максимальную скидку
   })
 
   // Computed свойство для быстрого доступа к цветам по ID
@@ -176,6 +178,10 @@ export const useSettingsStore = defineStore('settings', () => {
     }
   }
 
+  const updateDiscountMode = (mode: 'sum' | 'max') => {
+    gameSettings.value.discountMode = mode
+  }
+
   const applyGameSettings = (prizesCount: number, badPrizesCount: number) => {
     // Сохраняем текущие подарки перед изменением количества
     const currentPrizes = [...gameSettings.value.prizes]
@@ -217,6 +223,7 @@ export const useSettingsStore = defineStore('settings', () => {
     removeLogo,
     updatePrizeName,
     updatePrizeDiscount,
+    updateDiscountMode,
     applyGameSettings
   }
 })

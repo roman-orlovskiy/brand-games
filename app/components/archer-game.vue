@@ -145,7 +145,7 @@ const handleWrapperTouchStart = (e: TouchEvent) => {
 };
 
 // Обработчик попадания в подарок - перемещаем корзину
-const handlePrizeHit = (leftPosition: number, isBad: boolean = false) => {
+const handlePrizeHit = (leftPosition: number, isBad: boolean = false, discount: number = 3) => {
   // Корзина подъезжает только к хорошим призам
   if (!isBad) {
     // Конвертируем позицию подарка в позицию корзины
@@ -168,11 +168,11 @@ const handlePrizeHit = (leftPosition: number, isBad: boolean = false) => {
     // Добавляем подарок в коробку с небольшой задержкой
     setTimeout(() => {
       if (boxRef.value && boxRef.value.addGiftToBox) {
-        boxRef.value.addGiftToBox()
+        boxRef.value.addGiftToBox(discount)
       }
     }, 1200) // Задержка, чтобы подарок успел упасть в корзину
     
-    console.log('Попал в хороший приз! Корзина подъехала и добавила подарок.')
+    console.log(`Попал в хороший приз со скидкой ${discount}%! Корзина подъехала и добавила подарок.`)
   } else {
     console.log('Попал в плохой приз (мусор)! Корзина остается на месте.')
     // TODO: Добавить логику для плохих призов (например, штрафные очки)
