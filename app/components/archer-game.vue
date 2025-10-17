@@ -269,10 +269,10 @@ defineExpose({
   }
 
   &__back-logo {
-    width: 25%;
+    width: 12%;
     position: absolute;
     bottom: 24%;
-    left: 42%;
+    left: 37%;
     z-index: 35;
 
     img {
