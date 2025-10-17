@@ -23,6 +23,8 @@
 
       <div class="archer-man__line" :style="lineStyle">
         <ArcherImagesLine ref="lineRef" :power="displayPower" :direction="displayDirection" :aim-position="displayAimPosition" />
+        <!-- Визуальный индикатор точки вращения -->
+        <div class="rotation-point-indicator" :style="lineRotationPointStyle" />
         
         <!-- Летящая стрела прямо внутри SVG -->
         <svg v-if="isShooting" ref="flyingArrowRef" class="flying-arrow-svg" :style="flyingSvgStyle">
@@ -99,17 +101,16 @@ const rotationPoint = { x: 25, y: 35 } // Общая точка слева дл�
 
 // Вычисляемые позиции с учетом прицела
 const handStyle = computed(() => {
-  // Левая рука движется влево при натяжении и следует движению джойстика
   const powerOffset = aimPosition.value.power * 2.5 // Максимум 10% влево при натяжении
-  const horizontalOffset = aimPosition.value.x * 2.5 // Движение влево/вправо (отрицательный x = влево, положительный = вправо)
   
   return {
-    left: `${basePositions.hand.x - powerOffset + horizontalOffset}%`, // + потому что x отрицательный при движении влево
+    left: `${basePositions.hand.x - powerOffset}%`, // + потому что x отрицательный при движении влево
     top: `${basePositions.hand.y}%`,
-    transformOrigin: 'right center',
-    transform: `rotate(${-aimPosition.value.y * 5}deg)` // Инвертировано: отрицательный y = вверх
+    transformOrigin: '0% 70%',
+    transform: `rotate(${aimPosition.value.y * 15}deg)` // Инвертировано: отрицательный y = вверх
   }
 })
+
 
 const hand2Style = computed(() => {
   const rotation = -aimPosition.value.y * 40 + aimPosition.value.x * 20
@@ -125,15 +126,31 @@ const hand2Style = computed(() => {
 
 const arrowStyle = computed(() => {
   // Стрела движется вместе с рукой и вращается вместе с луком
-  const powerOffset = aimPosition.value.power * 2.5 // Движение влево при натяжении
-  const horizontalOffset = aimPosition.value.x * 2.5 // Движение влево/вправо вместе с рукой
+  const powerOffset = aimPosition.value.power * 4.5 // Движение влево при натяжении
   const rotation = -aimPosition.value.y * 40 + aimPosition.value.x * 20 // Инвертировано вертикальное вращение
   
   return {
-    left: `${basePositions.arrow.x - powerOffset + horizontalOffset}%`, // + потому что x отрицательный при движении влево
+    left: `${basePositions.arrow.x - powerOffset}%`, // + потому что x отрицательный при движении влево
     top: `${basePositions.arrow.y}%`,
     transform: `rotate(${rotation}deg)`,
     transformOrigin: '20% 80%',
+  }
+})
+
+// Стиль для визуального индикатора точки вращения траектории
+const lineRotationPointStyle = computed(() => {
+  return {
+    position: 'absolute' as const,
+    left: '0%', // left 0% соответствует transform-origin: 'left center'
+    top: '30%', // center соответствует transform-origin: 'left center'
+    width: '8px',
+    height: '8px',
+    backgroundColor: 'orange',
+    borderRadius: '50%',
+    border: '2px solid white',
+    transform: 'translate(-50%, -50%)', // Центрируем точку
+    zIndex: 1000,
+    pointerEvents: 'none' as const
   }
 })
 
@@ -170,7 +187,7 @@ const lineStyle = computed(() => {
     left: `${rotationPoint.x + lineOffsetFromRotationPoint - powerOffset + horizontalOffset}%`,
     top: `${rotationPoint.y - 21}%`, // Поднимаем вверх, чтобы совпадало с кончиком стрелы
     transform: `rotate(${rotation}deg)`,
-    transformOrigin: 'left center', // Вращение от единой точки (левая сторона линии)
+    transformOrigin: '0% 30%', // Вращение от единой точки (левая сторона линии)
     opacity: lineOpacity,
     pointerEvents: 'none' as const
   }
