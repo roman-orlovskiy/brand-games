@@ -112,18 +112,16 @@ const handStyle = computed(() => {
 })
 
 const hand2Style = computed(() => {
-  // Правая рука (лук) НЕ движется, только вращается от точки плеча
-  // Вращение зависит от горизонтального и вертикального прицеливания
-  const horizontalRotation = aimPosition.value.x * 10 // Поворот при горизонтальном прицеливании
-  const verticalRotation = -aimPosition.value.y * 6 // Инвертировано: отрицательный y = вверх
-  
+  const rotation = -aimPosition.value.y * 40 + aimPosition.value.x * 20
+
   return {
     left: `${basePositions.hand2.x}%`,
     top: `${basePositions.hand2.y}%`,
-    transform: `rotate(${horizontalRotation + verticalRotation}deg)`,
-    transformOrigin: 'left center' // Вращение от левой точки (плеча)
+    transform: `rotate(${rotation}deg)`,
+    transformOrigin: '25% 65%' // Вращение от левой точки (плеча)
   }
 })
+
 
 const arrowStyle = computed(() => {
   // Стрела движется вместе с рукой и вращается вместе с луком
