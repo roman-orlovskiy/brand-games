@@ -133,7 +133,7 @@ const arrowStyle = computed(() => {
     left: `${basePositions.arrow.x - powerOffset + horizontalOffset}%`, // + потому что x отрицательный при движении влево
     top: `${basePositions.arrow.y}%`,
     transform: `rotate(${rotation}deg)`,
-    transformOrigin: 'left center',
+    transformOrigin: '20% 80%',
   }
 })
 
