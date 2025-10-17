@@ -187,7 +187,7 @@ const lineStyle = computed(() => {
     left: `${rotationPoint.x + lineOffsetFromRotationPoint - powerOffset + horizontalOffset}%`,
     top: `${rotationPoint.y - 21}%`, // Поднимаем вверх, чтобы совпадало с кончиком стрелы
     transform: `rotate(${rotation}deg)`,
-    transformOrigin: '0% 30%', // Вращение от единой точки (левая сторона линии)
+    transformOrigin: 'left center', // Вращение от единой точки (левая сторона линии)
     opacity: lineOpacity,
     pointerEvents: 'none' as const
   }
