@@ -8,7 +8,7 @@
       <div class="archer-man__legs">
         <ArcherManLegs />
       </div>
-      <div v-if="!isShooting" class="archer-man__arrow" :style="arrowStyle">
+      <div v-if="!isShooting" ref="arrowInBowRef" class="archer-man__arrow" :style="arrowStyle">
         <ArcherManArrow />
       </div>
       <div class="archer-man__hand" :style="handStyle">
@@ -21,13 +21,13 @@
         <ArcherManArrows />
       </div>
 
-      <div class="archer-man__line" :style="lineStyle">
+      <div class="archer-man__line">
         <ArcherImagesLine ref="lineRef" :power="displayPower" :direction="displayDirection" :aim-position="displayAimPosition" />
         <!-- Визуальный индикатор точки вращения -->
         <div class="rotation-point-indicator" :style="lineRotationPointStyle" />
         
         <!-- Летящая стрела прямо внутри SVG -->
-        <svg v-if="isShooting" ref="flyingArrowRef" class="flying-arrow-svg" :style="flyingSvgStyle">
+        <svg ref="flyingArrowRef" viewBox="0 0 1200 700" >
           <defs>
             <path :id="pathId" :d="flyingPathData" />
           </defs>
@@ -83,6 +83,7 @@ const lineRef = ref<{
 const flyingArrowRef = ref<SVGSVGElement | null>(null)
 const animateMotionRef = ref<SVGAnimateMotionElement | null>(null)
 const animationFrameId = ref<number | null>(null)
+const arrowInBowRef = ref<HTMLElement | null>(null)
 
 // Для отображения используем либо текущую позицию, либо замороженную
 const displayPower = computed(() => isShooting.value ? frozenAimPosition.value.power : aimPosition.value.power)
@@ -96,8 +97,6 @@ const basePositions = {
   arrow: { x: 20, y: 35 }
 }
 
-// Единая точка вращения для arrow и line
-const rotationPoint = { x: 25, y: 35 } // Общая точка слева для вращения
 
 // Вычисляемые позиции с учетом прицела
 const handStyle = computed(() => {
@@ -111,14 +110,15 @@ const handStyle = computed(() => {
   }
 })
 
+const handArrowRotation = computed(() => {
+  return -aimPosition.value.y * 23 - aimPosition.value.x * 25 - 26
+})
 
 const hand2Style = computed(() => {
-  const rotation = -aimPosition.value.y * 40 + aimPosition.value.x * 20
-
   return {
     left: `${basePositions.hand2.x}%`,
     top: `${basePositions.hand2.y}%`,
-    transform: `rotate(${rotation}deg)`,
+    transform: `rotate(${handArrowRotation.value}deg)`,
     transformOrigin: '25% 65%' // Вращение от левой точки (плеча)
   }
 })
@@ -127,12 +127,11 @@ const hand2Style = computed(() => {
 const arrowStyle = computed(() => {
   // Стрела движется вместе с рукой и вращается вместе с луком
   const powerOffset = aimPosition.value.power * 4.5 // Движение влево при натяжении
-  const rotation = -aimPosition.value.y * 40 + aimPosition.value.x * 20 // Инвертировано вертикальное вращение
   
   return {
     left: `${basePositions.arrow.x - powerOffset}%`, // + потому что x отрицательный при движении влево
     top: `${basePositions.arrow.y}%`,
-    transform: `rotate(${rotation}deg)`,
+    transform: `rotate(${handArrowRotation.value}deg)`,
     transformOrigin: '20% 80%',
   }
 })
@@ -154,45 +153,6 @@ const lineRotationPointStyle = computed(() => {
   }
 })
 
-const lineStyle = computed(() => {
-  // Используем замороженную позицию, если стреляем, иначе текущую
-  const currentAim = isShooting.value ? frozenAimPosition.value : aimPosition.value
-  
-  // Скрываем траекторию, пока джойстик не начали двигать
-  const isJoystickActive = currentAim.x !== 0 || currentAim.y !== 0 || currentAim.power > 0
-  
-  if (!isJoystickActive) {
-    return {
-      opacity: 0,
-      pointerEvents: 'none' as const
-    }
-  }
-  
-  // Устанавливаем прозрачность в зависимости от направления прицеливания
-  // Если джойстик отклонен вверх (отрицательный Y) - делаем линию прозрачной
-  const isAimingUp = currentAim.y < -0.5
-  const lineOpacity = isAimingUp ? 0 : 1
-  
-  // Линия траектории начинается из единой точки вращения
-  // Плавная зависимость: влево = сильное, вправо = слабое (без резких переходов)
-  const directionMultiplier = 0.2 + ((currentAim.x + 1) * 0.4) // От 0.2 (вправо) до 1 (влево), точка отсчёта справа
-  const powerOffset = currentAim.power * directionMultiplier * 2.5
-  const horizontalOffset = currentAim.x * 2.5
-  const rotation = -currentAim.y * 10 + currentAim.x * 20 // Инвертировано вертикальное вращение
-
-  // Линия начинается из единой точки вращения (кончик стрелы)
-  const lineOffsetFromRotationPoint = 5 // Линия начинается на 5% правее точки вращения (кончик стрелы)
-  
-  return {
-    left: `${rotationPoint.x + lineOffsetFromRotationPoint - powerOffset + horizontalOffset}%`,
-    top: `${rotationPoint.y - 21}%`, // Поднимаем вверх, чтобы совпадало с кончиком стрелы
-    transform: `rotate(${rotation}deg)`,
-    transformOrigin: 'left center', // Вращение от единой точки (левая сторона линии)
-    opacity: lineOpacity,
-    pointerEvents: 'none' as const
-  }
-})
-
 // Path данные для анимации стрелы (берем из lineRef)
 const flyingPathData = computed(() => {
   if (lineRef.value && lineRef.value.pathData) {
@@ -201,21 +161,6 @@ const flyingPathData = computed(() => {
   return ''
 })
 
-// Стиль для SVG с летящей стрелой
-const flyingSvgStyle = computed(() => {
-  if (!lineRef.value) return {}
-  
-  return {
-    position: 'absolute' as const,
-    top: '0',
-    left: '0',
-    width: '100%',
-    height: '100%',
-    overflow: 'visible',
-    pointerEvents: 'none' as const,
-    zIndex: '200'
-  }
-})
 
 // Стиль для группы стрелы - скрываем до начала анимации
 const arrowGroupStyle = computed(() => {
@@ -224,18 +169,34 @@ const arrowGroupStyle = computed(() => {
   }
 })
 
-// Размеры стрелы для foreignObject с учетом scale
-const arrowWidth = computed(() => {
-  // Базовая ширина для scale=1 (800px контейнер)
-  const baseWidth = 100
-  return Math.round(baseWidth * gameScale.value)
-})
+// Функции для получения размеров стрелы для foreignObject
+// Получаем реальные размеры стрелы в луке через getBoundingClientRect
+const getArrowWidth = () => {
+  if (!arrowInBowRef.value) {
+    // Fallback размеры если ref не готов
+    return Math.round(100)
+  }
+  
+  const rect = arrowInBowRef.value.getBoundingClientRect()
+  const realWidth = rect.width * 1.6
+  
+  return Math.round(realWidth)
+}
 
-const arrowHeight = computed(() => {
-  // Базовая высота для scale=1 (800px контейнер)
-  const baseHeight = 30
-  return Math.round(baseHeight * gameScale.value)
-})
+const getArrowHeight = () => {
+  if (!arrowInBowRef.value) {
+    // Fallback размеры если ref не готов
+    return Math.round(30)
+  }
+  
+  const rect = arrowInBowRef.value.getBoundingClientRect()
+  const realHeight = rect.height * 1.6
+  
+  return Math.round(realHeight)
+}
+
+const arrowWidth = ref(0)
+const arrowHeight = ref(0)
 
 // Функция для проверки коллизий во время полета стрелы
 const checkCollisionDuringFlight = () => {
@@ -299,10 +260,7 @@ const handleAimChange = (position: { x: number, y: number, power: number }) => {
 // Функция выстрела
 const shoot = async (position: { x: number, y: number, power: number }) => {
   if (isShooting.value) return
-  
-  // Запрещаем выстрел, если джойстик отклонен вверх (Y меньше -0.5)
-  if (position.y < -0.5) return
-  
+    
   // Замораживаем текущую позицию
   frozenAimPosition.value = { ...position }
   
@@ -343,6 +301,20 @@ const shoot = async (position: { x: number, y: number, power: number }) => {
 defineExpose({
   handleAimChange,
   shoot
+})
+
+const updateArrowSize = () => {
+  arrowWidth.value = getArrowWidth()
+  arrowHeight.value = getArrowHeight()
+}
+
+onMounted(() => {
+  updateArrowSize()
+  document.addEventListener('resize', updateArrowSize)
+})
+
+onUnmounted(() => {
+  document.removeEventListener('resize', updateArrowSize)
 })
 </script>
 
@@ -413,10 +385,20 @@ defineExpose({
 
   &__line {
     position: absolute;
-    width: 50%;
+    width: 450%;
+    height: 100%;
     z-index: 1;
     transition: all 0.1s ease-out;
-    pointer-events: none; // Линия не должна перехватывать клики
+    pointer-events: none;
+    top: 0;
+    left: 0;
+
+    & > svg {
+      width: 100%;
+      position: absolute;
+      top: -150%;
+      left: 7%;
+    }
   }
 
   &__flying-arrow {
@@ -427,20 +409,9 @@ defineExpose({
   }
 }
 
-.flying-arrow-svg {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  overflow: visible;
-  pointer-events: none;
-  z-index: 200;
-}
-
 .arrow-foreign-object {
   overflow: visible;
-  transform: rotate(29deg) translateY(-30%);
+  transform: rotate(29deg) translateY(-14%);
 }
 
 </style>  

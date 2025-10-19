@@ -144,13 +144,11 @@ const endDrag = () => {
   // Сила натяжения: справа = 0, центр = 0.5, слева = 1
   const power = (1 - normalizedX) / 2
   
-  if (power > 0.1) {
-    emit('shoot', {
-      x: normalizedX,
-      y: normalizedY,
-      power: Math.max(0, Math.min(power, 1))
-    })
-  }
+  emit('shoot', {
+    x: normalizedX,
+    y: normalizedY,
+    power: Math.max(0, Math.min(power, 1))
+  })
   
   // Возвращаем джойстик в центр
   currentPosition.value = { x: 0, y: 0 }
