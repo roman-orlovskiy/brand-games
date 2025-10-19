@@ -23,8 +23,6 @@
 
       <div class="archer-man__line">
         <ArcherImagesLine ref="lineRef" :power="displayPower" :direction="displayDirection" :aim-position="displayAimPosition" />
-        <!-- Визуальный индикатор точки вращения -->
-        <div class="rotation-point-indicator" :style="lineRotationPointStyle" />
         
         <!-- Летящая стрела прямо внутри SVG -->
         <svg ref="flyingArrowRef" viewBox="0 0 1200 700" >
@@ -136,22 +134,6 @@ const arrowStyle = computed(() => {
   }
 })
 
-// Стиль для визуального индикатора точки вращения траектории
-const lineRotationPointStyle = computed(() => {
-  return {
-    position: 'absolute' as const,
-    left: '0%', // left 0% соответствует transform-origin: 'left center'
-    top: '30%', // center соответствует transform-origin: 'left center'
-    width: '8px',
-    height: '8px',
-    backgroundColor: 'orange',
-    borderRadius: '50%',
-    border: '2px solid white',
-    transform: 'translate(-50%, -50%)', // Центрируем точку
-    zIndex: 1000,
-    pointerEvents: 'none' as const
-  }
-})
 
 // Path данные для анимации стрелы (берем из lineRef)
 const flyingPathData = computed(() => {
