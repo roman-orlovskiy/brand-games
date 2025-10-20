@@ -165,6 +165,17 @@
                   @update:model-value="(value: number) => settingsStore.updatePrizeDiscount(prize.id, value)"
                 />
               </div>
+              
+              <div class="w-32">
+                <label class="block text-sm font-medium text-gray-700 mb-1">Изображение</label>
+                <PrizeImageUpload
+                  :prize-id="prize.id"
+                  :prize-name="prize.name"
+                  :image-url="prize.imageUrl"
+                  @image-uploaded="handleImageUploaded"
+                  @image-removed="handleImageRemoved"
+                />
+              </div>
             </div>
           </div>
         </UCard>
@@ -261,6 +272,15 @@ const discountModeOptions = [
   { label: 'Суммировать скидки', value: 'sum' },
   { label: 'Максимальная скидка', value: 'max' }
 ]
+
+// Обработчики для загрузки изображений призов
+const handleImageUploaded = (prizeId: string, imageUrl: string) => {
+  settingsStore.updatePrizeImage(prizeId, imageUrl)
+}
+
+const handleImageRemoved = (prizeId: string) => {
+  settingsStore.removePrizeImage(prizeId)
+}
 </script>
 
 <style scoped lang="scss" >

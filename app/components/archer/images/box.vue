@@ -19,7 +19,7 @@
           class="box__gift"
           :style="gift.style"
         >
-          <ArcherImagesGift :discount="gift.discount" />
+          <ArcherImagesGift :discount="gift.discount" :image-url="gift.imageUrl" />
         </div>
       </TransitionGroup>
     </div>
@@ -62,6 +62,7 @@ interface CollectedGift {
   }
   appearing: boolean
   discount: number // Скидка этого подарка
+  imageUrl?: string // URL изображения подарка
 }
 
 const collectedGifts = ref<CollectedGift[]>([])
@@ -91,7 +92,7 @@ const notifyDiscounts = () => {
 }
 
 // Функция для добавления нового подарка в коробку
-const addGiftToBox = (discount: number = 3) => {
+const addGiftToBox = (discount: number = 3, imageUrl?: string) => {
   const totalGifts = collectedGifts.value.length
   
   // Единый алгоритм зацикливания
@@ -121,7 +122,8 @@ const addGiftToBox = (discount: number = 3) => {
         zIndex: zIndex
       },
       appearing: false,
-      discount: discount
+      discount: discount,
+      imageUrl: imageUrl
     }
     
     collectedGifts.value.push(newGift)

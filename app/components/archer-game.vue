@@ -202,7 +202,7 @@ const handleShotEnd = () => {
 };
 
 // Обработчик попадания в подарок - перемещаем корзину
-const handlePrizeHit = (leftPosition: number, isBad: boolean = false, discount: number = 3) => {
+const handlePrizeHit = (leftPosition: number, isBad: boolean = false, discount: number = 3, imageUrl?: string) => {
   // Корзина подъезжает только к хорошим призам
   if (!isBad) {
     // Конвертируем позицию подарка в позицию корзины
@@ -225,7 +225,7 @@ const handlePrizeHit = (leftPosition: number, isBad: boolean = false, discount: 
     // Добавляем подарок в коробку с небольшой задержкой
     setTimeout(() => {
       if (boxRef.value && boxRef.value.addGiftToBox) {
-        boxRef.value.addGiftToBox(discount)
+        boxRef.value.addGiftToBox(discount, imageUrl)
       }
     }, 1200) // Задержка, чтобы подарок успел упасть в корзину
     

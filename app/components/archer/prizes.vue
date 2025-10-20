@@ -17,6 +17,7 @@
         <ArcherImagesGift 
           v-if="!prize.isBad" 
           :discount="getPrizeDiscount(index)"
+          :image-url="getPrizeImageUrl(index)"
         />
         <ArcherImagesTrash v-else />
       </div>
@@ -273,15 +274,42 @@ const getPrizeDiscount = (index: number): number => {
   
   // Если это хороший подарок, возвращаем скидку из настроек
   if (goodPrizeIndex < prizesSettings.length) {
-    return prizesSettings[goodPrizeIndex].discount
+    return prizesSettings[goodPrizeIndex]?.discount || 3
   }
   
   // Возвращаем значение по умолчанию
   return 3
 }
 
+// Функция для получения URL изображения подарка по индексу
+const getPrizeImageUrl = (index: number): string | undefined => {
+  const prizesSettings = settingsStore.gameSettings.prizes
+  const prize = prizesData.value[index]
+  
+  // Если это плохой подарок, возвращаем undefined
+  if (prize?.isBad) {
+    return undefined
+  }
+  
+  // Находим индекс среди хороших подарков
+  let goodPrizeIndex = 0
+  for (let i = 0; i < index; i++) {
+    if (!prizesData.value[i]?.isBad) {
+      goodPrizeIndex++
+    }
+  }
+  
+  // Если это хороший подарок, возвращаем URL изображения из настроек
+  if (goodPrizeIndex < prizesSettings.length) {
+    return prizesSettings[goodPrizeIndex]?.imageUrl || undefined
+  }
+  
+  // Возвращаем undefined по умолчанию
+  return undefined
+}
+
 // Функция для проверки коллизии с точкой
-const checkCollision = (x: number, y: number, onPrizeHit?: (leftPosition: number, isBad: boolean, discount: number) => void): boolean => {
+const checkCollision = (x: number, y: number, onPrizeHit?: (leftPosition: number, isBad: boolean, discount: number, imageUrl?: string) => void): boolean => {
   if (!prizesContainerRef.value || !prizeRefs.value.length) return false
   
   for (let i = 0; i < prizeRefs.value.length; i++) {
@@ -303,10 +331,11 @@ const checkCollision = (x: number, y: number, onPrizeHit?: (leftPosition: number
       if (prizeData) {
         prizeData.falling = true
         
-        // Вызываем колбэк с позицией подарка, информацией о том, плохой ли он, и скидкой
+        // Вызываем колбэк с позицией подарка, информацией о том, плохой ли он, скидкой и URL изображения
         if (onPrizeHit) {
           const discount = prizeData.isBad ? 0 : getPrizeDiscount(i)
-          onPrizeHit(prizeData.leftPosition, prizeData.isBad, discount)
+          const imageUrl = prizeData.isBad ? undefined : getPrizeImageUrl(i)
+          onPrizeHit(prizeData.leftPosition, prizeData.isBad, discount, imageUrl)
         }
         
         // Скрываем подарок после завершения анимации

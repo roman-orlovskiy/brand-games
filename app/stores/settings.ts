@@ -23,6 +23,7 @@ export interface Prize {
   id: string
   name: string
   discount: number
+  imageUrl?: string
 }
 
 export interface GameSettings {
@@ -190,6 +191,20 @@ export const useSettingsStore = defineStore('settings', () => {
     gameSettings.value.shotsCount = normalized
   }
 
+  const updatePrizeImage = (prizeId: string, imageUrl: string) => {
+    const prize = gameSettings.value.prizes.find(p => p.id === prizeId)
+    if (prize) {
+      prize.imageUrl = imageUrl
+    }
+  }
+
+  const removePrizeImage = (prizeId: string) => {
+    const prize = gameSettings.value.prizes.find(p => p.id === prizeId)
+    if (prize) {
+      prize.imageUrl = undefined
+    }
+  }
+
   const applyGameSettings = (prizesCount: number, badPrizesCount: number, shotsCount?: number) => {
     // Сохраняем текущие подарки перед изменением количества
     const currentPrizes = [...gameSettings.value.prizes]
@@ -236,6 +251,8 @@ export const useSettingsStore = defineStore('settings', () => {
     updatePrizeDiscount,
     updateDiscountMode,
     updateShotsCount,
+    updatePrizeImage,
+    removePrizeImage,
     applyGameSettings
   }
 })
