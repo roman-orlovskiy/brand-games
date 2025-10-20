@@ -268,8 +268,8 @@ const shoot = async (position: { x: number, y: number, power: number }) => {
   // Замораживаем текущую позицию
   frozenAimPosition.value = { ...position }
   
-  // Длительность полёта зависит от силы (0.8-2 секунды)
-  const duration = 800 + (1 - position.power) * 1200
+  // Длительность полёта зависит от силы: при большей силе летит медленнее (1.2–2.4с)
+  const duration = 1200 + position.power * 1000
   animationDuration.value = duration
   
   isShooting.value = true
