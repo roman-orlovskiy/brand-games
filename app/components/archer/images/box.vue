@@ -72,6 +72,24 @@ const showingDiscount = ref(false)
 const currentDiscount = ref(0)
 
 
+// Эмит события об обновлении агрегированных скидок
+const emit = defineEmits<{
+  (e: 'discount-update', payload: { sum: number; max: number }): void
+}>()
+
+const sumDiscount = computed(() => {
+  return collectedGifts.value.reduce((acc, gift) => acc + (gift.discount || 0), 0)
+})
+
+const maxDiscount = computed(() => {
+  if (collectedGifts.value.length === 0) return 0
+  return collectedGifts.value.reduce((max, gift) => Math.max(max, gift.discount || 0), 0)
+})
+
+const notifyDiscounts = () => {
+  emit('discount-update', { sum: sumDiscount.value, max: maxDiscount.value })
+}
+
 // Функция для добавления нового подарка в коробку
 const addGiftToBox = (discount: number = 3) => {
   const totalGifts = collectedGifts.value.length
@@ -110,6 +128,9 @@ const addGiftToBox = (discount: number = 3) => {
     
     // Запускаем анимацию скидки
     showDiscountAnimation(discount)
+
+    // Сообщаем об обновлении агрегированных значений скидок
+    notifyDiscounts()
 }
 
 // Функция для показа анимации скидки
@@ -127,6 +148,7 @@ const showDiscountAnimation = (discount: number) => {
 const clearGifts = () => {
   collectedGifts.value = []
   giftIdCounter = 0
+  notifyDiscounts()
 }
 
 // Экспортируем функции для внешнего использования

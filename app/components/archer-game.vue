@@ -49,11 +49,18 @@
         class="archer-game__box"
         :style="boxStyle"
       >
-        <ArcherImagesBox ref="boxRef" />
+        <ArcherImagesBox ref="boxRef" @discount-update="handleDiscountUpdate" />
       </div>
 
       <div class="archer-game__prizes">
         <ArcherPrizes ref="prizesRef" />
+      </div>
+      <!-- Индикатор скидки в правом нижнем углу -->
+      <div class="archer-game__discount">
+        <div class="discount__inner">
+          <span class="discount__label">{{ discountLabel }}</span>
+          <span class="discount__value">{{ discountValue }}%</span>
+        </div>
       </div>
     </div>
     <!-- Модальное окно окончания игры -->
@@ -84,6 +91,18 @@ const logoUrl = computed(() => gameSettings.value.logoUrl);
 // Счётчик оставшихся выстрелов
 const remainingShots = ref<number>(gameSettings.value.shotsCount || 3);
 const showEndModal = ref(false);
+
+// Агрегированные скидки
+const totalDiscountSum = ref(0)
+const totalDiscountMax = ref(0)
+
+const handleDiscountUpdate = (payload: { sum: number; max: number }) => {
+  totalDiscountSum.value = payload.sum || 0
+  totalDiscountMax.value = payload.max || 0
+}
+
+const discountLabel = computed(() => gameSettings.value.discountMode === 'sum' ? 'Суммарная скидка' : 'Максимальная скидка')
+const discountValue = computed(() => gameSettings.value.discountMode === 'sum' ? totalDiscountSum.value : totalDiscountMax.value)
 
 // Размеры контейнера для расчетов траектории
 const containerSize = ref({ width: 0, height: 0 });
@@ -242,6 +261,9 @@ const resetGame = () => {
   // Сбрасываем счётчик выстрелов и скрываем модалку
   remainingShots.value = gameSettings.value.shotsCount || 3;
   showEndModal.value = false;
+  // Сбрасываем агрегированные скидки
+  totalDiscountSum.value = 0
+  totalDiscountMax.value = 0
 };
 
 // Экспортируем функцию сброса для внешнего использования
@@ -343,6 +365,33 @@ defineExpose({
       width: 3rem; // относительный размер от ширины игрового поля
       transform: rotate(-25deg);
       margin-right: -3%;
+    }
+  }
+
+  &__discount {
+    position: absolute;
+    right: 2%;
+    bottom: 4%;
+    z-index: 1200;
+
+    .discount__inner {
+      display: flex;
+      align-items: baseline;
+      gap: 0.5rem;
+      color: #fff;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.6);
+      font-weight: 700;
+      user-select: none;
+    }
+
+    .discount__label {
+      font-size: 1rem;
+      opacity: 0.95;
+      text-transform: uppercase;
+    }
+
+    .discount__value {
+      font-size: 1.6rem;
     }
   }
 }
