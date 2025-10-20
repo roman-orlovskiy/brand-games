@@ -50,7 +50,7 @@
   </template>
 
 <script setup lang="ts">
-import { ref, computed, inject, nextTick } from 'vue'
+import { ref, computed, inject, nextTick, onMounted, onUnmounted } from 'vue'
 
 // Пропс для функции проверки коллизий
 interface Props {
@@ -81,6 +81,7 @@ const lineRef = ref<{
 const flyingArrowRef = ref<SVGSVGElement | null>(null)
 const animateMotionRef = ref<SVGAnimateMotionElement | null>(null)
 const animationFrameId = ref<number | null>(null)
+const arrowOpacity = ref(0) // Прозрачность летящей стрелы (для плавного исчезновения)
 const arrowInBowRef = ref<HTMLElement | null>(null)
 
 // Для отображения используем либо текущую позицию, либо замороженную
@@ -147,7 +148,8 @@ const flyingPathData = computed(() => {
 // Стиль для группы стрелы - скрываем до начала анимации
 const arrowGroupStyle = computed(() => {
   return {
-    opacity: animationStarted.value ? '1' : '0'
+    opacity: String(arrowOpacity.value),
+    transition: 'opacity 500ms ease'
   }
 })
 
@@ -206,9 +208,24 @@ const checkCollisionDuringFlight = () => {
   // Проверяем коллизию
   const hitTarget = props.onCollisionCheck(arrowX, arrowY)
   
-  // Если попали в цель, останавливаем стрелу
+  // Если попали в цель, останавливаем стрелу и плавно скрываем
   if (hitTarget) {
-    resetAfterShot()
+    // Останавливаем анимацию на текущем кадре
+    if (flyingArrowRef.value) {
+      flyingArrowRef.value.pauseAnimations()
+    }
+
+    // Прекращаем дальнейшие проверки коллизий
+    if (animationFrameId.value !== null) {
+      cancelAnimationFrame(animationFrameId.value)
+      animationFrameId.value = null
+    }
+
+    // Плавно скрываем стрелу за 500мс и затем сбрасываем состояние
+    arrowOpacity.value = 0
+    setTimeout(() => {
+      resetAfterShot()
+    }, 500)
     return
   }
 
@@ -228,8 +245,13 @@ const resetAfterShot = () => {
   
   isShooting.value = false
   animationStarted.value = false
+  arrowOpacity.value = 0
   aimPosition.value = { x: 0, y: 0, power: 0 }
   frozenAimPosition.value = { x: 0, y: 0, power: 0 }
+  // Возобновляем SVG таймлайн для будущих выстрелов
+  if (flyingArrowRef.value) {
+    try { flyingArrowRef.value.unpauseAnimations() } catch { void 0 }
+  }
 }
 
 // Обработчик изменения прицела
@@ -263,6 +285,11 @@ const shoot = async (position: { x: number, y: number, power: number }) => {
       try {
         // Показываем стрелу и сразу запускаем анимацию
         animationStarted.value = true
+        arrowOpacity.value = 1
+        // На случай, если ранее ставили на паузу таймлайн SVG
+        if (flyingArrowRef.value) {
+          try { flyingArrowRef.value.unpauseAnimations() } catch { void 0 }
+        }
         animateMotionRef.value.beginElement()
       } catch (e) {
         console.warn('Failed to start SVG animation:', e)
@@ -275,6 +302,7 @@ const shoot = async (position: { x: number, y: number, power: number }) => {
   
   // Сбрасываем позицию после окончания анимации
   setTimeout(() => {
+    // Если стрела еще не была сброшена из-за попадания, сбрасываем по окончанию полёта
     resetAfterShot()
   }, duration + 500)
 }
