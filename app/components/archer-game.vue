@@ -6,9 +6,17 @@
     @touchstart="handleWrapperTouchStart"
   >
     <div class="game-field__inner">
+      <!-- Индикатор выстрелов в левом верхнем углу -->
+      <div class="archer-game__shots">
+        <div class="shots__inner">
+          <div v-for="n in remainingShots" :key="n" class="shots__arrow">
+            <ArcherManArrow />
+          </div>
+        </div>
+      </div>
 
       <div class="archer-game__man">
-        <ArcherMan ref="archerManRef" :on-collision-check="handleCollisionCheck" />
+        <ArcherMan ref="archerManRef" :on-collision-check="handleCollisionCheck" :on-shot-end="handleShotEnd" />
       </div>
 
       <!-- Управление прицелом -->
@@ -48,6 +56,8 @@
         <ArcherPrizes ref="prizesRef" />
       </div>
     </div>
+    <!-- Модальное окно окончания игры -->
+    <ModalOverlay v-if="showEndModal" />
   </div>
 </template>
 
@@ -55,6 +65,8 @@
 import { computed, ref, provide, onMounted, onUnmounted } from 'vue';
 import { useSettingsStore } from '~/stores/settings';
 import { storeToRefs } from 'pinia';
+import ModalOverlay from '~/components/ModalOverlay.vue';
+import ArcherManArrow from '~/components/archer/man/arrow.vue';
 
 const boxLeft = ref(40);
 const archerManRef = ref();
@@ -68,6 +80,10 @@ const settingsStore = useSettingsStore();
 const { gameSettings } = storeToRefs(settingsStore);
 
 const logoUrl = computed(() => gameSettings.value.logoUrl);
+
+// Счётчик оставшихся выстрелов
+const remainingShots = ref<number>(gameSettings.value.shotsCount || 3);
+const showEndModal = ref(false);
 
 // Размеры контейнера для расчетов траектории
 const containerSize = ref({ width: 0, height: 0 });
@@ -126,8 +142,19 @@ const handleAimChange = (position: { x: number, y: number, power: number }) => {
 
 // Обработчик выстрела
 const handleShoot = (position: { x: number, y: number, power: number }) => {
+  if (remainingShots.value <= 0) return;
   if (archerManRef.value && archerManRef.value.shoot) {
     archerManRef.value.shoot(position);
+    // Убираем одну стрелу сразу при выстреле
+    remainingShots.value = Math.max(0, remainingShots.value - 1);
+    // Резервный показ модалки, если onShotEnd не сработает по какой-то причине
+    if (remainingShots.value === 0) {
+      setTimeout(() => {
+        if (!showEndModal.value) {
+          showEndModal.value = true;
+        }
+      }, 3000);
+    }
   }
 };
 
@@ -141,6 +168,17 @@ const handleWrapperMouseDown = (e: MouseEvent) => {
 const handleWrapperTouchStart = (e: TouchEvent) => {
   if (aimControlRef.value && aimControlRef.value.startDragFromAnywhere) {
     aimControlRef.value.startDragFromAnywhere(e);
+  }
+};
+
+// Сообщение об окончании выстрела из ArcherMan
+const handleShotEnd = () => {
+  // Если выстрелов не осталось, показываем модалку с небольшой задержкой
+  if (remainingShots.value === 0) {
+    // Небольшая задержка, чтобы завершились анимации подарка/корзины
+    setTimeout(() => {
+      showEndModal.value = true;
+    }, 1500);
   }
 };
 
@@ -201,6 +239,9 @@ const resetGame = () => {
   
   // Сбрасываем позицию коробки
   boxLeft.value = 40;
+  // Сбрасываем счётчик выстрелов и скрываем модалку
+  remainingShots.value = gameSettings.value.shotsCount || 3;
+  showEndModal.value = false;
 };
 
 // Экспортируем функцию сброса для внешнего использования
@@ -286,6 +327,23 @@ defineExpose({
     bottom: 10%;
     z-index: 90;
     transition: left 1s ease-out;
+  }
+
+  &__shots {
+    position: absolute;
+    z-index: 1200;
+    top: 6%;
+    left: 2%;
+
+    .shots__inner {
+      display: flex;
+      align-items: center;
+    }
+    .shots__arrow {
+      width: 3rem; // относительный размер от ширины игрового поля
+      transform: rotate(-25deg);
+      margin-right: -3%;
+    }
   }
 }
 </style>

@@ -78,6 +78,17 @@
               <p class="text-xs text-gray-500">От 1 до 10 подарков</p>
             </div>
             <div class="space-y-2">
+              <label class="block text-sm font-medium text-gray-700">Количество выстрелов</label>
+              <UInput
+                v-model.number="shotsCount"
+                type="number"
+                min="1"
+                max="10"
+                class="w-32"
+              />
+              <p class="text-xs text-gray-500">Сколько выстрелов доступно игроку</p>
+            </div>
+            <div class="space-y-2">
               <label class="block text-sm font-medium text-gray-700">Количество мусора</label>
               <UInput
                 v-model.number="badPrizesCount"
@@ -193,22 +204,24 @@ definePageMeta({
 })
 
 const settingsStore = useSettingsStore()
-const { brandSettings, gameSettings } = storeToRefs(settingsStore)
+  const { brandSettings, gameSettings } = storeToRefs(settingsStore)
 
-// Локальные значения для количества подарков (без автоматического обновления store)
+// Локальные значения для настроек (без автоприменения, до нажатия кнопки)
 const prizesCount = ref(gameSettings.value.prizesCount)
+const shotsCount = ref(gameSettings.value.shotsCount)
 const badPrizesCount = ref(gameSettings.value.badPrizesCount)
 
 // Функция применения изменений (вызывается из reloadGame)
 const applyChanges = () => {
   settingsStore.updatePrizesCount(prizesCount.value)
+  settingsStore.updateShotsCount(shotsCount.value)
   settingsStore.updateBadPrizesCount(badPrizesCount.value)
 }
 
 // Функция применения изменений параметров игры
 const applyGameSettings = () => {
   // Применяем изменения через стор
-  settingsStore.applyGameSettings(prizesCount.value, badPrizesCount.value)
+  settingsStore.applyGameSettings(prizesCount.value, badPrizesCount.value, shotsCount.value)
   
   // Перезагружаем игру для применения изменений
   reloadGame()
