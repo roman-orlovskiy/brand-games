@@ -255,8 +255,13 @@ const prizes = computed(() => prizesData.value)
 
 // Функция для получения скидки подарка по индексу
 const getPrizeDiscount = (index: number): number => {
-  const goodPrizesCount = settingsStore.gameSettings.prizesCount
   const prizesSettings = settingsStore.gameSettings.prizes
+  const prize = prizesData.value[index]
+  
+  // Если это плохой подарок, возвращаем 0
+  if (prize?.isBad) {
+    return 0
+  }
   
   // Находим индекс среди хороших подарков
   let goodPrizeIndex = 0
@@ -267,7 +272,7 @@ const getPrizeDiscount = (index: number): number => {
   }
   
   // Если это хороший подарок, возвращаем скидку из настроек
-  if (goodPrizeIndex < goodPrizesCount && goodPrizeIndex < prizesSettings.length) {
+  if (goodPrizeIndex < prizesSettings.length) {
     return prizesSettings[goodPrizeIndex].discount
   }
   

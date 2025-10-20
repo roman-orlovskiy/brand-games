@@ -19,7 +19,7 @@
           class="box__gift"
           :style="gift.style"
         >
-          <ArcherImagesGift />
+          <ArcherImagesGift :discount="gift.discount" />
         </div>
       </TransitionGroup>
     </div>
