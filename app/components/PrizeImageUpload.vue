@@ -2,8 +2,7 @@
   <div class="prize-image-upload">
     <div v-if="!imageUrl" class="upload-area">
       <UButton
-        color="gray"
-        variant="soft"
+        variant="outline"
         icon="i-heroicons-photo"
         size="sm"
         @click="handleFileSelect"
@@ -27,23 +26,17 @@
       />
       <div class="image-actions">
         <UButton
-          color="red"
-          variant="soft"
+          variant="outline"
           icon="i-heroicons-trash"
           size="xs"
           @click="removeImage"
-        >
-          Удалить
-        </UButton>
+        />
         <UButton
-          color="gray"
-          variant="soft"
+          variant="outline"
           icon="i-heroicons-pencil"
           size="xs"
           @click="handleFileSelect"
-        >
-          Изменить
-        </UButton>
+        />
       </div>
       <input
         ref="fileInput"
@@ -112,11 +105,19 @@ const removeImage = () => {
   .upload-area {
     display: flex;
     align-items: center;
+    cursor: pointer;
+
+    button {
+      cursor: pointer;
+    }
   }
   
   .image-preview {
     position: relative;
-    display: inline-block;
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    justify-content: center;
     
     .preview-image {
       width: 60px;
@@ -127,17 +128,15 @@ const removeImage = () => {
     }
     
     .image-actions {
-      position: absolute;
-      top: -8px;
-      right: -8px;
       display: flex;
+      flex-direction: column;
       gap: 4px;
-      opacity: 0;
-      transition: opacity 0.2s;
-    }
-    
-    &:hover .image-actions {
-      opacity: 1;
+      align-items: center;
+      justify-content: center;
+
+      button {
+        cursor: pointer;
+      }
     }
   }
 }
