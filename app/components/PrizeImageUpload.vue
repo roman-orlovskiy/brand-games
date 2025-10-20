@@ -2,6 +2,7 @@
   <div class="prize-image-upload">
     <div v-if="!imageUrl" class="upload-area">
       <UButton
+        color="info"
         variant="outline"
         icon="i-heroicons-photo"
         size="sm"
@@ -26,6 +27,7 @@
       />
       <div class="image-actions">
         <UButton
+          color="error"
           variant="outline"
           icon="i-heroicons-trash"
           size="xs"
