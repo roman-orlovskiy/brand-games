@@ -74,7 +74,7 @@ const giftColorDark = computed(() => {
       color: v-bind(giftColor);
 
     &--left {
-      left: 2%;
+      left: 5%;
     }
 
     &--right {
@@ -83,33 +83,33 @@ const giftColorDark = computed(() => {
   }
 
   // Container queries для разных размеров подарка
-  @container (min-width: 25px) {
+  @container (max-width: 60px) {
     .gift__number {
-      font-size: 0.5rem;
+      font-size: 1em;
     }
   }
 
-  @container (min-width: 30px) {
+  @container (max-width: 50px) {
     .gift__number {
-      font-size: 0.6rem;
+      font-size: 0.9em;
     }
   }
 
-  @container (min-width: 40px) {
+  @container (max-width: 40px) {
     .gift__number {
-      font-size: 0.7rem;
+      font-size: 0.8em;
     }
   }
 
-  @container (min-width: 50px) {
+  @container (max-width: 30px) {
     .gift__number {
-      font-size: 0.8rem;
+      font-size: 0.7em;
     }
   }
 
-  @container (min-width: 60px) {
+  @container (max-width: 25px) {
     .gift__number {
-      font-size: 0.9rem;
+      font-size: 0.6em;
     }
   }
 }
