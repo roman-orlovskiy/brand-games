@@ -280,6 +280,17 @@ defineExpose({
     /* Пропорции 1453:1000 = 1000/1453 ≈ 0.688 */
     padding-top: 68.8%; /* 1000/1453 * 100% */
     overflow: hidden;
+    container-type: inline-size; /* Включаем Container Queries */
+
+    .game-field__inner {
+      font-size: 14px; /* Базовый размер для rem */
+    }
+
+    @container (max-width: 600px) {
+      .game-field__inner {
+        font-size: 10px;
+      }
+    }
   }
 
   &__man {
@@ -370,9 +381,10 @@ defineExpose({
 
   &__discount {
     position: absolute;
-    right: 2%;
-    bottom: 4%;
+    right: 3%;
+    bottom: 3%;
     z-index: 1200;
+    font-size: inherit; /* Наследует размер от wrapper */
 
     .discount__inner {
       display: flex;
@@ -385,13 +397,13 @@ defineExpose({
     }
 
     .discount__label {
-      font-size: 1rem;
+      font-size: 100%; /* Используем em вместо rem для масштабирования относительно контейнера */
       opacity: 0.95;
       text-transform: uppercase;
     }
 
     .discount__value {
-      font-size: 1.6rem;
+      font-size: 1.6em; /* Используем em вместо rem для масштабирования относительно контейнера */
     }
   }
 }
