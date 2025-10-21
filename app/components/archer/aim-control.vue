@@ -8,7 +8,17 @@
         :style="innerCircleStyle"
         @mousedown="startDrag"
         @touchstart="startDrag"
-      />
+      >
+        <!-- Иконка руки -->
+        <transition name="hand-fade">
+          <div 
+            v-if="showHandIcon" 
+            class="aim-control__hand-icon"
+          >
+            &#9994;
+          </div>
+        </transition>
+      </div>
     </div>
   </div>
 </template>
@@ -38,6 +48,7 @@ const innerRadius = computed(() => baseInnerRadius * gameScale.value)
 const isDragging = ref(false)
 const isSimulating = ref(false) // Флаг для симуляции
 const isUserInteracting = ref(false) // Флаг для отслеживания взаимодействия пользователя
+const showHandIcon = ref(false) // Флаг для отображения иконки руки
 const dragStartPoint = ref({ x: 0, y: 0 }) // Точка, где начали тащить
 const currentPosition = ref({ x: 0, y: 0 })
 
@@ -83,6 +94,7 @@ const startDragFromAnywhere = (e: MouseEvent | TouchEvent) => {
   // Пользователь начал взаимодействие - останавливаем симуляцию
   isUserInteracting.value = true
   isDragging.value = true
+  showHandIcon.value = false // Скрываем иконку руки
   
   // Очищаем интервал и таймер симуляции
   if (simulationInterval) {
@@ -127,6 +139,7 @@ const startDrag = (e: MouseEvent | TouchEvent) => {
   
   // Пользователь начал взаимодействие - останавливаем симуляцию
   isUserInteracting.value = true
+  showHandIcon.value = false // Скрываем иконку руки
   
   // Очищаем интервал и таймер симуляции
   if (simulationInterval) {
@@ -254,6 +267,7 @@ const simulateDrag = async () => {
   // Начинаем симуляцию
   isSimulating.value = true
   isDragging.value = true
+  showHandIcon.value = true // Показываем иконку руки
   
   // Очищаем предыдущие таймеры симуляции
   simulationTimeouts.forEach(timeoutId => {
@@ -426,10 +440,43 @@ onMounted(() => {
     margin-top: -16px;
     cursor: grab;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
     
     &:active {
       cursor: grabbing;
     }
   }
+
+  &__hand-icon {
+    font-size: 2em;
+    color: white;
+    pointer-events: none;
+    user-select: none;
+    transform: scale(1);
+  }
+}
+
+// Vue transition стили для иконки руки
+.hand-fade-enter-active,
+.hand-fade-leave-active {
+  transition: opacity 1s ease, transform 1s ease;
+}
+
+.hand-fade-enter-from {
+  opacity: 0.6;
+  transform: translate(-150%, -150%);
+}
+
+.hand-fade-leave-to {
+  opacity: 0;
+  transform: translate(-150%, -150%);
+}
+
+.hand-fade-enter-to,
+.hand-fade-leave-from {
+  opacity: 1;
+  transform: translate(0, 0);
 }
 </style>
