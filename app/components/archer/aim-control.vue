@@ -383,9 +383,10 @@ const simulateDrag = async () => {
   }
   
   // Небольшая задержка для корректного отображения начальной позиции
-  setTimeout(() => {
+  const initialDelayTimeout = setTimeout(() => {
     requestAnimationFrame(animateToLeftBottom)
   }, 50)
+  simulationTimeouts.push(initialDelayTimeout)
 }
 
 // Экспонируем методы для использования из родительского компонента
