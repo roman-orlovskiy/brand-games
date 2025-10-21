@@ -50,7 +50,7 @@
   </template>
 
 <script setup lang="ts">
-import { ref, computed, inject, nextTick, onMounted, onUnmounted } from 'vue'
+import { ref, computed, nextTick, onMounted, onUnmounted } from 'vue'
 
 // Пропс для функции проверки коллизий
 interface Props {
@@ -61,8 +61,6 @@ const props = withDefaults(defineProps<Props>(), {
   onCollisionCheck: undefined
 })
 
-// Получаем scale из родительского компонента (800px = scale 1)
-const gameScale = inject<{ value: number }>('gameScale', { value: 1 })
 
 // Позиция прицела и сила натяжения
 const aimPosition = ref({ x: 0, y: 0, power: 0 })
@@ -197,13 +195,32 @@ const checkCollisionDuringFlight = () => {
     return
   }
 
-  // Получаем bounding box foreignObject относительно viewport
-  const arrowRect = foreignObject.getBoundingClientRect()
+  // Получаем компонент стрелы внутри foreignObject
+  const arrowComponent = foreignObject.querySelector('svg')
+  if (!arrowComponent) {
+    // Продолжаем проверку в следующем кадре
+    if (isShooting.value) {
+      animationFrameId.value = requestAnimationFrame(checkCollisionDuringFlight)
+    }
+    return
+  }
+
+  // Получаем path элемент кончика стрелы
+  const arrowTipPath = arrowComponent.querySelector('path:last-child')
+  if (!arrowTipPath) {
+    // Продолжаем проверку в следующем кадре
+    if (isShooting.value) {
+      animationFrameId.value = requestAnimationFrame(checkCollisionDuringFlight)
+    }
+    return
+  }
+
+  // Получаем bounding box path элемента относительно viewport
+  const arrowTipRect = arrowTipPath.getBoundingClientRect()
   
-  // Центр стрелы (можно использовать кончик стрелы - правую сторону)
-  // Смещение масштабируется вместе с игрой
-  const arrowX = arrowRect.right - (10 * gameScale.value) // Кончик стрелы
-  const arrowY = arrowRect.top + arrowRect.height / 2 // Центр по вертикали
+  // Используем центр path элемента для более точного определения позиции
+  const arrowX = arrowTipRect.left + arrowTipRect.width / 2
+  const arrowY = arrowTipRect.top + arrowTipRect.height / 2
   
   // Проверяем коллизию
   const hitTarget = props.onCollisionCheck(arrowX, arrowY)
