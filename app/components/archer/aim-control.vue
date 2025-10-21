@@ -37,8 +37,14 @@ const innerRadius = computed(() => baseInnerRadius * gameScale.value)
 
 const isDragging = ref(false)
 const isSimulating = ref(false) // Флаг для симуляции
+const isUserInteracting = ref(false) // Флаг для отслеживания взаимодействия пользователя
 const dragStartPoint = ref({ x: 0, y: 0 }) // Точка, где начали тащить
 const currentPosition = ref({ x: 0, y: 0 })
+
+// ID интервала и таймера для симуляции
+let simulationInterval: number | null = null
+let initialTimeout: number | null = null
+let simulationTimeouts: number[] = [] // Массив для хранения ID вложенных таймеров
 
 const interfaceColor = computed(() => {
   return settingsStore.gameSettingsColorsById.interface?.color || '#00BCD4'
@@ -74,7 +80,24 @@ const startDragFromAnywhere = (e: MouseEvent | TouchEvent) => {
   e.preventDefault()
   e.stopPropagation()
   
+  // Пользователь начал взаимодействие - останавливаем симуляцию
+  isUserInteracting.value = true
   isDragging.value = true
+  
+  // Очищаем интервал и таймер симуляции
+  if (simulationInterval) {
+    clearInterval(simulationInterval)
+    simulationInterval = null
+  }
+  if (initialTimeout) {
+    clearTimeout(initialTimeout)
+    initialTimeout = null
+  }
+  // Очищаем все вложенные таймеры симуляции
+  simulationTimeouts.forEach(timeoutId => {
+    clearTimeout(timeoutId)
+  })
+  simulationTimeouts = []
   
   const clientX = 'touches' in e ? e.touches[0]?.clientX : e.clientX
   const clientY = 'touches' in e ? e.touches[0]?.clientY : e.clientY
@@ -101,6 +124,25 @@ const startDragFromAnywhere = (e: MouseEvent | TouchEvent) => {
 const startDrag = (e: MouseEvent | TouchEvent) => {
   e.preventDefault()
   e.stopPropagation()
+  
+  // Пользователь начал взаимодействие - останавливаем симуляцию
+  isUserInteracting.value = true
+  
+  // Очищаем интервал и таймер симуляции
+  if (simulationInterval) {
+    clearInterval(simulationInterval)
+    simulationInterval = null
+  }
+  if (initialTimeout) {
+    clearTimeout(initialTimeout)
+    initialTimeout = null
+  }
+  // Очищаем все вложенные таймеры симуляции
+  simulationTimeouts.forEach(timeoutId => {
+    clearTimeout(timeoutId)
+  })
+  simulationTimeouts = []
+  
   startDragFromAnywhere(e)
 }
 
@@ -183,6 +225,22 @@ const emitAimChange = () => {
 }
 
 onUnmounted(() => {
+  // Очищаем интервал и таймер симуляции
+  if (simulationInterval) {
+    clearInterval(simulationInterval)
+    simulationInterval = null
+  }
+  if (initialTimeout) {
+    clearTimeout(initialTimeout)
+    initialTimeout = null
+  }
+  // Очищаем все вложенные таймеры симуляции
+  simulationTimeouts.forEach(timeoutId => {
+    clearTimeout(timeoutId)
+  })
+  simulationTimeouts = []
+  
+  // Очищаем обработчики событий
   document.removeEventListener('mousemove', handleDrag)
   document.removeEventListener('mouseup', endDrag)
   document.removeEventListener('touchmove', handleDrag)
@@ -191,11 +249,17 @@ onUnmounted(() => {
 
 // Функция для имитации драга джойстика: влево вниз → вверх → возврат в центр
 const simulateDrag = async () => {
-  if (isDragging.value || isSimulating.value) return // Если уже идет драг или симуляция, не запускаем новый
+  if (isDragging.value || isSimulating.value || isUserInteracting.value) return // Если уже идет драг, симуляция или пользователь взаимодействует, не запускаем новый
   
   // Начинаем симуляцию
   isSimulating.value = true
   isDragging.value = true
+  
+  // Очищаем предыдущие таймеры симуляции
+  simulationTimeouts.forEach(timeoutId => {
+    clearTimeout(timeoutId)
+  })
+  simulationTimeouts = []
   
   // Устанавливаем начальную позицию (центр)
   currentPosition.value = { x: 0, y: 0 }
@@ -237,7 +301,7 @@ const simulateDrag = async () => {
       requestAnimationFrame(animateToLeftBottom)
     } else {
       // Пауза перед вторым движением
-      setTimeout(() => {
+      const timeoutId1 = setTimeout(() => {
         // 2. Движение вверх (X остается тем же)
         const startTime2 = Date.now()
         const startX2 = currentPosition.value.x
@@ -261,7 +325,7 @@ const simulateDrag = async () => {
             requestAnimationFrame(animateToLeftTop)
           } else {
             // Пауза перед третьим движением
-            setTimeout(() => {
+            const timeoutId2 = setTimeout(() => {
               // 3. Возврат в центр
               const startTime3 = Date.now()
               const startX3 = currentPosition.value.x
@@ -294,11 +358,13 @@ const simulateDrag = async () => {
               
               requestAnimationFrame(animateToCenter)
             }, pauseDuration)
+            simulationTimeouts.push(timeoutId2)
           }
         }
         
         requestAnimationFrame(animateToLeftTop)
       }, pauseDuration)
+      simulationTimeouts.push(timeoutId1)
     }
   }
   
@@ -315,9 +381,17 @@ defineExpose({
 })
 
 onMounted(() => {
-  setTimeout(() => {
-    simulateDrag();
+  // Запускаем первую симуляцию через 1 секунду
+  initialTimeout = setTimeout(() => {
+    simulateDrag()
   }, 1000)
+  
+  // Затем запускаем цикличную симуляцию каждые 6 секунд (4.4с симуляция + 1.6с пауза)
+  simulationInterval = setInterval(() => {
+    if (!isUserInteracting.value) {
+      simulateDrag()
+    }
+  }, 6000)
 })
 </script>
 
