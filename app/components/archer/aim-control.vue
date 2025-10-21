@@ -14,7 +14,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onUnmounted, inject } from 'vue'
+import { ref, computed, onUnmounted, onMounted, inject } from 'vue'
 import { useSettingsStore } from '~/stores/settings'
 
 const settingsStore = useSettingsStore()
@@ -36,6 +36,7 @@ const outerRadius = computed(() => baseOuterRadius * gameScale.value)
 const innerRadius = computed(() => baseInnerRadius * gameScale.value)
 
 const isDragging = ref(false)
+const isSimulating = ref(false) // Флаг для симуляции
 const dragStartPoint = ref({ x: 0, y: 0 }) // Точка, где начали тащить
 const currentPosition = ref({ x: 0, y: 0 })
 
@@ -63,7 +64,7 @@ const innerCircleStyle = computed(() => {
   const y = currentPosition.value.y
   return {
     transform: `translate(${x}px, ${y}px)`,
-    transition: isDragging.value ? 'none' : 'transform 0.2s ease-out',
+    transition: (isDragging.value && !isSimulating.value) ? 'none' : 'transform 0.2s ease-out',
     background: interfaceColor.value
   }
 })
@@ -188,9 +189,135 @@ onUnmounted(() => {
   document.removeEventListener('touchend', endDrag)
 })
 
-// Экспонируем метод для использования из родительского компонента
+// Функция для имитации драга джойстика: влево вниз → вверх → возврат в центр
+const simulateDrag = async () => {
+  if (isDragging.value || isSimulating.value) return // Если уже идет драг или симуляция, не запускаем новый
+  
+  // Начинаем симуляцию
+  isSimulating.value = true
+  isDragging.value = true
+  
+  // Устанавливаем начальную позицию (центр)
+  currentPosition.value = { x: 0, y: 0 }
+  emitAimChange()
+  
+  // Вычисляем позиции
+  const maxDistance = outerRadius.value - innerRadius.value
+  // Для движения по осям (влево-вправо, вверх-вниз) используем радиус / √2
+  // Это обеспечивает, что джойстик касается границы круга, а не выходит за неё
+  const axisDistance = maxDistance / Math.sqrt(2)
+  
+  const leftBottomX = -axisDistance // Максимально влево (по оси X)
+  const leftBottomY = axisDistance  // Максимально вниз (по оси Y)
+  const leftTopY = -axisDistance    // Максимально вверх (по оси Y)
+  
+  const moveDuration = 1000 // 1.5 секунды на движение
+  const pauseDuration = 700 // 1 секунда паузы между движениями
+  
+  // 1. Движение влево вниз
+  const startTime1 = Date.now()
+  const startX1 = 0
+  const startY1 = 0
+  
+  const animateToLeftBottom = () => {
+    const elapsed = Date.now() - startTime1
+    const progress = Math.min(elapsed / moveDuration, 1)
+    
+    // Используем easeOut для плавного замедления
+    const easeProgress = 1 - Math.pow(1 - progress, 3)
+    
+    // Интерполируем позицию
+    const currentX = startX1 + (leftBottomX - startX1) * easeProgress
+    const currentY = startY1 + (leftBottomY - startY1) * easeProgress
+    
+    currentPosition.value = { x: currentX, y: currentY }
+    emitAimChange()
+    
+    if (progress < 1) {
+      requestAnimationFrame(animateToLeftBottom)
+    } else {
+      // Пауза перед вторым движением
+      setTimeout(() => {
+        // 2. Движение вверх (X остается тем же)
+        const startTime2 = Date.now()
+        const startX2 = currentPosition.value.x
+        const startY2 = currentPosition.value.y
+        
+        const animateToLeftTop = () => {
+          const elapsed = Date.now() - startTime2
+          const progress = Math.min(elapsed / moveDuration, 1)
+          
+          // Используем easeOut для плавного замедления
+          const easeProgress = 1 - Math.pow(1 - progress, 3)
+          
+          // Интерполируем позицию (X остается тем же)
+          const currentX = startX2 // X не меняется
+          const currentY = startY2 + (leftTopY - startY2) * easeProgress
+          
+          currentPosition.value = { x: currentX, y: currentY }
+          emitAimChange()
+          
+          if (progress < 1) {
+            requestAnimationFrame(animateToLeftTop)
+          } else {
+            // Пауза перед третьим движением
+            setTimeout(() => {
+              // 3. Возврат в центр
+              const startTime3 = Date.now()
+              const startX3 = currentPosition.value.x
+              const startY3 = currentPosition.value.y
+              
+              const animateToCenter = () => {
+                const elapsed = Date.now() - startTime3
+                const progress = Math.min(elapsed / moveDuration, 1)
+                
+                // Используем easeOut для плавного замедления
+                const easeProgress = 1 - Math.pow(1 - progress, 3)
+                
+                // Интерполируем позицию обратно в центр
+                const currentX = startX3 + (0 - startX3) * easeProgress
+                const currentY = startY3 + (0 - startY3) * easeProgress
+                
+                currentPosition.value = { x: currentX, y: currentY }
+                emitAimChange()
+                
+                if (progress < 1) {
+                  requestAnimationFrame(animateToCenter)
+                } else {
+                  // Анимация завершена, завершаем симуляцию без выстрела
+                  isSimulating.value = false
+                  isDragging.value = false
+                  currentPosition.value = { x: 0, y: 0 }
+                  emitAimChange()
+                }
+              }
+              
+              requestAnimationFrame(animateToCenter)
+            }, pauseDuration)
+          }
+        }
+        
+        requestAnimationFrame(animateToLeftTop)
+      }, pauseDuration)
+    }
+  }
+  
+  // Небольшая задержка для корректного отображения начальной позиции
+  setTimeout(() => {
+    requestAnimationFrame(animateToLeftBottom)
+  }, 50)
+}
+
+// Экспонируем методы для использования из родительского компонента
 defineExpose({
-  startDragFromAnywhere
+  startDragFromAnywhere,
+  simulateDrag
+})
+
+onMounted(() => {
+  setTimeout(() => {
+    simulateDrag();
+  }, 1000)
 })
 </script>
 
