@@ -4,8 +4,7 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
 
   devServer: {
-    host: '0.0.0.0', // Доступ по локальной сети
-    port: 3000
+    port: 8080
   },
 
   modules: [
