@@ -179,12 +179,22 @@ const handleShoot = (position: { x: number, y: number, power: number }) => {
 
 // Обработчик клика на wrapper для начала драга
 const handleWrapperMouseDown = (e: MouseEvent) => {
+  // Не обрабатываем события, если модальное окно открыто
+  if (showEndModal.value) {
+    return;
+  }
+  
   if (aimControlRef.value && aimControlRef.value.startDragFromAnywhere) {
     aimControlRef.value.startDragFromAnywhere(e);
   }
 };
 
 const handleWrapperTouchStart = (e: TouchEvent) => {
+  // Не обрабатываем события, если модальное окно открыто
+  if (showEndModal.value) {
+    return;
+  }
+  
   if (aimControlRef.value && aimControlRef.value.startDragFromAnywhere) {
     aimControlRef.value.startDragFromAnywhere(e);
   }
@@ -286,8 +296,16 @@ defineExpose({
       font-size: 14px; /* Базовый размер для rem */
     }
 
+    .modal-overlay {
+      font-size: 14px;
+    }
+
     @container (max-width: 600px) {
       .game-field__inner {
+        font-size: 10px;
+      }
+
+      .modal-overlay {
         font-size: 10px;
       }
     }
