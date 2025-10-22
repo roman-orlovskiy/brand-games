@@ -311,6 +311,7 @@ const simulateDrag = async () => {
     emitAimChange()
     
     if (progress < 1) {
+      if (isDragging.value || isUserInteracting.value) return
       requestAnimationFrame(animateToLeftBottom)
     } else {
       // Пауза перед вторым движением
@@ -336,6 +337,7 @@ const simulateDrag = async () => {
           emitAimChange()
           
           if (progress < 1) {
+            if (isDragging.value || isUserInteracting.value) return
             requestAnimationFrame(animateToLeftTop)
           } else {
             // Пауза перед третьим движением
@@ -361,8 +363,10 @@ const simulateDrag = async () => {
                 emitAimChange()
                 
                 if (progress < 1) {
+                  if (isDragging.value || isUserInteracting.value) return
                   requestAnimationFrame(animateToCenter)
                 } else {
+                  if (isDragging.value || isUserInteracting.value) return
                   // Анимация завершена, завершаем симуляцию без выстрела
                   isSimulating.value = false
                   isDragging.value = false
@@ -371,6 +375,7 @@ const simulateDrag = async () => {
                 }
               }
               
+              if (isDragging.value || isUserInteracting.value) return
               requestAnimationFrame(animateToCenter)
             }, pauseDuration)
             simulationTimeouts.push(timeoutId2)
