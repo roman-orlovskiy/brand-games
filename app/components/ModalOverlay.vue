@@ -13,9 +13,8 @@
         @submit="handleSubmit"
       >
         <div class="form-row">
-          <UFormGroup 
+          <UFormField 
             label="Имя" 
-            name="firstName"
             :error="errors.firstName"
             class="form-group"
           >
@@ -23,12 +22,12 @@
               v-model="formState.firstName" 
               placeholder="Введите ваше имя"
               size="lg"
+              @input="clearFieldError('firstName')"
             />
-          </UFormGroup>
+          </UFormField>
           
-          <UFormGroup 
+          <UFormField 
             label="Фамилия" 
-            name="lastName"
             :error="errors.lastName"
             class="form-group"
           >
@@ -36,14 +35,14 @@
               v-model="formState.lastName" 
               placeholder="Введите вашу фамилию"
               size="lg"
+              @input="clearFieldError('lastName')"
             />
-          </UFormGroup>
+          </UFormField>
         </div>
         
         <div class="form-row">
-          <UFormGroup 
+          <UFormField 
             label="Телефон" 
-            name="phone"
             :error="errors.phone"
             class="form-group"
           >
@@ -52,12 +51,12 @@
                v-maska="'+7 (###) ###-##-##'"
                placeholder="+7 (___) ___-__-__"
                size="lg"
+               @input="clearFieldError('phone')"
              />
-          </UFormGroup>
+          </UFormField>
           
-          <UFormGroup 
+          <UFormField 
             label="Email" 
-            name="email"
             :error="errors.email"
             class="form-group"
           >
@@ -66,8 +65,9 @@
               type="email"
               placeholder="Введите ваш email"
               size="lg"
+              @input="clearFieldError('email')"
             />
-          </UFormGroup>
+          </UFormField>
         </div>
         
         <div class="form-actions">
@@ -100,37 +100,43 @@ const formState = reactive({
 
 // Ошибки валидации
 const errors = reactive({
-  firstName: '',
-  lastName: '',
-  phone: '',
-  email: ''
+  firstName: undefined as string | undefined,
+  lastName: undefined as string | undefined,
+  phone: undefined as string | undefined,
+  email: undefined as string | undefined
 })
 
 // Состояние отправки
 const isSubmitting = ref(false)
 
+// Очистка ошибок при изменении полей
+const clearFieldError = (fieldName: keyof typeof errors) => {
+  if (errors[fieldName]) {
+    errors[fieldName] = undefined
+  }
+}
 
 // Валидация формы
 const validateForm = () => {
   // Очищаем предыдущие ошибки
   Object.keys(errors).forEach(key => {
-    errors[key as keyof typeof errors] = ''
+    errors[key as keyof typeof errors] = undefined
   })
   
   let isValid = true
   
   if (!formState.firstName.trim()) {
-    errors.firstName = 'Имя обязательно для заполнения'
+    errors.firstName = 'Введите имя'
     isValid = false
   }
   
   if (!formState.lastName.trim()) {
-    errors.lastName = 'Фамилия обязательна для заполнения'
+    errors.lastName = 'Введите фамилию'
     isValid = false
   }
   
   if (!formState.phone.trim()) {
-    errors.phone = 'Телефон обязателен для заполнения'
+    errors.phone = 'Введите телефон'
     isValid = false
   } else if (formState.phone.length < 18) {
     errors.phone = 'Введите корректный номер телефона'
@@ -138,7 +144,7 @@ const validateForm = () => {
   }
   
   if (!formState.email.trim()) {
-    errors.email = 'Email обязателен для заполнения'
+    errors.email = 'Введите email'
     isValid = false
   } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formState.email)) {
     errors.email = 'Введите корректный email'
