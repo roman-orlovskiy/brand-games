@@ -266,7 +266,6 @@ const simulateDrag = async () => {
   
   // Начинаем симуляцию
   isSimulating.value = true
-  isDragging.value = true
   showHandIcon.value = true // Показываем иконку руки
   
   // Очищаем предыдущие таймеры симуляции
@@ -316,6 +315,7 @@ const simulateDrag = async () => {
     } else {
       // Пауза перед вторым движением
       const timeoutId1 = setTimeout(() => {
+        if (isDragging.value || isUserInteracting.value) return
         // 2. Движение вверх (X остается тем же)
         const startTime2 = Date.now()
         const startX2 = currentPosition.value.x
@@ -340,6 +340,7 @@ const simulateDrag = async () => {
           } else {
             // Пауза перед третьим движением
             const timeoutId2 = setTimeout(() => {
+              if (isDragging.value || isUserInteracting.value) return
               // 3. Возврат в центр
               const startTime3 = Date.now()
               const startX3 = currentPosition.value.x
