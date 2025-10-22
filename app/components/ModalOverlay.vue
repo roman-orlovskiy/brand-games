@@ -165,6 +165,15 @@ const promoCode = ref('BRAND2024')
 // Функционал копирования
 const { copy, copied } = useClipboard()
 
+// Функция для конвертации hex в rgb
+const hexToRgb = (hex: string) => {
+  const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex)
+  if (result && result[1] && result[2] && result[3]) {
+    return `${parseInt(result[1], 16)}, ${parseInt(result[2], 16)}, ${parseInt(result[3], 16)}`
+  }
+  return '0, 0, 0'
+}
+
 // Очистка ошибок при изменении полей
 const clearFieldError = (fieldName: keyof typeof errors) => {
   if (errors[fieldName]) {
@@ -260,7 +269,7 @@ const handleSubmit = async () => {
   &__backdrop {
     position: absolute;
     inset: 0;
-    background: rgba(0, 0, 0, 0.6);
+    background: v-bind('`rgba(${hexToRgb(gameSettings.formSettings?.overlayBackgroundColor || "#C27BA0")}, 0.6)`');
   }
 
   &__content {

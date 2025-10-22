@@ -163,12 +163,39 @@
                     </div>
                   </template>
                 </USelect>
-                <div 
-                  class="w-8 h-8 rounded border border-gray-300"
-                  :style="{ backgroundColor: formSubmitButtonColor }"
-                />
               </div>
               <p class="text-xs text-gray-500">Выберите цвет из палитры бренда для кнопки отправки формы</p>
+            </div>
+            
+            <div class="space-y-2">
+              <label class="block text-sm font-medium text-gray-700">Цвет фона оверлея</label>
+              <div class="flex items-center space-x-4">
+                <USelect
+                  :model-value="formOverlayBackgroundColorId"
+                  :items="colorOptions"
+                  placeholder="Выберите цвет"
+                  value-key="brandColorId"
+                  class="w-64"
+                  @update:model-value="(value: string) => updateFormOverlayBackgroundColor(value)"
+                >
+                  <template #leading>
+                    <div 
+                      class="w-4 h-4 rounded-full border border-gray-300"
+                      :style="{ backgroundColor: formOverlayBackgroundColor }"
+                    />
+                  </template>
+                  <template #item-label="{ item }">
+                    <div class="flex items-center space-x-2">
+                      <div 
+                        class="w-4 h-4 rounded-full border border-gray-300"
+                        :style="{ backgroundColor: item.value }"
+                      />
+                      <span>{{ item.label }}</span>
+                    </div>
+                  </template>
+                </USelect>
+              </div>
+              <p class="text-xs text-gray-500">Выберите цвет из палитры бренда для фона оверлея (прозрачность сохраняется)</p>
             </div>
           </div>
         </UCard>
@@ -271,12 +298,24 @@ const formSubmitButtonColor = ref(gameSettings.value.formSettings?.submitButtonC
 // ID выбранного цвета для кнопки формы
 const formSubmitButtonColorId = ref('main') // По умолчанию основной цвет
 
+// Переменные для цвета фона оверлея
+const formOverlayBackgroundColor = ref(gameSettings.value.formSettings?.overlayBackgroundColor || '#C27BA0')
+const formOverlayBackgroundColorId = ref('neutral') // По умолчанию нейтральный цвет
+
 // Инициализируем правильный ID при загрузке
 onMounted(() => {
+  // Инициализация цвета кнопки
   const currentColor = gameSettings.value.formSettings?.submitButtonColor || '#00BCD4'
   const brandColor = brandSettings.value?.colors?.find(color => color.color === currentColor)
   if (brandColor) {
     formSubmitButtonColorId.value = brandColor.id
+  }
+  
+  // Инициализация цвета фона оверлея
+  const currentOverlayColor = gameSettings.value.formSettings?.overlayBackgroundColor || '#C27BA0'
+  const overlayBrandColor = brandSettings.value?.colors?.find(color => color.color === currentOverlayColor)
+  if (overlayBrandColor) {
+    formOverlayBackgroundColorId.value = overlayBrandColor.id
   }
 })
 
@@ -290,12 +329,23 @@ const updateFormButtonColor = (brandColorId: string) => {
   }
 }
 
+// Функция обновления цвета фона оверлея
+const updateFormOverlayBackgroundColor = (brandColorId: string) => {
+  formOverlayBackgroundColorId.value = brandColorId
+  const brandColor = brandSettings.value?.colors?.find(color => color.id === brandColorId)
+  if (brandColor) {
+    formOverlayBackgroundColor.value = brandColor.color
+    settingsStore.updateFormOverlayBackgroundColor(brandColor.color)
+  }
+}
+
 // Функция применения изменений (вызывается из reloadGame)
 const applyChanges = () => {
   settingsStore.updatePrizesCount(prizesCount.value)
   settingsStore.updateShotsCount(shotsCount.value)
   settingsStore.updateBadPrizesCount(badPrizesCount.value)
   settingsStore.updateFormSubmitButtonColor(formSubmitButtonColor.value)
+  settingsStore.updateFormOverlayBackgroundColor(formOverlayBackgroundColor.value)
 }
 
 // Функция применения изменений параметров игры

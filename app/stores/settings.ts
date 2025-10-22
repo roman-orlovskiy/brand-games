@@ -28,6 +28,7 @@ export interface Prize {
 
 export interface FormSettings {
   submitButtonColor: string
+  overlayBackgroundColor: string
 }
 
 export interface GameSettings {
@@ -114,7 +115,8 @@ export const useSettingsStore = defineStore('settings', () => {
     discountMode: 'max', // По умолчанию выбираем максимальную скидку
     shotsCount: 3,
     formSettings: {
-      submitButtonColor: '#00BCD4' // Основной цвет бренда по умолчанию
+      submitButtonColor: '#00BCD4', // Основной цвет бренда по умолчанию
+      overlayBackgroundColor: '#C27BA0' // Нейтральный цвет бренда по умолчанию
     }
   })
 
@@ -216,10 +218,21 @@ export const useSettingsStore = defineStore('settings', () => {
   const updateFormSubmitButtonColor = (color: string) => {
     if (!gameSettings.value.formSettings) {
       gameSettings.value.formSettings = {
-        submitButtonColor: '#00BCD4'
+        submitButtonColor: '#00BCD4',
+        overlayBackgroundColor: '#C27BA0'
       }
     }
     gameSettings.value.formSettings.submitButtonColor = color
+  }
+
+  const updateFormOverlayBackgroundColor = (color: string) => {
+    if (!gameSettings.value.formSettings) {
+      gameSettings.value.formSettings = {
+        submitButtonColor: '#00BCD4',
+        overlayBackgroundColor: '#C27BA0'
+      }
+    }
+    gameSettings.value.formSettings.overlayBackgroundColor = color
   }
 
   const applyGameSettings = (prizesCount: number, badPrizesCount: number, shotsCount?: number) => {
@@ -271,6 +284,7 @@ export const useSettingsStore = defineStore('settings', () => {
     updatePrizeImage,
     removePrizeImage,
     updateFormSubmitButtonColor,
+    updateFormOverlayBackgroundColor,
     applyGameSettings
   }
 })
