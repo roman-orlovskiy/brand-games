@@ -197,6 +197,37 @@
               </div>
               <p class="text-xs text-gray-500">Выберите цвет из палитры бренда для фона оверлея (прозрачность сохраняется)</p>
             </div>
+            
+            <div class="space-y-4">
+              <div class="space-y-2">
+                <label class="block text-sm font-medium text-gray-700">Заголовок формы</label>
+                <UInput
+                  v-model="formTitleText"
+                  placeholder="Итоги игры"
+                />
+                <p class="text-xs text-gray-500">Текст заголовка модального окна</p>
+              </div>
+              
+              <div class="space-y-2">
+                <label class="block text-sm font-medium text-gray-700">Описание формы</label>
+                <UTextarea
+                  v-model="formDescriptionText"
+                  placeholder="Чтобы получить промокод заполните контактные данные"
+                  :rows="5"
+                />
+                <p class="text-xs text-gray-500">Описание под заголовком</p>
+              </div>
+              
+              <div class="space-y-2">
+                <label class="block text-sm font-medium text-gray-700">Текст кнопки</label>
+                <UInput
+                  v-model="formButtonText"
+                  placeholder="Получить промокод"
+                />
+                <p class="text-xs text-gray-500">Текст на кнопке отправки формы</p>
+              </div>
+              
+            </div>
           </div>
         </UCard>
 
@@ -278,7 +309,7 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted } from 'vue'
+import { onMounted, watch } from 'vue'
 import { useSettingsStore } from '~/stores/settings'
 import { storeToRefs } from 'pinia'
 
@@ -301,6 +332,25 @@ const formSubmitButtonColorId = ref('main') // По умолчанию осно�
 // Переменные для цвета фона оверлея
 const formOverlayBackgroundColor = ref(gameSettings.value.formSettings?.overlayBackgroundColor || '#C27BA0')
 const formOverlayBackgroundColorId = ref('neutral') // По умолчанию нейтральный цвет
+
+// Переменные для текстов формы
+const formTitleText = ref(gameSettings.value.formSettings?.titleText || 'Итоги игры')
+const formDescriptionText = ref(gameSettings.value.formSettings?.descriptionText || 'Чтобы получить промокод заполните контактные данные')
+const formButtonText = ref(gameSettings.value.formSettings?.buttonText || 'Получить промокод')
+
+// Watchers для автоматического обновления store
+watch(formTitleText, (newValue) => {
+  settingsStore.updateFormTitleText(newValue)
+})
+
+watch(formDescriptionText, (newValue) => {
+  settingsStore.updateFormDescriptionText(newValue)
+})
+
+watch(formButtonText, (newValue) => {
+  settingsStore.updateFormButtonText(newValue)
+})
+
 
 // Инициализируем правильный ID при загрузке
 onMounted(() => {
@@ -346,6 +396,9 @@ const applyChanges = () => {
   settingsStore.updateBadPrizesCount(badPrizesCount.value)
   settingsStore.updateFormSubmitButtonColor(formSubmitButtonColor.value)
   settingsStore.updateFormOverlayBackgroundColor(formOverlayBackgroundColor.value)
+  settingsStore.updateFormTitleText(formTitleText.value)
+  settingsStore.updateFormDescriptionText(formDescriptionText.value)
+  settingsStore.updateFormButtonText(formButtonText.value)
 }
 
 // Функция применения изменений параметров игры

@@ -3,9 +3,9 @@
     <div class="modal-overlay__backdrop" />
     <div class="modal-overlay__content">
       <div class="modal-header">
-        <h2 class="modal-title">{{ isSuccess ? 'Поздравляем!' : 'Итоги игры' }}</h2>
+        <h2 class="modal-title">{{ gameSettings.formSettings?.titleText || 'Итоги игры' }}</h2>
         <p class="modal-subtitle">
-          {{ isSuccess ? 'Ваш промокод готов к использованию' : 'Чтобы получить промокод заполните контактные данные' }}
+          {{ gameSettings.formSettings?.descriptionText || 'Чтобы получить промокод заполните контактные данные' }}
         </p>
       </div>
       
@@ -90,7 +90,7 @@
               color: 'white'
             }"
           >
-            Получить промокод
+            {{ gameSettings.formSettings?.buttonText || 'Получить промокод' }}
           </UButton>
         </div>
       </UForm>

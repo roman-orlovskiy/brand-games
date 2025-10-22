@@ -29,6 +29,9 @@ export interface Prize {
 export interface FormSettings {
   submitButtonColor: string
   overlayBackgroundColor: string
+  titleText: string
+  descriptionText: string
+  buttonText: string
 }
 
 export interface GameSettings {
@@ -116,7 +119,10 @@ export const useSettingsStore = defineStore('settings', () => {
     shotsCount: 3,
     formSettings: {
       submitButtonColor: '#00BCD4', // Основной цвет бренда по умолчанию
-      overlayBackgroundColor: '#C27BA0' // Нейтральный цвет бренда по умолчанию
+      overlayBackgroundColor: '#C27BA0', // Нейтральный цвет бренда по умолчанию
+      titleText: 'Итоги игры',
+      descriptionText: 'Чтобы получить промокод заполните контактные данные',
+      buttonText: 'Получить промокод'
     }
   })
 
@@ -229,11 +235,56 @@ export const useSettingsStore = defineStore('settings', () => {
     if (!gameSettings.value.formSettings) {
       gameSettings.value.formSettings = {
         submitButtonColor: '#00BCD4',
-        overlayBackgroundColor: '#C27BA0'
+        overlayBackgroundColor: '#C27BA0',
+        titleText: 'Итоги игры',
+        descriptionText: 'Чтобы получить промокод заполните контактные данные',
+        buttonText: 'Получить промокод'
       }
     }
     gameSettings.value.formSettings.overlayBackgroundColor = color
   }
+
+  const updateFormTitleText = (text: string) => {
+    if (!gameSettings.value.formSettings) {
+      gameSettings.value.formSettings = {
+        submitButtonColor: '#00BCD4',
+        overlayBackgroundColor: '#C27BA0',
+        titleText: 'Итоги игры',
+        descriptionText: 'Чтобы получить промокод заполните контактные данные',
+        buttonText: 'Получить промокод'
+      }
+    }
+    gameSettings.value.formSettings.titleText = text
+  }
+
+  const updateFormDescriptionText = (text: string) => {
+    if (!gameSettings.value.formSettings) {
+      gameSettings.value.formSettings = {
+        submitButtonColor: '#00BCD4',
+        overlayBackgroundColor: '#C27BA0',
+        titleText: 'Итоги игры',
+        descriptionText: 'Чтобы получить промокод заполните контактные данные',
+        buttonText: 'Получить промокод'
+      }
+    }
+    gameSettings.value.formSettings.descriptionText = text
+  }
+
+  const updateFormButtonText = (text: string) => {
+    if (!gameSettings.value.formSettings) {
+      gameSettings.value.formSettings = {
+        submitButtonColor: '#00BCD4',
+        overlayBackgroundColor: '#C27BA0',
+        titleText: 'Итоги игры',
+        descriptionText: 'Чтобы получить промокод заполните контактные данные',
+        buttonText: 'Получить промокод',
+        successTitleText: 'Поздравляем!',
+        successDescriptionText: 'Ваш промокод готов к использованию'
+      }
+    }
+    gameSettings.value.formSettings.buttonText = text
+  }
+
 
   const applyGameSettings = (prizesCount: number, badPrizesCount: number, shotsCount?: number) => {
     // Сохраняем текущие подарки перед изменением количества
@@ -285,6 +336,9 @@ export const useSettingsStore = defineStore('settings', () => {
     removePrizeImage,
     updateFormSubmitButtonColor,
     updateFormOverlayBackgroundColor,
+    updateFormTitleText,
+    updateFormDescriptionText,
+    updateFormButtonText,
     applyGameSettings
   }
 })
