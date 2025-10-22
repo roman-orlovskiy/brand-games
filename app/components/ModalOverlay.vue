@@ -3,11 +3,15 @@
     <div class="modal-overlay__backdrop" />
     <div class="modal-overlay__content">
       <div class="modal-header">
-        <h2 class="modal-title">Итоги игры</h2>
-        <p class="modal-subtitle">Чтобы получить промокод заполните контактные данные</p>
+        <h2 class="modal-title">{{ isSuccess ? 'Поздравляем!' : 'Итоги игры' }}</h2>
+        <p class="modal-subtitle">
+          {{ isSuccess ? 'Ваш промокод готов к использованию' : 'Чтобы получить промокод заполните контактные данные' }}
+        </p>
       </div>
       
+      <!-- Форма ввода данных -->
       <UForm 
+        v-if="!isSuccess"
         :state="formState" 
         class="contact-form"
         @submit="handleSubmit"
@@ -18,8 +22,9 @@
             :error="errors.firstName"
             class="form-group"
           >
-            <UInput 
+            <UInput
               v-model="formState.firstName" 
+              name="firstName"
               placeholder="Введите ваше имя"
               size="lg"
               @input="clearFieldError('firstName')"
@@ -33,6 +38,7 @@
           >
             <UInput 
               v-model="formState.lastName" 
+              name="lastName"
               placeholder="Введите вашу фамилию"
               size="lg"
               @input="clearFieldError('lastName')"
@@ -49,6 +55,7 @@
              <UInput 
                v-model="formState.phone" 
                v-maska="'+7 (###) ###-##-##'"
+               name="phone"
                placeholder="+7 (___) ___-__-__"
                size="lg"
                @input="clearFieldError('phone')"
@@ -63,6 +70,7 @@
             <UInput 
               v-model="formState.email" 
               type="email"
+              name="email"
               placeholder="Введите ваш email"
               size="lg"
               @input="clearFieldError('email')"
@@ -82,6 +90,34 @@
           </UButton>
         </div>
       </UForm>
+
+      <!-- Промокод -->
+      <div v-else class="promo-section">
+        <div class="promo-code-container">
+          <UInput
+            v-model="promoCode"
+            readonly
+            size="lg"
+            class="promo-input"
+            :ui="{ trailing: 'pr-0.5' }"
+            @click="handleInputClick"
+          >
+            <template #trailing>
+              <UTooltip text="Скопировать промокод" :content="{ side: 'right' }">
+                <UButton
+                  :color="copied ? 'success' : 'neutral'"
+                  variant="link"
+                  size="sm"
+                  :icon="copied ? 'i-lucide-copy-check' : 'i-lucide-copy'"
+                  aria-label="Скопировать промокод"
+                  @click.stop="copy(promoCode)"
+                />
+              </UTooltip>
+            </template>
+          </UInput>
+        </div>
+        
+      </div>
     </div>
   </div>
 </template>
@@ -89,6 +125,7 @@
 <script setup lang="ts">
 import { reactive, ref } from 'vue'
 import { vMaska } from 'maska/vue'
+import { useClipboard } from '@vueuse/core'
 
 // Состояние формы
 const formState = reactive({
@@ -109,10 +146,32 @@ const errors = reactive({
 // Состояние отправки
 const isSubmitting = ref(false)
 
+// Состояние успешной отправки
+const isSuccess = ref(false)
+
+// Промокод
+const promoCode = ref('BRAND2024')
+
+// Функционал копирования
+const { copy, copied } = useClipboard()
+
 // Очистка ошибок при изменении полей
 const clearFieldError = (fieldName: keyof typeof errors) => {
   if (errors[fieldName]) {
     errors[fieldName] = undefined
+  }
+}
+
+// Обработка клика по инпуту с промокодом
+const handleInputClick = async (event: Event) => {
+  const target = event.target as HTMLInputElement
+  if (target) {
+    // Выделяем весь текст
+    target.select()
+    target.setSelectionRange(0, target.value.length)
+    
+    // Копируем в буфер обмена
+    await copy(promoCode.value)
   }
 }
 
@@ -169,8 +228,8 @@ const handleSubmit = async () => {
     // Имитация запроса
     await new Promise(resolve => setTimeout(resolve, 2000))
     
-    // После успешной отправки можно закрыть модалку или показать сообщение об успехе
-    alert('Промокод отправлен на ваш email!')
+    // Показываем промокод вместо alert
+    isSuccess.value = true
     
   } catch (error) {
     console.error('Ошибка при отправке формы:', error)
@@ -186,7 +245,7 @@ const handleSubmit = async () => {
   position: absolute;
   inset: 0;
   z-index: 5000;
-  font-size: 1rem; // Базовый размер для em
+  font-size: 1rem;
 
   &__backdrop {
     position: absolute;
@@ -200,14 +259,14 @@ const handleSubmit = async () => {
     left: 50%;
     transform: translate(-50%, -50%);
     width: 90%;
-    max-width: 32em; // Используем em вместо rem
+    max-width: 32em;
     background: rgba(255, 255, 255, 0.95);
-    border-radius: 0.75em; // 12px в em
+    border-radius: 0.75em;
     padding: 1.5em;
     text-align: center;
     box-shadow: 0 0.5em 2em rgba(0, 0, 0, 0.15);
     
-    // Адаптивность для маленьких экранов
+    /* Адаптивность для маленьких экранов */
     @media (max-width: 480px) {
       width: 95%;
       padding: 1em;
@@ -225,7 +284,7 @@ const handleSubmit = async () => {
   
   .modal-title {
     color: #111;
-    font-size: 1.5em; // 24px в em
+    font-size: 1.5em;
     font-weight: 700;
     margin: 0 0 0.5em 0;
     line-height: 1.2;
@@ -233,7 +292,7 @@ const handleSubmit = async () => {
   
   .modal-subtitle {
     color: #666;
-    font-size: 0.9em; // 14.4px в em
+    font-size: 0.9em;
     font-weight: 400;
     margin: 0;
     line-height: 1.4;
@@ -259,7 +318,7 @@ const handleSubmit = async () => {
     
     .submit-button {
       width: 100%;
-      min-height: 2.5em; // 40px в em
+      min-height: 2.5em;
       font-size: 1em;
       font-weight: 600;
       cursor: pointer !important;
@@ -267,7 +326,36 @@ const handleSubmit = async () => {
   }
 }
 
-// Адаптивность для очень маленьких экранов
+.promo-section {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5em;
+  text-align: center;
+  
+  .promo-code-container {
+    .promo-input {
+      font-family: 'Courier New', monospace;
+      font-weight: 600;
+      font-size: 1.1em;
+      text-align: center;
+      letter-spacing: 0.1em;
+      cursor: pointer;
+      user-select: all;
+      
+      &:hover {
+        background-color: rgba(0, 0, 0, 0.05);
+      }
+      
+      &:focus {
+        outline: none;
+        background-color: rgba(0, 0, 0, 0.1);
+      }
+    }
+  }
+  
+}
+
+/* Адаптивность для очень маленьких экранов */
 @media (max-width: 320px) {
   .modal-overlay {
     font-size: 0.75rem;
@@ -289,7 +377,7 @@ const handleSubmit = async () => {
   }
 }
 
-// Адаптивность для больших экранов
+/* Адаптивность для больших экранов */
 @media (min-width: 1200px) {
   .modal-overlay {
     font-size: 1.1rem;
