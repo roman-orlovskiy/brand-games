@@ -214,6 +214,7 @@
                   v-model="formDescriptionText"
                   placeholder="Чтобы получить промокод заполните контактные данные"
                   :rows="5"
+                  :cols="45"
                 />
                 <p class="text-xs text-gray-500">Описание под заголовком</p>
               </div>
@@ -233,6 +234,7 @@
                   v-model="formDiscountDescription"
                   placeholder="Ваша скидка: <strong>3%</strong><br>Промокод действует до конца месяца"
                   :rows="4"
+                  :cols="45"
                 />
                 <p class="text-xs text-gray-500">Описание скидки, которое отображается в модальном окне</p>
               </div>
