@@ -101,7 +101,7 @@ const handleDiscountUpdate = (payload: { sum: number; max: number }) => {
   totalDiscountMax.value = payload.max || 0
 }
 
-const discountLabel = computed(() => gameSettings.value.discountMode === 'sum' ? 'Суммарная скидка' : 'Максимальная скидка')
+const discountLabel = computed(() => 'Ваша скидка')
 const discountValue = computed(() => gameSettings.value.discountMode === 'sum' ? totalDiscountSum.value : totalDiscountMax.value)
 
 // Размеры контейнера для расчетов траектории
