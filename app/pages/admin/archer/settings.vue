@@ -209,7 +209,7 @@
               </div>
               
               <div class="space-y-2">
-                <label class="block text-sm font-medium text-gray-700">Описание формы</label>
+                <label class="block text-sm font-medium text-gray-700">Описание формы (Можно HTML)</label>
                 <UTextarea
                   v-model="formDescriptionText"
                   placeholder="Чтобы получить промокод заполните контактные данные"

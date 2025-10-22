@@ -4,9 +4,10 @@
     <div class="modal-overlay__content">
       <div class="modal-header">
         <h2 class="modal-title">{{ gameSettings.formSettings?.titleText || 'Итоги игры' }}</h2>
-        <p class="modal-subtitle">
-          {{ gameSettings.formSettings?.descriptionText || 'Чтобы получить промокод заполните контактные данные' }}
-        </p>
+        <p
+          class="modal-subtitle"
+          v-html="gameSettings.formSettings?.descriptionText"
+        />
       </div>
       
       <!-- Форма ввода данных -->
