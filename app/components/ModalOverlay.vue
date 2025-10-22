@@ -5,8 +5,14 @@
       <div class="modal-header">
         <h2 class="modal-title">{{ gameSettings.formSettings?.titleText || 'Итоги игры' }}</h2>
         <p
+          v-if="!isSuccess"
           class="modal-subtitle"
           v-html="gameSettings.formSettings?.descriptionText"
+        />
+        <p
+          v-else
+          class="modal-subtitle"
+          v-html="gameSettings.formSettings?.discountDescription"
         />
       </div>
       
@@ -383,7 +389,6 @@ const handleSubmit = async () => {
       }
     }
   }
-  
 }
 
 /* Адаптивность для очень маленьких экранов */

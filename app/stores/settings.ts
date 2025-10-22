@@ -32,6 +32,7 @@ export interface FormSettings {
   titleText: string
   descriptionText: string
   buttonText: string
+  discountDescription: string
 }
 
 export interface GameSettings {
@@ -122,7 +123,8 @@ export const useSettingsStore = defineStore('settings', () => {
       overlayBackgroundColor: '#C27BA0', // Нейтральный цвет бренда по умолчанию
       titleText: 'Итоги игры',
       descriptionText: 'Чтобы получить промокод заполните контактные данные',
-      buttonText: 'Получить промокод'
+      buttonText: 'Получить промокод',
+      discountDescription: 'Ваша скидка<br>Промокод действует до конца месяца'
     }
   })
 
@@ -278,11 +280,24 @@ export const useSettingsStore = defineStore('settings', () => {
         titleText: 'Итоги игры',
         descriptionText: 'Чтобы получить промокод заполните контактные данные',
         buttonText: 'Получить промокод',
-        successTitleText: 'Поздравляем!',
-        successDescriptionText: 'Ваш промокод готов к использованию'
+        discountDescription: 'Ваша скидка: <strong>3%</strong><br>Промокод действует до конца месяца'
       }
     }
     gameSettings.value.formSettings.buttonText = text
+  }
+
+  const updateFormDiscountDescription = (text: string) => {
+    if (!gameSettings.value.formSettings) {
+      gameSettings.value.formSettings = {
+        submitButtonColor: '#00BCD4',
+        overlayBackgroundColor: '#C27BA0',
+        titleText: 'Итоги игры',
+        descriptionText: 'Чтобы получить промокод заполните контактные данные',
+        buttonText: 'Получить промокод',
+        discountDescription: 'Ваша скидка: <strong>3%</strong><br>Промокод действует до конца месяца'
+      }
+    }
+    gameSettings.value.formSettings.discountDescription = text
   }
 
 
@@ -339,6 +354,7 @@ export const useSettingsStore = defineStore('settings', () => {
     updateFormTitleText,
     updateFormDescriptionText,
     updateFormButtonText,
+    updateFormDiscountDescription,
     applyGameSettings
   }
 })

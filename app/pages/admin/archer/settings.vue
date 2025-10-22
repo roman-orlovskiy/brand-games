@@ -227,6 +227,16 @@
                 <p class="text-xs text-gray-500">Текст на кнопке отправки формы</p>
               </div>
               
+              <div class="space-y-2">
+                <label class="block text-sm font-medium text-gray-700">Описание скидки (Можно HTML)</label>
+                <UTextarea
+                  v-model="formDiscountDescription"
+                  placeholder="Ваша скидка: <strong>3%</strong><br>Промокод действует до конца месяца"
+                  :rows="4"
+                />
+                <p class="text-xs text-gray-500">Описание скидки, которое отображается в модальном окне</p>
+              </div>
+              
             </div>
           </div>
         </UCard>
@@ -337,6 +347,7 @@ const formOverlayBackgroundColorId = ref('neutral') // По умолчанию �
 const formTitleText = ref(gameSettings.value.formSettings?.titleText || 'Итоги игры')
 const formDescriptionText = ref(gameSettings.value.formSettings?.descriptionText || 'Чтобы получить промокод заполните контактные данные')
 const formButtonText = ref(gameSettings.value.formSettings?.buttonText || 'Получить промокод')
+const formDiscountDescription = ref(gameSettings.value.formSettings?.discountDescription || 'Ваша скидка: <strong>3%</strong><br>Промокод действует до конца месяца')
 
 // Watchers для автоматического обновления store
 watch(formTitleText, (newValue) => {
@@ -349,6 +360,10 @@ watch(formDescriptionText, (newValue) => {
 
 watch(formButtonText, (newValue) => {
   settingsStore.updateFormButtonText(newValue)
+})
+
+watch(formDiscountDescription, (newValue) => {
+  settingsStore.updateFormDiscountDescription(newValue)
 })
 
 
@@ -399,6 +414,7 @@ const applyChanges = () => {
   settingsStore.updateFormTitleText(formTitleText.value)
   settingsStore.updateFormDescriptionText(formDescriptionText.value)
   settingsStore.updateFormButtonText(formButtonText.value)
+  settingsStore.updateFormDiscountDescription(formDiscountDescription.value)
 }
 
 // Функция применения изменений параметров игры
