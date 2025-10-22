@@ -82,9 +82,13 @@
           <UButton 
             type="submit" 
             size="lg"
-            color="primary"
             :loading="isSubmitting"
             class="submit-button cursor-pointer"
+            :style="{ 
+              backgroundColor: gameSettings.formSettings?.submitButtonColor || '#00BCD4',
+              borderColor: gameSettings.formSettings?.submitButtonColor || '#00BCD4',
+              color: 'white'
+            }"
           >
             Получить промокод
           </UButton>
@@ -126,6 +130,12 @@
 import { reactive, ref } from 'vue'
 import { vMaska } from 'maska/vue'
 import { useClipboard } from '@vueuse/core'
+import { useSettingsStore } from '~/stores/settings'
+import { storeToRefs } from 'pinia'
+
+// Получаем настройки из store
+const settingsStore = useSettingsStore()
+const { gameSettings } = storeToRefs(settingsStore)
 
 // Состояние формы
 const formState = reactive({
@@ -322,6 +332,17 @@ const handleSubmit = async () => {
       font-size: 1em;
       font-weight: 600;
       cursor: pointer !important;
+      
+      /* Переопределяем стили UButton для кастомного цвета */
+      &:hover {
+        opacity: 0.9;
+        transform: translateY(-1px);
+        transition: all 0.2s ease;
+      }
+      
+      &:active {
+        transform: translateY(0);
+      }
     }
   }
 }

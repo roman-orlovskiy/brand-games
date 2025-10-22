@@ -129,6 +129,50 @@
           </div>
         </UCard>
 
+        <!-- Настройки формы обратной связи -->
+        <UCard>
+          <template #header>
+            <h2 class="text-lg font-semibold">Настройки формы обратной связи</h2>
+          </template>
+
+          <div class="space-y-4">
+            <div class="space-y-2">
+              <label class="block text-sm font-medium text-gray-700">Цвет кнопки "Получить промокод"</label>
+              <div class="flex items-center space-x-4">
+                <USelect
+                  :model-value="formSubmitButtonColorId"
+                  :items="colorOptions"
+                  placeholder="Выберите цвет"
+                  value-key="brandColorId"
+                  class="w-64"
+                  @update:model-value="(value: string) => updateFormButtonColor(value)"
+                >
+                  <template #leading>
+                    <div 
+                      class="w-4 h-4 rounded-full border border-gray-300"
+                      :style="{ backgroundColor: formSubmitButtonColor }"
+                    />
+                  </template>
+                  <template #item-label="{ item }">
+                    <div class="flex items-center space-x-2">
+                      <div 
+                        class="w-4 h-4 rounded-full border border-gray-300"
+                        :style="{ backgroundColor: item.value }"
+                      />
+                      <span>{{ item.label }}</span>
+                    </div>
+                  </template>
+                </USelect>
+                <div 
+                  class="w-8 h-8 rounded border border-gray-300"
+                  :style="{ backgroundColor: formSubmitButtonColor }"
+                />
+              </div>
+              <p class="text-xs text-gray-500">Выберите цвет из палитры бренда для кнопки отправки формы</p>
+            </div>
+          </div>
+        </UCard>
+
         <!-- Список подарков -->
         <UCard>
           <template #header>
@@ -207,6 +251,7 @@
 </template>
 
 <script setup lang="ts">
+import { onMounted } from 'vue'
 import { useSettingsStore } from '~/stores/settings'
 import { storeToRefs } from 'pinia'
 
@@ -221,12 +266,36 @@ const settingsStore = useSettingsStore()
 const prizesCount = ref(gameSettings.value.prizesCount)
 const shotsCount = ref(gameSettings.value.shotsCount)
 const badPrizesCount = ref(gameSettings.value.badPrizesCount)
+const formSubmitButtonColor = ref(gameSettings.value.formSettings?.submitButtonColor || '#00BCD4')
+
+// ID выбранного цвета для кнопки формы
+const formSubmitButtonColorId = ref('main') // По умолчанию основной цвет
+
+// Инициализируем правильный ID при загрузке
+onMounted(() => {
+  const currentColor = gameSettings.value.formSettings?.submitButtonColor || '#00BCD4'
+  const brandColor = brandSettings.value?.colors?.find(color => color.color === currentColor)
+  if (brandColor) {
+    formSubmitButtonColorId.value = brandColor.id
+  }
+})
+
+// Функция обновления цвета кнопки формы
+const updateFormButtonColor = (brandColorId: string) => {
+  formSubmitButtonColorId.value = brandColorId
+  const brandColor = brandSettings.value?.colors?.find(color => color.id === brandColorId)
+  if (brandColor) {
+    formSubmitButtonColor.value = brandColor.color
+    settingsStore.updateFormSubmitButtonColor(brandColor.color)
+  }
+}
 
 // Функция применения изменений (вызывается из reloadGame)
 const applyChanges = () => {
   settingsStore.updatePrizesCount(prizesCount.value)
   settingsStore.updateShotsCount(shotsCount.value)
   settingsStore.updateBadPrizesCount(badPrizesCount.value)
+  settingsStore.updateFormSubmitButtonColor(formSubmitButtonColor.value)
 }
 
 // Функция применения изменений параметров игры

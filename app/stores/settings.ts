@@ -26,6 +26,10 @@ export interface Prize {
   imageUrl?: string
 }
 
+export interface FormSettings {
+  submitButtonColor: string
+}
+
 export interface GameSettings {
   colors: GameColor[]
   prizesCount: number
@@ -34,6 +38,7 @@ export interface GameSettings {
   prizes: Prize[]
   discountMode: 'sum' | 'max' // Режим скидок: суммировать или выбирать максимальную
   shotsCount: number
+  formSettings: FormSettings
 }
 
 export const useSettingsStore = defineStore('settings', () => {
@@ -107,7 +112,10 @@ export const useSettingsStore = defineStore('settings', () => {
       { id: '4', name: 'Подарок 4', discount: 3 }
     ],
     discountMode: 'max', // По умолчанию выбираем максимальную скидку
-    shotsCount: 3
+    shotsCount: 3,
+    formSettings: {
+      submitButtonColor: '#00BCD4' // Основной цвет бренда по умолчанию
+    }
   })
 
   // Computed свойство для быстрого доступа к цветам по ID
@@ -205,6 +213,15 @@ export const useSettingsStore = defineStore('settings', () => {
     }
   }
 
+  const updateFormSubmitButtonColor = (color: string) => {
+    if (!gameSettings.value.formSettings) {
+      gameSettings.value.formSettings = {
+        submitButtonColor: '#00BCD4'
+      }
+    }
+    gameSettings.value.formSettings.submitButtonColor = color
+  }
+
   const applyGameSettings = (prizesCount: number, badPrizesCount: number, shotsCount?: number) => {
     // Сохраняем текущие подарки перед изменением количества
     const currentPrizes = [...gameSettings.value.prizes]
@@ -253,6 +270,7 @@ export const useSettingsStore = defineStore('settings', () => {
     updateShotsCount,
     updatePrizeImage,
     removePrizeImage,
+    updateFormSubmitButtonColor,
     applyGameSettings
   }
 })
