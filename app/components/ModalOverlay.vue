@@ -47,12 +47,12 @@
             :error="errors.phone"
             class="form-group"
           >
-            <UInput 
-              v-model="formState.phone" 
-              placeholder="+7 (___) ___-__-__"
-              size="lg"
-              @input="formatPhone"
-            />
+             <UInput 
+               v-model="formState.phone" 
+               v-maska="'+7 (###) ###-##-##'"
+               placeholder="+7 (___) ___-__-__"
+               size="lg"
+             />
           </UFormGroup>
           
           <UFormGroup 
@@ -88,6 +88,7 @@
 
 <script setup lang="ts">
 import { reactive, ref } from 'vue'
+import { vMaska } from 'maska/vue'
 
 // Состояние формы
 const formState = reactive({
@@ -108,38 +109,6 @@ const errors = reactive({
 // Состояние отправки
 const isSubmitting = ref(false)
 
-// Функция форматирования телефона
-const formatPhone = (event: Event) => {
-  const target = event.target as HTMLInputElement
-  let value = target.value.replace(/\D/g, '')
-  
-  if (value.length > 0) {
-    if (value[0] !== '7') {
-      value = '7' + value
-    }
-    
-    if (value.length >= 1) {
-      value = '+7'
-    }
-    if (value.length >= 2) {
-      value = '+7 (' + value.slice(2)
-    }
-    if (value.length >= 7) {
-      value = value.slice(0, 7) + ') ' + value.slice(7)
-    }
-    if (value.length >= 12) {
-      value = value.slice(0, 12) + '-' + value.slice(12)
-    }
-    if (value.length >= 15) {
-      value = value.slice(0, 15) + '-' + value.slice(15)
-    }
-    if (value.length > 18) {
-      value = value.slice(0, 18)
-    }
-  }
-  
-  formState.phone = value
-}
 
 // Валидация формы
 const validateForm = () => {
@@ -277,8 +246,6 @@ const handleSubmit = async () => {
     gap: 1em;
   }
   
-  .form-group {
-  }
   
   .form-actions {
     margin-top: 0.5em;
