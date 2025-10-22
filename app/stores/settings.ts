@@ -223,81 +223,48 @@ export const useSettingsStore = defineStore('settings', () => {
     }
   }
 
-  const updateFormSubmitButtonColor = (color: string) => {
+  // Вспомогательная функция для инициализации formSettings
+  const ensureFormSettings = () => {
     if (!gameSettings.value.formSettings) {
       gameSettings.value.formSettings = {
         submitButtonColor: '#00BCD4',
-        overlayBackgroundColor: '#C27BA0'
+        overlayBackgroundColor: '#C27BA0',
+        titleText: 'Итоги игры',
+        descriptionText: 'Чтобы получить промокод заполните контактные данные',
+        buttonText: 'Получить промокод',
+        discountDescription: 'Ваша скидка<br>Промокод действует до конца месяца'
       }
     }
-    gameSettings.value.formSettings.submitButtonColor = color
+  }
+
+  const updateFormSubmitButtonColor = (color: string) => {
+    ensureFormSettings()
+    gameSettings.value.formSettings!.submitButtonColor = color
   }
 
   const updateFormOverlayBackgroundColor = (color: string) => {
-    if (!gameSettings.value.formSettings) {
-      gameSettings.value.formSettings = {
-        submitButtonColor: '#00BCD4',
-        overlayBackgroundColor: '#C27BA0',
-        titleText: 'Итоги игры',
-        descriptionText: 'Чтобы получить промокод заполните контактные данные',
-        buttonText: 'Получить промокод'
-      }
-    }
-    gameSettings.value.formSettings.overlayBackgroundColor = color
+    ensureFormSettings()
+    gameSettings.value.formSettings!.overlayBackgroundColor = color
   }
 
   const updateFormTitleText = (text: string) => {
-    if (!gameSettings.value.formSettings) {
-      gameSettings.value.formSettings = {
-        submitButtonColor: '#00BCD4',
-        overlayBackgroundColor: '#C27BA0',
-        titleText: 'Итоги игры',
-        descriptionText: 'Чтобы получить промокод заполните контактные данные',
-        buttonText: 'Получить промокод'
-      }
-    }
-    gameSettings.value.formSettings.titleText = text
+    ensureFormSettings()
+    gameSettings.value.formSettings!.titleText = text
   }
 
   const updateFormDescriptionText = (text: string) => {
-    if (!gameSettings.value.formSettings) {
-      gameSettings.value.formSettings = {
-        submitButtonColor: '#00BCD4',
-        overlayBackgroundColor: '#C27BA0',
-        titleText: 'Итоги игры',
-        descriptionText: 'Чтобы получить промокод заполните контактные данные',
-        buttonText: 'Получить промокод'
-      }
-    }
-    gameSettings.value.formSettings.descriptionText = text
+    ensureFormSettings()
+    gameSettings.value.formSettings!.descriptionText = text
   }
 
   const updateFormButtonText = (text: string) => {
-    if (!gameSettings.value.formSettings) {
-      gameSettings.value.formSettings = {
-        submitButtonColor: '#00BCD4',
-        overlayBackgroundColor: '#C27BA0',
-        titleText: 'Итоги игры',
-        descriptionText: 'Чтобы получить промокод заполните контактные данные',
-        buttonText: 'Получить промокод',
-        discountDescription: 'Ваша скидка: <strong>3%</strong><br>Промокод действует до конца месяца'
-      }
-    }
-    gameSettings.value.formSettings.buttonText = text
+    ensureFormSettings()
+    gameSettings.value.formSettings!.buttonText = text
   }
 
   const updateFormDiscountDescription = (text: string) => {
-    if (!gameSettings.value.formSettings) {
-      gameSettings.value.formSettings = {
-        submitButtonColor: '#00BCD4',
-        overlayBackgroundColor: '#C27BA0',
-        titleText: 'Итоги игры',
-        descriptionText: 'Чтобы получить промокод заполните контактные данные',
-        buttonText: 'Получить промокод',
-        discountDescription: 'Ваша скидка: <strong>3%</strong><br>Промокод действует до конца месяца'
-      }
-    }
-    gameSettings.value.formSettings.discountDescription = text
+    ensureFormSettings()
+    gameSettings.value.formSettings!.discountDescription = text
   }
 
 
