@@ -309,7 +309,7 @@ const getPrizeImageUrl = (index: number): string | undefined => {
 }
 
 // Функция для проверки коллизии с точкой
-const checkCollision = (x: number, y: number, onPrizeHit?: (leftPosition: number, isBad: boolean, discount: number, imageUrl?: string) => void): boolean => {
+const checkCollision = (x: number, y: number, onPrizeHit?: (leftPosition: number, isBad: boolean, discount: number, imageUrl?: string, prizeIndex?: number) => void): boolean => {
   if (!prizesContainerRef.value || !prizeRefs.value.length) return false
   
   for (let i = 0; i < prizeRefs.value.length; i++) {
@@ -335,7 +335,20 @@ const checkCollision = (x: number, y: number, onPrizeHit?: (leftPosition: number
         if (onPrizeHit) {
           const discount = prizeData.isBad ? 0 : getPrizeDiscount(i)
           const imageUrl = prizeData.isBad ? undefined : getPrizeImageUrl(i)
-          onPrizeHit(prizeData.leftPosition, prizeData.isBad, discount, imageUrl)
+          
+          // Вычисляем индекс подарка в настройках для хороших подарков
+          let prizeIndex: number | undefined = undefined
+          if (!prizeData.isBad) {
+            let goodPrizeIndex = 0
+            for (let j = 0; j < i; j++) {
+              if (!prizesData.value[j]?.isBad) {
+                goodPrizeIndex++
+              }
+            }
+            prizeIndex = goodPrizeIndex
+          }
+          
+          onPrizeHit(prizeData.leftPosition, prizeData.isBad, discount, imageUrl, prizeIndex)
         }
         
         // Скрываем подарок после завершения анимации

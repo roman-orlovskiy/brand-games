@@ -121,7 +121,7 @@
                   size="sm"
                   :icon="copied ? 'i-lucide-copy-check' : 'i-lucide-copy'"
                   aria-label="Скопировать промокод"
-                  @click.stop="copy(promoCode)"
+                  @click="copy(promoCode || defaultPromoCode)"
                 />
               </UTooltip>
             </template>
@@ -134,11 +134,20 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, ref } from 'vue'
+import { reactive, ref, computed } from 'vue'
 import { vMaska } from 'maska/vue'
 import { useClipboard } from '@vueuse/core'
 import { useSettingsStore } from '~/stores/settings'
 import { storeToRefs } from 'pinia'
+
+// Пропсы
+interface Props {
+  collectedGifts?: Array<{ discount: number; imageUrl?: string; name?: string }>
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  collectedGifts: () => []
+})
 
 // Получаем настройки из store
 const settingsStore = useSettingsStore()
@@ -166,8 +175,35 @@ const isSubmitting = ref(false)
 // Состояние успешной отправки
 const isSuccess = ref(false)
 
-// Промокод
-const promoCode = ref('BRAND2024')
+// Функция генерации промокода из подарка
+const generatePromoCodeFromGift = (gift: { discount: number; imageUrl?: string; name?: string }) => {
+  // Генерируем промокод на основе названия подарка
+  if (gift.name) {
+    // Убираем пробелы и приводим к верхнему регистру
+    const cleanName = gift.name.toUpperCase()
+    return cleanName
+  }
+}
+
+const defaultPromoCode = 'BRAND2024'
+
+// Генерация промокода на основе сбитых подарков
+const promoCode = computed(() => {
+  if (!props.collectedGifts || props.collectedGifts.length === 0) {
+    return defaultPromoCode // Дефолтный промокод, если подарков нет
+  }
+
+  // Если режим максимальной скидки, берем промокод из подарка с максимальной скидкой
+  if (gameSettings.value.discountMode === 'max') {
+    const maxDiscountGift = props.collectedGifts.reduce((max, gift) => 
+      gift.discount > max.discount ? gift : max
+    )
+
+    return generatePromoCodeFromGift(maxDiscountGift)
+  }
+
+  return defaultPromoCode
+})
 
 // Функционал копирования
 const { copy, copied } = useClipboard()
@@ -197,7 +233,7 @@ const handleInputClick = async (event: Event) => {
     target.setSelectionRange(0, target.value.length)
     
     // Копируем в буфер обмена
-    await copy(promoCode.value)
+    await copy(promoCode.value || defaultPromoCode)
   }
 }
 

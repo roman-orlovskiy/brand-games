@@ -64,7 +64,7 @@
       </div>
     </div>
     <!-- Модальное окно окончания игры -->
-    <ModalOverlay v-if="showEndModal" />
+    <ModalOverlay v-if="showEndModal" :collected-gifts="collectedGifts" />
   </div>
 </template>
 
@@ -96,9 +96,16 @@ const showEndModal = ref(false);
 const totalDiscountSum = ref(0)
 const totalDiscountMax = ref(0)
 
-const handleDiscountUpdate = (payload: { sum: number; max: number }) => {
+// Собранные подарки для передачи в модальное окно
+const collectedGifts = ref<Array<{ discount: number; imageUrl?: string; name?: string }>>([])
+
+const handleDiscountUpdate = (payload: { sum: number; max: number; gifts?: Array<{ discount: number; imageUrl?: string; name?: string }> }) => {
   totalDiscountSum.value = payload.sum || 0
   totalDiscountMax.value = payload.max || 0
+  if (payload.gifts) {
+    collectedGifts.value = payload.gifts
+    console.log(collectedGifts.value)
+  }
 }
 
 const discountLabel = computed(() => 'Ваша скидка')
@@ -212,7 +219,7 @@ const handleShotEnd = () => {
 };
 
 // Обработчик попадания в подарок - перемещаем корзину
-const handlePrizeHit = (leftPosition: number, isBad: boolean = false, discount: number = 3, imageUrl?: string) => {
+const handlePrizeHit = (leftPosition: number, isBad: boolean = false, discount: number = 3, imageUrl?: string, prizeIndex?: number) => {
   // Корзина подъезжает только к хорошим призам
   if (!isBad) {
     // Конвертируем позицию подарка в позицию корзины
@@ -235,7 +242,7 @@ const handlePrizeHit = (leftPosition: number, isBad: boolean = false, discount: 
     // Добавляем подарок в коробку с небольшой задержкой
     setTimeout(() => {
       if (boxRef.value && boxRef.value.addGiftToBox) {
-        boxRef.value.addGiftToBox(discount, imageUrl)
+        boxRef.value.addGiftToBox(discount, imageUrl, prizeIndex)
       }
     }, 1200) // Задержка, чтобы подарок успел упасть в корзину
     
@@ -274,6 +281,8 @@ const resetGame = () => {
   // Сбрасываем агрегированные скидки
   totalDiscountSum.value = 0
   totalDiscountMax.value = 0
+  // Очищаем собранные подарки
+  collectedGifts.value = []
 };
 
 // Экспортируем функцию сброса для внешнего использования

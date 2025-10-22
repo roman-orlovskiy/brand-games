@@ -38,7 +38,7 @@ import { storeToRefs } from 'pinia'
 import { darkenColor, lightenColor } from '~/utils/colors'
 
 const settingsStore = useSettingsStore()
-const { gameSettingsColorsById } = storeToRefs(settingsStore)
+const { gameSettingsColorsById, gameSettings } = storeToRefs(settingsStore)
 
 const boxColor = computed(() => {
   return gameSettingsColorsById.value.box?.color || '#C27BA0'
@@ -63,6 +63,7 @@ interface CollectedGift {
   appearing: boolean
   discount: number // Скидка этого подарка
   imageUrl?: string // URL изображения подарка
+  prizeIndex?: number // Индекс подарка в настройках
 }
 
 const collectedGifts = ref<CollectedGift[]>([])
@@ -75,7 +76,7 @@ const currentDiscount = ref(0)
 
 // Эмит события об обновлении агрегированных скидок
 const emit = defineEmits<{
-  (e: 'discount-update', payload: { sum: number; max: number }): void
+  (e: 'discount-update', payload: { sum: number; max: number; gifts?: Array<{ discount: number; imageUrl?: string; name?: string }> }): void
 }>()
 
 const sumDiscount = computed(() => {
@@ -88,11 +89,23 @@ const maxDiscount = computed(() => {
 })
 
 const notifyDiscounts = () => {
-  emit('discount-update', { sum: sumDiscount.value, max: maxDiscount.value })
+  const gifts = collectedGifts.value.map((gift) => {
+    // Получаем название подарка из настроек по правильному индексу
+    const prizeIndex = gift.prizeIndex ?? 0
+    const prizeSettings = gameSettings.value.prizes[prizeIndex]
+    const prizeName = prizeSettings?.name || `Подарок ${prizeIndex + 1}`
+    
+    return {
+      discount: gift.discount,
+      imageUrl: gift.imageUrl,
+      name: prizeName
+    }
+  })
+  emit('discount-update', { sum: sumDiscount.value, max: maxDiscount.value, gifts })
 }
 
 // Функция для добавления нового подарка в коробку
-const addGiftToBox = (discount: number = 3, imageUrl?: string) => {
+const addGiftToBox = (discount: number = 3, imageUrl?: string, prizeIndex?: number) => {
   const totalGifts = collectedGifts.value.length
   
   // Единый алгоритм зацикливания
@@ -123,7 +136,8 @@ const addGiftToBox = (discount: number = 3, imageUrl?: string) => {
       },
       appearing: false,
       discount: discount,
-      imageUrl: imageUrl
+      imageUrl: imageUrl,
+      prizeIndex: prizeIndex
     }
     
     collectedGifts.value.push(newGift)
