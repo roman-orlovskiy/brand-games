@@ -76,7 +76,7 @@
             size="lg"
             color="primary"
             :loading="isSubmitting"
-            class="submit-button"
+            class="submit-button cursor-pointer"
           >
             Получить промокод
           </UButton>
@@ -289,7 +289,7 @@ const handleSubmit = async () => {
       min-height: 2.5em; // 40px в em
       font-size: 1em;
       font-weight: 600;
-      cursor: pointer;
+      cursor: pointer !important;
     }
   }
 }
