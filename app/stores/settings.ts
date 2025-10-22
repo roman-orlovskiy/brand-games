@@ -222,48 +222,27 @@ export const useSettingsStore = defineStore('settings', () => {
       prize.imageUrl = undefined
     }
   }
-
-  // Вспомогательная функция для инициализации formSettings
-  const ensureFormSettings = () => {
-    if (!gameSettings.value.formSettings) {
-      gameSettings.value.formSettings = {
-        submitButtonColor: '#00BCD4',
-        overlayBackgroundColor: '#C27BA0',
-        titleText: 'Итоги игры',
-        descriptionText: 'Чтобы получить промокод заполните контактные данные',
-        buttonText: 'Получить промокод',
-        discountDescription: 'Ваша скидка<br>Промокод действует до конца месяца'
-      }
-    }
-  }
-
   const updateFormSubmitButtonColor = (color: string) => {
-    ensureFormSettings()
     gameSettings.value.formSettings!.submitButtonColor = color
   }
 
   const updateFormOverlayBackgroundColor = (color: string) => {
-    ensureFormSettings()
     gameSettings.value.formSettings!.overlayBackgroundColor = color
   }
 
   const updateFormTitleText = (text: string) => {
-    ensureFormSettings()
     gameSettings.value.formSettings!.titleText = text
   }
 
   const updateFormDescriptionText = (text: string) => {
-    ensureFormSettings()
     gameSettings.value.formSettings!.descriptionText = text
   }
 
   const updateFormButtonText = (text: string) => {
-    ensureFormSettings()
     gameSettings.value.formSettings!.buttonText = text
   }
 
   const updateFormDiscountDescription = (text: string) => {
-    ensureFormSettings()
     gameSettings.value.formSettings!.discountDescription = text
   }
 

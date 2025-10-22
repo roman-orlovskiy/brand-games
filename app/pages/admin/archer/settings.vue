@@ -212,7 +212,7 @@
                 <label class="block text-sm font-medium text-gray-700">Описание формы (Можно HTML)</label>
                 <UTextarea
                   v-model="formDescriptionText"
-                  placeholder="Чтобы получить промокод заполните контактные данные"
+                  placeholder="Описание формы"
                   :rows="5"
                   :cols="45"
                 />
@@ -232,7 +232,7 @@
                 <label class="block text-sm font-medium text-gray-700">Описание скидки (Можно HTML)</label>
                 <UTextarea
                   v-model="formDiscountDescription"
-                  placeholder="Ваша скидка: <strong>3%</strong><br>Промокод действует до конца месяца"
+                  placeholder="Описание скидки"
                   :rows="4"
                   :cols="45"
                 />
@@ -330,7 +330,8 @@ definePageMeta({
 })
 
 const settingsStore = useSettingsStore()
-  const { brandSettings, gameSettings } = storeToRefs(settingsStore)
+
+const { brandSettings, gameSettings } = storeToRefs(settingsStore)
 
 // Локальные значения для настроек (без автоприменения, до нажатия кнопки)
 const prizesCount = ref(gameSettings.value.prizesCount)
@@ -346,10 +347,10 @@ const formOverlayBackgroundColor = ref(gameSettings.value.formSettings?.overlayB
 const formOverlayBackgroundColorId = ref('neutral') // По умолчанию нейтральный цвет
 
 // Переменные для текстов формы
-const formTitleText = ref(gameSettings.value.formSettings?.titleText || 'Итоги игры')
-const formDescriptionText = ref(gameSettings.value.formSettings?.descriptionText || 'Чтобы получить промокод заполните контактные данные')
-const formButtonText = ref(gameSettings.value.formSettings?.buttonText || 'Получить промокод')
-const formDiscountDescription = ref(gameSettings.value.formSettings?.discountDescription || 'Ваша скидка: <strong>3%</strong><br>Промокод действует до конца месяца')
+const formTitleText = ref(gameSettings.value.formSettings?.titleText)
+const formDescriptionText = ref(gameSettings.value.formSettings?.descriptionText)
+const formButtonText = ref(gameSettings.value.formSettings?.buttonText)
+const formDiscountDescription = ref(gameSettings.value.formSettings?.discountDescription)
 
 // Watchers для автоматического обновления store
 watch(formTitleText, (newValue) => {
