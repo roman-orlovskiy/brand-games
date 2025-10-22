@@ -33,6 +33,7 @@ export interface FormSettings {
   descriptionText: string
   buttonText: string
   discountDescription: string
+  defaultPromoCode: string
 }
 
 export interface GameSettings {
@@ -124,7 +125,8 @@ export const useSettingsStore = defineStore('settings', () => {
       titleText: 'Итоги игры',
       descriptionText: 'Чтобы получить промокод заполните контактные данные',
       buttonText: 'Получить промокод',
-      discountDescription: 'Ваша скидка<br>Промокод действует до конца месяца'
+      discountDescription: 'Ваша скидка<br>Промокод действует до конца месяца',
+      defaultPromoCode: 'BRAND2025'
     }
   })
 
@@ -246,6 +248,10 @@ export const useSettingsStore = defineStore('settings', () => {
     gameSettings.value.formSettings!.discountDescription = text
   }
 
+  const updateFormDefaultPromoCode = (promoCode: string) => {
+    gameSettings.value.formSettings!.defaultPromoCode = promoCode
+  }
+
 
   const applyGameSettings = (prizesCount: number, badPrizesCount: number, shotsCount?: number) => {
     // Сохраняем текущие подарки перед изменением количества
@@ -301,6 +307,7 @@ export const useSettingsStore = defineStore('settings', () => {
     updateFormDescriptionText,
     updateFormButtonText,
     updateFormDiscountDescription,
+    updateFormDefaultPromoCode,
     applyGameSettings
   }
 })

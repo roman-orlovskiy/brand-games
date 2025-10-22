@@ -185,12 +185,15 @@ const generatePromoCodeFromGift = (gift: { discount: number; imageUrl?: string; 
   }
 }
 
-const defaultPromoCode = 'BRAND2024'
+// Получаем дефолтный промокод из настроек
+const defaultPromoCode = computed(() => {
+  return gameSettings.value.formSettings?.defaultPromoCode || 'BRAND2025'
+})
 
 // Генерация промокода на основе сбитых подарков
 const promoCode = computed(() => {
   if (!props.collectedGifts || props.collectedGifts.length === 0) {
-    return defaultPromoCode // Дефолтный промокод, если подарков нет
+    return defaultPromoCode.value // Дефолтный промокод, если подарков нет
   }
 
   // Если режим максимальной скидки, берем промокод из подарка с максимальной скидкой
@@ -202,7 +205,7 @@ const promoCode = computed(() => {
     return generatePromoCodeFromGift(maxDiscountGift)
   }
 
-  return defaultPromoCode
+  return defaultPromoCode.value
 })
 
 // Функционал копирования
@@ -233,7 +236,7 @@ const handleInputClick = async (event: Event) => {
     target.setSelectionRange(0, target.value.length)
     
     // Копируем в буфер обмена
-    await copy(promoCode.value || defaultPromoCode)
+    await copy(promoCode.value || defaultPromoCode.value)
   }
 }
 

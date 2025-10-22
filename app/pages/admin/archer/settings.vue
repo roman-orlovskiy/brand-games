@@ -239,6 +239,15 @@
                 <p class="text-xs text-gray-500">Описание скидки, которое отображается в модальном окне</p>
               </div>
               
+              <div class="space-y-2">
+                <label class="block text-sm font-medium text-gray-700">Дефолтный промокод</label>
+                <UInput
+                  v-model="formDefaultPromoCode"
+                  placeholder="BRAND2025"
+                />
+                <p class="text-xs text-gray-500">Промокод по умолчанию, если подарки не сбиты</p>
+              </div>
+              
             </div>
           </div>
         </UCard>
@@ -351,6 +360,7 @@ const formTitleText = ref(gameSettings.value.formSettings?.titleText)
 const formDescriptionText = ref(gameSettings.value.formSettings?.descriptionText)
 const formButtonText = ref(gameSettings.value.formSettings?.buttonText)
 const formDiscountDescription = ref(gameSettings.value.formSettings?.discountDescription)
+const formDefaultPromoCode = ref(gameSettings.value.formSettings?.defaultPromoCode)
 
 // Watchers для автоматического обновления store
 watch(formTitleText, (newValue) => {
@@ -367,6 +377,10 @@ watch(formButtonText, (newValue) => {
 
 watch(formDiscountDescription, (newValue) => {
   settingsStore.updateFormDiscountDescription(newValue)
+})
+
+watch(formDefaultPromoCode, (newValue) => {
+  settingsStore.updateFormDefaultPromoCode(newValue)
 })
 
 
@@ -418,6 +432,7 @@ const applyChanges = () => {
   settingsStore.updateFormDescriptionText(formDescriptionText.value)
   settingsStore.updateFormButtonText(formButtonText.value)
   settingsStore.updateFormDiscountDescription(formDiscountDescription.value)
+  settingsStore.updateFormDefaultPromoCode(formDefaultPromoCode.value)
 }
 
 // Функция применения изменений параметров игры
