@@ -10,11 +10,25 @@
       </template>
 
       <template #footer="{ collapsed }">
-        <UNavigationMenu
-          :collapsed="collapsed"
-          :items="items[1]"
-          orientation="vertical"
-        />
+        <div class="space-y-2">
+          <UNavigationMenu
+            :collapsed="collapsed"
+            :items="items[1]"
+            orientation="vertical"
+          />
+          
+          <!-- Кнопка выхода -->
+          <UButton
+            :label="collapsed ? '' : 'Выход'"
+            icon="i-lucide-log-out"
+            color="error"
+            variant="ghost"
+            size="sm"
+            block
+            class="mt-2"
+            @click="handleLogout"
+          />
+        </div>
       </template>
 
     </UDashboardSidebar>
@@ -30,12 +44,20 @@ import type { NavigationMenuItem } from '@nuxt/ui'
 
 // Store аутентификации
 const authStore = useAuthStore()
-const { userName, userEmail } = storeToRefs(authStore)
+const { userName } = storeToRefs(authStore)
 
 // Обработчик выхода
 const handleLogout = async () => {
-  authStore.logout()
-  await navigateTo('/')
+  // Показываем подтверждение выхода
+  const confirmed = confirm('Вы уверены, что хотите выйти из системы?')
+  
+  if (confirmed) {
+    // Очищаем все данные аутентификации
+    authStore.logout()
+    
+    // Редиректим на главную страницу
+    await navigateTo('/')
+  }
 }
 
 const items: NavigationMenuItem[][] = [[
@@ -69,13 +91,8 @@ const items: NavigationMenuItem[][] = [[
     }]
 }],
 [{
-  label: computed(() => userName.value || 'Профиль'),
+  label: userName.value || 'Профиль',
   icon: 'i-lucide-user',
   to: '/admin/profile'
-},
-{
-  label: 'Выход',
-  icon: 'i-lucide-log-out',
-  click: handleLogout
 }]]
 </script>

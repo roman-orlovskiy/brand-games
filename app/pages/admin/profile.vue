@@ -39,7 +39,7 @@
             color="red" 
             variant="outline" 
             icon="i-lucide-log-out"
-            @click="handleLogout"
+            @click="showLogoutDialog = true"
             block
           >
             Выйти из аккаунта
@@ -52,6 +52,40 @@
         </div>
       </UCard>
     </div>
+
+    <!-- Модальное окно подтверждения выхода -->
+    <UModal v-model="showLogoutDialog">
+      <UCard>
+        <template #header>
+          <div class="flex items-center gap-3">
+            <UIcon name="i-lucide-log-out" class="w-5 h-5 text-red-500" />
+            <h3 class="text-lg font-semibold">Подтверждение выхода</h3>
+          </div>
+        </template>
+
+        <div class="space-y-4">
+          <p class="text-gray-600">
+            Вы уверены, что хотите выйти из системы? После выхода вам потребуется снова войти в аккаунт.
+          </p>
+          
+          <div class="flex gap-3 justify-end">
+            <UButton 
+              color="gray" 
+              variant="outline"
+              @click="showLogoutDialog = false"
+            >
+              Отмена
+            </UButton>
+            <UButton 
+              color="red" 
+              @click="handleLogout"
+            >
+              Выйти
+            </UButton>
+          </div>
+        </div>
+      </UCard>
+    </UModal>
   </div>
 </template>
 
@@ -59,6 +93,9 @@
 // Store аутентификации
 const authStore = useAuthStore()
 const { userName, userEmail, user } = storeToRefs(authStore)
+
+// Состояние модального окна
+const showLogoutDialog = ref(false)
 
 // Форматированная дата регистрации
 const registrationDate = computed(() => {
@@ -76,7 +113,13 @@ const registrationDate = computed(() => {
 
 // Обработчик выхода
 const handleLogout = async () => {
+  // Очищаем все данные аутентификации
   authStore.logout()
+  
+  // Закрываем модальное окно
+  showLogoutDialog.value = false
+  
+  // Редиректим на главную страницу
   await navigateTo('/')
 }
 

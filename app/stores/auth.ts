@@ -107,11 +107,19 @@ export const useAuthStore = defineStore('auth', () => {
   }
 
   const logout = () => {
+    // Очищаем состояние пользователя
     user.value = null
+    
+    // Очищаем localStorage только на клиенте
     if (process.client) {
       localStorage.removeItem('auth_user')
     }
+    
+    // Очищаем ошибки
     error.value = null
+    
+    // Сбрасываем состояние загрузки
+    isLoading.value = false
   }
 
   const initializeAuth = () => {
