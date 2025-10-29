@@ -1,0 +1,134 @@
+[
+  {
+    "id": "1",
+    "firstName": "Алексей",
+    "lastName": "Иванов",
+    "phone": "+7 900 111-22-33",
+    "email": "alexey.ivanov@example.com",
+    "mode": "sum",
+    "promoCode": null,
+    "playedAt": "2025-10-28T10:15:00+03:00"
+  },
+  {
+    "id": "2",
+    "firstName": "Мария",
+    "lastName": "Петрова",
+    "phone": "+7 900 222-33-44",
+    "email": "maria.petrova@example.com",
+    "mode": "max",
+    "promoCode": "PROMO-7KQ4",
+    "playedAt": "2025-10-28T10:22:00+03:00"
+  },
+  {
+    "id": "3",
+    "firstName": "Игорь",
+    "lastName": "Сидоров",
+    "phone": "+7 900 333-44-55",
+    "email": "igor.sidorov@example.com",
+    "mode": "sum",
+    "promoCode": null,
+    "playedAt": "2025-10-28T11:05:12+03:00"
+  },
+  {
+    "id": "4",
+    "firstName": "Ольга",
+    "lastName": "Кузнецова",
+    "phone": "+7 900 444-55-66",
+    "email": "olga.kuznetsova@example.com",
+    "mode": "max",
+    "promoCode": "PROMO-T8N2",
+    "playedAt": "2025-10-28T11:47:39+03:00"
+  },
+  {
+    "id": "5",
+    "firstName": "Дмитрий",
+    "lastName": "Смирнов",
+    "phone": "+7 900 555-66-77",
+    "email": "dmitry.smirnov@example.com",
+    "mode": "sum",
+    "promoCode": null,
+    "playedAt": "2025-10-28T12:03:58+03:00"
+  },
+  {
+    "id": "6",
+    "firstName": "Анна",
+    "lastName": "Волкова",
+    "phone": "+7 900 666-77-88",
+    "email": "anna.volkova@example.com",
+    "mode": "max",
+    "promoCode": "PROMO-4Z9X",
+    "playedAt": "2025-10-28T12:20:11+03:00"
+  },
+  {
+    "id": "7",
+    "firstName": "Павел",
+    "lastName": "Морозов",
+    "phone": "+7 900 777-88-99",
+    "email": "pavel.morozov@example.com",
+    "mode": "sum",
+    "promoCode": null,
+    "playedAt": "2025-10-28T13:01:22+03:00"
+  },
+  {
+    "id": "8",
+    "firstName": "Екатерина",
+    "lastName": "Соколова",
+    "phone": "+7 900 888-99-00",
+    "email": "ekaterina.sokolova@example.com",
+    "mode": "max",
+    "promoCode": "PROMO-Q3LM",
+    "playedAt": "2025-10-28T13:37:49+03:00"
+  },
+  {
+    "id": "9",
+    "firstName": "Сергей",
+    "lastName": "Орлов",
+    "phone": "+7 900 999-00-11",
+    "email": "sergey.orlov@example.com",
+    "mode": "sum",
+    "promoCode": null,
+    "playedAt": "2025-10-28T14:08:05+03:00"
+  },
+  {
+    "id": "10",
+    "firstName": "Наталья",
+    "lastName": "Зайцева",
+    "phone": "+7 901 111-22-33",
+    "email": "natalia.zaytseva@example.com",
+    "mode": "max",
+    "promoCode": "PROMO-H1AS",
+    "playedAt": "2025-10-28T14:55:31+03:00"
+  },
+  {
+    "id": "11",
+    "firstName": "Виктор",
+    "lastName": "Семенов",
+    "phone": "+7 901 222-33-44",
+    "email": "victor.semenov@example.com",
+    "mode": "sum",
+    "promoCode": null,
+    "playedAt": "2025-10-28T15:20:17+03:00"
+  },
+  {
+    "id": "12",
+    "firstName": "Юлия",
+    "lastName": "Медведева",
+    "phone": "+7 901 333-44-55",
+    "email": "yulia.medvedeva@example.com",
+    "mode": "max",
+    "promoCode": "PROMO-P5RT",
+    "playedAt": "2025-10-28T16:02:44+03:00"
+  },
+  {
+    "id": "13",
+    "firstName": "Роман",
+    "lastName": "Федоров",
+    "phone": "+7 901 444-55-66",
+    "email": "roman.fedorov@example.com",
+    "mode": "sum",
+    "promoCode": null,
+    "playedAt": "2025-10-28T16:40:09+03:00"
+  }
+]
+
+
