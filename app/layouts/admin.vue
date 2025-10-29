@@ -44,7 +44,6 @@ import type { NavigationMenuItem } from '@nuxt/ui'
 
 // Store аутентификации
 const authStore = useAuthStore()
-const { userName } = storeToRefs(authStore)
 
 // Обработчик выхода
 const handleLogout = async () => {
@@ -91,7 +90,7 @@ const items: NavigationMenuItem[][] = [[
     }]
 }],
 [{
-  label: userName.value || 'Профиль',
+  label: 'Профиль',
   icon: 'i-lucide-user',
   to: '/admin/profile'
 }]]

@@ -23,6 +23,7 @@
               type="email" 
               placeholder="Введите ваш email"
               :disabled="isLoading"
+              class="w-full"
             />
           </UFormField>
 
@@ -36,12 +37,13 @@
               type="password" 
               placeholder="Введите пароль"
               :disabled="isLoading"
+              class="w-full"
             />
           </UFormField>
 
           <UAlert 
             v-if="error" 
-            color="red" 
+            color="error" 
             variant="soft"
             class="auth-page__alert"
           >
@@ -67,14 +69,6 @@
               Зарегистрироваться
             </NuxtLink>
           </p>
-        </div>
-
-        <div class="auth-page__demo">
-          <UAlert color="blue" variant="soft" class="auth-page__demo-alert">
-            <template #title>Демо-данные для входа</template>
-            <p>Email: admin@example.com</p>
-            <p>Пароль: admin123</p>
-          </UAlert>
         </div>
       </div>
     </div>

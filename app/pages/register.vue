@@ -23,6 +23,7 @@
               type="text" 
               placeholder="Введите ваше имя"
               :disabled="isLoading"
+              class="w-full"
             />
           </UFormField>
 
@@ -36,6 +37,7 @@
               type="email" 
               placeholder="Введите ваш email"
               :disabled="isLoading"
+              class="w-full"
             />
           </UFormField>
 
@@ -49,6 +51,7 @@
               type="password" 
               placeholder="Введите пароль"
               :disabled="isLoading"
+              class="w-full"
             />
           </UFormField>
 
@@ -62,6 +65,7 @@
               type="password" 
               placeholder="Подтвердите пароль"
               :disabled="isLoading"
+              class="w-full"
             />
           </UFormField>
 

@@ -22,3 +22,5 @@
 
 Не используй UFormGroup, это nuxt ui 2, а мы используем nuxt ui 4
 Глобальную логику выноси в stores
+
+На кнопки UButton всегда добавлять класс cursor-pointer
