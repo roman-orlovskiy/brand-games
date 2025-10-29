@@ -25,7 +25,7 @@
             variant="ghost"
             size="sm"
             block
-            class="mt-2"
+            class="mt-2 cursor-pointer"
             @click="handleLogout"
           />
         </div>
@@ -78,9 +78,6 @@ const items: NavigationMenuItem[][] = [[
         {
           label: 'Настройки',
           to: '/admin/archer/settings',
-        }, {
-          label: 'Промокоды',
-          to: '/admin/archer/promo'
         },
         {
           label: 'Статистика',
