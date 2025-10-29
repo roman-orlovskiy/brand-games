@@ -28,6 +28,16 @@
 <script setup lang="ts">
 import type { NavigationMenuItem } from '@nuxt/ui'
 
+// Store аутентификации
+const authStore = useAuthStore()
+const { userName, userEmail } = storeToRefs(authStore)
+
+// Обработчик выхода
+const handleLogout = async () => {
+  authStore.logout()
+  await navigateTo('/')
+}
+
 const items: NavigationMenuItem[][] = [[
 {
   label: 'Настройки бренда',
@@ -59,13 +69,13 @@ const items: NavigationMenuItem[][] = [[
     }]
 }],
 [{
-  label: 'Профиль',
+  label: computed(() => userName.value || 'Профиль'),
   icon: 'i-lucide-user',
   to: '/admin/profile'
 },
 {
   label: 'Выход',
   icon: 'i-lucide-log-out',
-  to: '/admin/logout'
+  click: handleLogout
 }]]
 </script>
