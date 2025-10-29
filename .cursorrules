@@ -1,0 +1,18 @@
+Используй nuxt 4
+Базовые компоненты из @nuxt/ui 4.1.0 https://ui.nuxt.com/docs/components
+Глобальные настройки в stores/settings.ts
+
+В компонентах использовать scss и БЭМ вида block__element--modifier
+.block {
+  &__element {
+    &--modifier {
+      ...
+    }
+  }
+}
+
+Вычисляемые свойства использовать через computed
+Классы с условиями выносить в отдельные переменные computed
+
+Сложные повторяющиеся вычисления в utils
+Хуки в composables
