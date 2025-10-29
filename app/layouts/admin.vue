@@ -44,7 +44,6 @@ import type { NavigationMenuItem } from '@nuxt/ui'
 
 // Store аутентификации
 const authStore = useAuthStore()
-
 // Обработчик выхода
 const handleLogout = async () => {
   // Показываем подтверждение выхода
