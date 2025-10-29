@@ -320,8 +320,33 @@
             </div>
           </template>
 
-          <div class="game-preview">
-            <ArcherGame ref="gameRef" :key="gameKey" />
+          <div class="space-y-4">
+            <!-- Предпросмотр игры компонентом -->
+            <div class="space-y-2">
+              <ArcherGame ref="gameRef" :key="gameKey" />
+            </div>
+
+            <!-- Код для вставки iframe -->
+            <div class="space-y-2">
+              <label class="block text-sm font-medium text-gray-700">Код для вставки</label>
+              <div class="flex gap-2">
+                <UInput
+                  ref="iframeInputRef"
+                  :model-value="iframeCode"
+                  readonly
+                  class="flex-1 font-mono text-sm cursor-pointer select-all"
+                  @click="selectAndCopy"
+                />
+                <UButton
+                  :icon="isCopied ? 'i-lucide-check' : 'i-lucide-copy'"
+                  variant="outline"
+                  class="cursor-pointer"
+                  @click="selectAndCopy"
+                >
+                  {{ isCopied ? 'Скопировано' : 'Копировать' }}
+                </UButton>
+              </div>
+            </div>
           </div>
         </UCard>
       </div>
@@ -342,6 +367,47 @@ definePageMeta({
 const settingsStore = useSettingsStore()
 
 const { brandSettings, gameSettings } = storeToRefs(settingsStore)
+
+// Генерируем URL и код iframe
+const gameHash = ref('random123') // Пока просто, потом будет генериться для каждого клиента
+const isCopied = ref(false)
+const iframeInputRef = ref()
+
+const iframeUrl = computed(() => {
+  if (import.meta.client) {
+    const domain = window.location.origin
+    return `${domain}/archer?hash=${gameHash.value}`
+  }
+  return ''
+})
+
+const iframeCode = computed(() => {
+  return `<iframe src="${iframeUrl.value}" width="100%" height="100%" frameborder="0"></iframe>`
+})
+
+// Выделить весь текст в инпуте и скопировать
+const selectAndCopy = async () => {
+  if (import.meta.client) {
+    try {
+      // Пытаемся найти нативный input внутри UInput и выделить текст
+      const el = iframeInputRef.value?.$el?.querySelector('input, textarea') as HTMLInputElement | HTMLTextAreaElement | null
+      if (el) {
+        el.focus()
+        el.select()
+      }
+
+      await navigator.clipboard.writeText(iframeCode.value)
+      isCopied.value = true
+      
+      // Возвращаем кнопку в исходное состояние через 2 секунды
+      setTimeout(() => {
+        isCopied.value = false
+      }, 2000)
+    } catch (err) {
+      console.error('Ошибка копирования:', err)
+    }
+  }
+}
 
 // Локальные значения для настроек (без автоприменения, до нажатия кнопки)
 const prizesCount = ref(gameSettings.value.prizesCount)

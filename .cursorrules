@@ -24,3 +24,4 @@
 Глобальную логику выноси в stores
 
 На кнопки UButton всегда добавлять класс cursor-pointer
+Для логики используй DRY KISS SOLID PRINCIPLES
