@@ -138,7 +138,8 @@ import { useSettingsStore } from '~/stores/settings'
 import { storeToRefs } from 'pinia'
 
 definePageMeta({
-  layout: 'admin'
+  layout: 'admin',
+  middleware: 'admin-auth'
 })
 
 const settingsStore = useSettingsStore()

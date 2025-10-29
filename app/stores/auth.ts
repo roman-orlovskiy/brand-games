@@ -50,7 +50,7 @@ export const useAuthStore = defineStore('auth', () => {
         }
         
         // Сохраняем в localStorage для имитации сессии (только на клиенте)
-        if (process.client) {
+        if (import.meta.client) {
           localStorage.setItem('auth_user', JSON.stringify(user.value))
         }
         return true
@@ -94,7 +94,7 @@ export const useAuthStore = defineStore('auth', () => {
       }
 
       // Сохраняем в localStorage для имитации сессии (только на клиенте)
-      if (process.client) {
+      if (import.meta.client) {
         localStorage.setItem('auth_user', JSON.stringify(user.value))
       }
       return true
@@ -107,12 +107,15 @@ export const useAuthStore = defineStore('auth', () => {
   }
 
   const logout = () => {
+    console.log('Logout: очищаем данные пользователя')
+    
     // Очищаем состояние пользователя
     user.value = null
     
     // Очищаем localStorage только на клиенте
-    if (process.client) {
+    if (import.meta.client) {
       localStorage.removeItem('auth_user')
+      console.log('Logout: localStorage очищен')
     }
     
     // Очищаем ошибки
@@ -120,19 +123,27 @@ export const useAuthStore = defineStore('auth', () => {
     
     // Сбрасываем состояние загрузки
     isLoading.value = false
+    
+    console.log('Logout: завершено, isAuthenticated =', !!user.value)
   }
 
   const initializeAuth = () => {
     // Проверяем localStorage при инициализации только на клиенте
-    if (process.client) {
+    if (import.meta.client) {
       const savedUser = localStorage.getItem('auth_user')
+      console.log('InitializeAuth: проверяем localStorage, найден пользователь:', !!savedUser)
+      
       if (savedUser) {
         try {
           user.value = JSON.parse(savedUser)
+          console.log('InitializeAuth: пользователь восстановлен:', user.value?.email)
         } catch {
           localStorage.removeItem('auth_user')
+          console.log('InitializeAuth: ошибка парсинга, localStorage очищен')
         }
       }
+      
+      console.log('InitializeAuth: завершено, isAuthenticated =', !!user.value)
     }
   }
 

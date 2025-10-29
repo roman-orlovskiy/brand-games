@@ -124,6 +124,7 @@ const handleLogout = async () => {
 }
 
 definePageMeta({
-  layout: 'admin'
+  layout: 'admin',
+  middleware: 'admin-auth'
 })
 </script>
