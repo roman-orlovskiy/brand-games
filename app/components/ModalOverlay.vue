@@ -287,18 +287,32 @@ const handleSubmit = async () => {
   isSubmitting.value = true
   
   try {
-    // Здесь будет логика отправки данных на сервер
-    console.log('Отправка данных:', formState)
+    // Получаем режим игры из настроек
+    const mode = gameSettings.value.discountMode || 'max'
     
-    // Имитация запроса
-    await new Promise(resolve => setTimeout(resolve, 2000))
+    // Генерируем промокод
+    const generatedPromoCode = promoCode.value || defaultPromoCode.value
     
-    // Показываем промокод вместо alert
+    // Сохранение результата игры через API
+    await $fetch('/api/game/result', {
+      method: 'POST',
+      body: {
+        firstName: formState.firstName.trim(),
+        lastName: formState.lastName.trim(),
+        phone: formState.phone.trim(),
+        email: formState.email.trim(),
+        mode,
+        promoCode: generatedPromoCode
+      }
+    })
+    
+    // Показываем промокод после успешной отправки
     isSuccess.value = true
     
-  } catch (error) {
+  } catch (error: any) {
     console.error('Ошибка при отправке формы:', error)
-    alert('Произошла ошибка. Попробуйте еще раз.')
+    const errorMessage = error.data?.message || error.message || 'Произошла ошибка. Попробуйте еще раз.'
+    alert(errorMessage)
   } finally {
     isSubmitting.value = false
   }

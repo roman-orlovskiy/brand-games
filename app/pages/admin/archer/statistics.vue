@@ -17,14 +17,13 @@
         </div>
       </template>
 
-      <UTable :data="tableRows" :columns="columns" :loading="false" />
+      <UTable :data="tableRows" :columns="columns" :loading="isLoading" />
     </UCard>
   </div>
 
 </template>
 
 <script setup lang="ts">
-import rawData from '~/data/archer-statistics.json';
 import { formatDateTimeRu, formatDateRangeInclusiveRu } from '~/utils/date';
 
 definePageMeta({
@@ -45,7 +44,30 @@ interface ArcherStatRow {
   playedAt: string; // ISO
 }
 
-const data = rawData as ArcherStatRow[];
+const isLoading = ref(false)
+const data = ref<ArcherStatRow[]>([])
+
+// Загрузка данных из API
+const loadStatistics = async () => {
+  isLoading.value = true
+  try {
+    const response = await $fetch<{ results: ArcherStatRow[]; totalCount: number }>('/api/admin/archer/statistics')
+    data.value = response.results.map(r => ({
+      ...r,
+      playedAt: typeof r.playedAt === 'string' ? r.playedAt : new Date(r.playedAt).toISOString()
+    }))
+  } catch (error) {
+    console.error('Ошибка загрузки статистики:', error)
+    data.value = []
+  } finally {
+    isLoading.value = false
+  }
+}
+
+// Загружаем данные при монтировании компонента
+onMounted(() => {
+  loadStatistics()
+})
 
 const columns = [
   { id: 'firstName', accessorKey: 'firstName', header: 'Имя' },

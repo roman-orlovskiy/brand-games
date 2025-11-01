@@ -286,6 +286,69 @@ export const useSettingsStore = defineStore('settings', () => {
     gameSettings.value.prizes = newPrizes
   }
 
+  // Загрузка настроек бренда из API
+  const loadBrandSettings = async () => {
+    try {
+      const response = await $fetch<{ brandSettings: BrandSettings }>('/api/admin/brand/settings')
+      if (response.brandSettings) {
+        brandSettings.value = response.brandSettings
+      }
+    } catch (error) {
+      console.error('Ошибка загрузки настроек бренда:', error)
+    }
+  }
+
+  // Сохранение настроек бренда через API
+  const saveBrandSettings = async () => {
+    try {
+      await $fetch('/api/admin/brand/settings', {
+        method: 'PUT',
+        body: {
+          colors: brandSettings.value.colors
+        }
+      })
+      return true
+    } catch (error) {
+      console.error('Ошибка сохранения настроек бренда:', error)
+      return false
+    }
+  }
+
+  // Загрузка настроек игры из API
+  const loadGameSettings = async () => {
+    try {
+      const response = await $fetch<{ gameSettings: GameSettings }>('/api/admin/archer/settings')
+      if (response.gameSettings) {
+        gameSettings.value = response.gameSettings
+      }
+    } catch (error) {
+      console.error('Ошибка загрузки настроек игры:', error)
+    }
+  }
+
+  // Сохранение настроек игры через API
+  const saveGameSettings = async () => {
+    try {
+      await $fetch('/api/admin/archer/settings', {
+        method: 'PUT',
+        body: {
+          colors: gameSettings.value.colors,
+          prizesCount: gameSettings.value.prizesCount,
+          badPrizesCount: gameSettings.value.badPrizesCount,
+          logoUrl: gameSettings.value.logoUrl,
+          prizes: gameSettings.value.prizes,
+          discountMode: gameSettings.value.discountMode,
+          shotsCount: gameSettings.value.shotsCount,
+          formSettings: gameSettings.value.formSettings
+        }
+      })
+      return true
+    } catch (error) {
+      console.error('Ошибка сохранения настроек игры:', error)
+      return false
+    }
+  }
+
   return {
     brandSettings,
     gameSettings,
@@ -308,6 +371,10 @@ export const useSettingsStore = defineStore('settings', () => {
     updateFormButtonText,
     updateFormDiscountDescription,
     updateFormDefaultPromoCode,
-    applyGameSettings
+    applyGameSettings,
+    loadBrandSettings,
+    saveBrandSettings,
+    loadGameSettings,
+    saveGameSettings
   }
 })

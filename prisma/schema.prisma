@@ -1,0 +1,74 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String    @id @default(cuid())
+  email        String    @unique
+  password     String
+  name         String
+  companyName  String?
+  role         String    @default("user") // "user" или "admin"
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  brandSettings BrandSettings?
+  gameSettings  GameSettings?
+  gameResults   GameResult[]
+
+  @@map("users")
+}
+
+model BrandSettings {
+  id        String   @id @default(cuid())
+  userId    String   @unique
+  colors    Json     // Массив BrandColor объектов
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("brand_settings")
+}
+
+model GameSettings {
+  id              String   @id @default(cuid())
+  userId           String   @unique
+  colors            Json     // Массив GameColor объектов
+  prizesCount       Int      @default(4)
+  badPrizesCount    Int      @default(3)
+  logoUrl           String?
+  prizes            Json     // Массив Prize объектов
+  discountMode      String   @default("max") // "sum" или "max"
+  shotsCount        Int      @default(3)
+  formSettings      Json     // FormSettings объект
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("game_settings")
+}
+
+model GameResult {
+  id         String    @id @default(cuid())
+  userId     String?   // Может быть null для анонимных игроков
+  firstName  String
+  lastName   String
+  phone      String
+  email      String
+  mode       String    // "sum" или "max"
+  promoCode  String?
+  playedAt   DateTime  @default(now())
+  createdAt  DateTime  @default(now())
+
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@map("game_results")
+}
+

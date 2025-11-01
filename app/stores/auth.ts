@@ -5,7 +5,10 @@ export interface User {
   id: string
   email: string
   name: string
+  companyName?: string
+  role?: string
   createdAt: string
+  updatedAt?: string
 }
 
 export interface LoginCredentials {
@@ -37,29 +40,15 @@ export const useAuthStore = defineStore('auth', () => {
     error.value = null
 
     try {
-      // Имитация задержки API
-      await new Promise(resolve => setTimeout(resolve, 1000))
-
-      // Имитация проверки данных
-      if (credentials.email === 'admin@example.com' && credentials.password === 'admin123') {
-        user.value = {
-          id: '1',
-          email: credentials.email,
-          name: 'Администратор',
-          createdAt: new Date().toISOString()
-        }
-        
-        // Сохраняем в localStorage для имитации сессии (только на клиенте)
-        if (import.meta.client) {
-          localStorage.setItem('auth_user', JSON.stringify(user.value))
-        }
-        return true
-      } else {
-        error.value = 'Неверный email или пароль'
-        return false
-      }
-    } catch {
-      error.value = 'Произошла ошибка при входе'
+      const response = await $fetch<{ user: User }>('/api/auth/login', {
+        method: 'POST',
+        body: credentials
+      })
+      
+      user.value = response.user
+      return true
+    } catch (err: any) {
+      error.value = err.data?.message || err.message || 'Произошла ошибка при входе'
       return false
     } finally {
       isLoading.value = false
@@ -71,10 +60,7 @@ export const useAuthStore = defineStore('auth', () => {
     error.value = null
 
     try {
-      // Имитация задержки API
-      await new Promise(resolve => setTimeout(resolve, 1000))
-
-      // Имитация проверки данных
+      // Проверка паролей на клиенте
       if (credentials.password !== credentials.confirmPassword) {
         error.value = 'Пароли не совпадают'
         return false
@@ -85,65 +71,57 @@ export const useAuthStore = defineStore('auth', () => {
         return false
       }
 
-      // Имитация успешной регистрации
-      user.value = {
-        id: Date.now().toString(),
-        email: credentials.email,
-        name: credentials.name,
-        createdAt: new Date().toISOString()
-      }
-
-      // Сохраняем в localStorage для имитации сессии (только на клиенте)
-      if (import.meta.client) {
-        localStorage.setItem('auth_user', JSON.stringify(user.value))
-      }
+      const response = await $fetch<{ user: User }>('/api/auth/register', {
+        method: 'POST',
+        body: {
+          email: credentials.email,
+          password: credentials.password,
+          name: credentials.name
+        }
+      })
+      
+      user.value = response.user
       return true
-    } catch {
-      error.value = 'Произошла ошибка при регистрации'
+    } catch (err: any) {
+      error.value = err.data?.message || err.message || 'Произошла ошибка при регистрации'
       return false
     } finally {
       isLoading.value = false
     }
   }
 
-  const logout = () => {
-    console.log('Logout: очищаем данные пользователя')
-    
-    // Очищаем состояние пользователя
-    user.value = null
-    
-    // Очищаем localStorage только на клиенте
-    if (import.meta.client) {
-      localStorage.removeItem('auth_user')
-      console.log('Logout: localStorage очищен')
-    }
-    
-    // Очищаем ошибки
+  const logout = async () => {
+    isLoading.value = true
     error.value = null
-    
-    // Сбрасываем состояние загрузки
-    isLoading.value = false
-    
-    console.log('Logout: завершено, isAuthenticated =', !!user.value)
+
+    try {
+      await $fetch('/api/auth/logout', {
+        method: 'POST'
+      })
+    } catch (err: any) {
+      // Игнорируем ошибки при выходе
+      console.error('Ошибка при выходе:', err)
+    } finally {
+      // Очищаем состояние пользователя в любом случае
+      user.value = null
+      error.value = null
+      isLoading.value = false
+    }
   }
 
-  const initializeAuth = () => {
-    // Проверяем localStorage при инициализации только на клиенте
+  const initializeAuth = async () => {
+    // Загружаем пользователя через API при инициализации только на клиенте
     if (import.meta.client) {
-      const savedUser = localStorage.getItem('auth_user')
-      console.log('InitializeAuth: проверяем localStorage, найден пользователь:', !!savedUser)
-      
-      if (savedUser) {
-        try {
-          user.value = JSON.parse(savedUser)
-          console.log('InitializeAuth: пользователь восстановлен:', user.value?.email)
-        } catch {
-          localStorage.removeItem('auth_user')
-          console.log('InitializeAuth: ошибка парсинга, localStorage очищен')
-        }
+      try {
+        const response = await $fetch<{ user: User }>('/api/auth/me', {
+          method: 'GET'
+        })
+        
+        user.value = response.user
+      } catch (err) {
+        // Если не авторизован, просто очищаем состояние
+        user.value = null
       }
-      
-      console.log('InitializeAuth: завершено, isAuthenticated =', !!user.value)
     }
   }
 

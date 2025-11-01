@@ -368,6 +368,12 @@ const settingsStore = useSettingsStore()
 
 const { brandSettings, gameSettings } = storeToRefs(settingsStore)
 
+// Загрузка настроек при монтировании
+onMounted(async () => {
+  await settingsStore.loadBrandSettings()
+  await settingsStore.loadGameSettings()
+})
+
 // Генерируем URL и код iframe
 const gameHash = ref('random123') // Пока просто, потом будет генериться для каждого клиента
 const isCopied = ref(false)
@@ -503,12 +509,17 @@ const applyChanges = () => {
 }
 
 // Функция применения изменений параметров игры
-const applyGameSettings = () => {
+const applyGameSettings = async () => {
   // Применяем изменения через стор
   settingsStore.applyGameSettings(prizesCount.value, badPrizesCount.value, shotsCount.value)
   
-  // Перезагружаем игру для применения изменений
-  reloadGame()
+  // Сохраняем в БД через API
+  const saved = await settingsStore.saveGameSettings()
+  
+  if (saved) {
+    // Перезагружаем игру для применения изменений
+    reloadGame()
+  }
 }
 
 // Ссылка на игровой компонент
@@ -518,9 +529,12 @@ const gameRef = ref()
 const gameKey = ref(0)
 
 // Функция перезагрузки игры
-const reloadGame = () => {
+const reloadGame = async () => {
   // Применяем изменения из локальных переменных
   applyChanges()
+  
+  // Сохраняем в БД через API
+  await settingsStore.saveGameSettings()
   
   // Сбрасываем игру перед перезагрузкой
   if (gameRef.value && gameRef.value.resetGame) {

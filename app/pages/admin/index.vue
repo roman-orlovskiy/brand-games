@@ -145,6 +145,23 @@ definePageMeta({
 const settingsStore = useSettingsStore()
 const { brandSettings } = storeToRefs(settingsStore)
 
+// Загрузка настроек бренда при монтировании
+onMounted(async () => {
+  await settingsStore.loadBrandSettings()
+})
+
+// Автосохранение при изменении цветов
+let saveTimeout: NodeJS.Timeout | null = null
+watch(() => brandSettings.value.colors, async () => {
+  // Небольшая задержка для debounce
+  if (saveTimeout) {
+    clearTimeout(saveTimeout)
+  }
+  saveTimeout = setTimeout(async () => {
+    await settingsStore.saveBrandSettings()
+  }, 1000)
+}, { deep: true })
+
 const getColor = (index: number) => {
   return brandSettings.value?.colors?.[index]?.color || '#000000'
 }
