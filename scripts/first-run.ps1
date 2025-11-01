@@ -1,44 +1,46 @@
-# Первый запуск проекта для Windows (PowerShell)
+# First run script for Windows (PowerShell)
 
-Write-Host "🚀 Первый запуск проекта..." -ForegroundColor Cyan
+Write-Host "Starting project setup..." -ForegroundColor Cyan
 Write-Host ""
 
-# Запуск Docker контейнеров
-Write-Host "📦 Запуск Docker контейнеров..." -ForegroundColor Yellow
+# Start Docker containers
+Write-Host "Starting Docker containers..." -ForegroundColor Yellow
 docker compose up -d
 
-# Ждем пока PostgreSQL запустится
-Write-Host "⏳ Ожидание запуска PostgreSQL (15 секунд)..." -ForegroundColor Yellow
+# Wait for PostgreSQL to start
+Write-Host "Waiting for PostgreSQL to start (15 seconds)..." -ForegroundColor Yellow
 Start-Sleep -Seconds 15
 
-# Проверка что контейнеры запущены
-$containers = docker compose ps
-if ($containers -notmatch "Up") {
-    Write-Host "❌ Ошибка: Контейнеры не запустились" -ForegroundColor Red
+# Check that containers are running
+Write-Host "Checking container status..." -ForegroundColor Yellow
+Start-Sleep -Seconds 2
+$psOutput = docker compose ps 2>&1 | Out-String
+if ($psOutput -notmatch "Up|running|healthy") {
+    Write-Host "Error: Containers failed to start" -ForegroundColor Red
+    Write-Host "Check logs: docker compose logs" -ForegroundColor Yellow
     exit 1
 }
 
-Write-Host "✅ Контейнеры запущены" -ForegroundColor Green
+Write-Host "Containers are running" -ForegroundColor Green
 Write-Host ""
 
-# Выполнение миграций
-Write-Host "🗄️  Выполнение миграций Prisma..." -ForegroundColor Yellow
+# Run Prisma migrations
+Write-Host "Running Prisma migrations..." -ForegroundColor Yellow
 docker compose exec app npx prisma migrate dev --name init
 
-# Генерация Prisma Client
-Write-Host "⚙️  Генерация Prisma Client..." -ForegroundColor Yellow
+# Generate Prisma Client
+Write-Host "Generating Prisma Client..." -ForegroundColor Yellow
 docker compose exec app npx prisma generate
 
-# Заполнение начальными данными
-Write-Host "🌱 Заполнение базы данных начальными данными..." -ForegroundColor Yellow
-docker compose exec app npm run db:seed
+# Seed database with initial data
+Write-Host "Seeding database with initial data..." -ForegroundColor Yellow
+docker compose exec app npx tsx prisma/seed.ts
 
 Write-Host ""
-Write-Host "✅ Готово! Проект запущен и настроен!" -ForegroundColor Green
+Write-Host "Done! Project is set up and running!" -ForegroundColor Green
 Write-Host ""
-Write-Host "🌐 Приложение доступно на: http://localhost:8080" -ForegroundColor Cyan
-Write-Host "👤 Админ: admin@example.com / admin123" -ForegroundColor Cyan
+Write-Host "Application available at: http://localhost:8080" -ForegroundColor Cyan
+Write-Host "Admin: admin@example.com / admin123" -ForegroundColor Cyan
 Write-Host ""
-Write-Host "📝 Просмотр логов: npm run docker:dev:logs" -ForegroundColor Yellow
-Write-Host "🛑 Остановка: npm run docker:dev:stop" -ForegroundColor Yellow
-
+Write-Host "View logs: npm run docker:dev:logs" -ForegroundColor Yellow
+Write-Host "Stop: npm run docker:dev:stop" -ForegroundColor Yellow

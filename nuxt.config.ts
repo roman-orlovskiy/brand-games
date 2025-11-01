@@ -4,7 +4,7 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
 
   devServer: {
-    host: '127.0.0.1', // Явно указываем IPv4 localhost
+    host: process.env.NITRO_HOST || '0.0.0.0', // 0.0.0.0 для Docker, 127.0.0.1 для локального запуска
     port: 8080
   },
 
