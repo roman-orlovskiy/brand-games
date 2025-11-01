@@ -12,6 +12,7 @@
     "docker:dev": "docker compose up -d",
     "docker:dev:logs": "docker compose logs -f app",
     "docker:dev:stop": "docker compose down",
+    "docker:setup": "powershell -ExecutionPolicy Bypass -File ./scripts/first-run.ps1",
     "docker:prod": "docker compose -f docker-compose.prod.yml up -d --build",
     "docker:prod:stop": "docker compose -f docker-compose.prod.yml down"
   },

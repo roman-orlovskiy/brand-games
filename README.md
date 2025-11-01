@@ -1,75 +1,68 @@
-# Nuxt Minimal Starter
+# Brand Games - Nuxt 4 + PostgreSQL + Prisma
 
-Look at the [Nuxt documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+Проект игр с брендингом на Nuxt 4 с PostgreSQL базой данных.
 
-## Setup
+## 🚀 Быстрый старт (первый запуск)
 
-Make sure to install dependencies:
+### С Docker (рекомендуется)
 
+1. **Установите Docker Desktop**: https://www.docker.com/products/docker-desktop/
+
+2. **Запустите первый раз**:
 ```bash
-# npm
-npm install
-
-# pnpm
-pnpm install
-
-# yarn
-yarn install
-
-# bun
-bun install
+npm run docker:setup
 ```
 
-## Development Server
+Эта команда автоматически:
+- ✅ Запустит PostgreSQL и приложение
+- ✅ Создаст структуру базы данных (миграции)
+- ✅ Заполнит базу начальными данными (создаст админа)
 
-Start the development server on `http://localhost:3000`:
+3. **Откройте в браузере**: http://localhost:8080
 
-```bash
-# npm
-npm run dev
+4. **Вход в админку**:
+   - Email: `admin@example.com`
+   - Пароль: `admin123`
 
-# pnpm
-pnpm dev
+### Вручную (пошагово)
 
-# yarn
-yarn dev
-
-# bun
-bun run dev
-```
-
-## Production
-
-Build the application for production:
+Если хотите запустить пошагово:
 
 ```bash
-# npm
-npm run build
+# 1. Запуск контейнеров
+npm run docker:dev
 
-# pnpm
-pnpm build
-
-# yarn
-yarn build
-
-# bun
-bun run build
+# 2. Подождите 15 секунд, затем выполните миграции
+docker compose exec app npx prisma migrate dev --name init
+docker compose exec app npx prisma generate
+docker compose exec app npm run db:seed
 ```
 
-Locally preview production build:
+## 📋 Другие команды
 
 ```bash
-# npm
-npm run preview
+# Просмотр логов
+npm run docker:dev:logs
 
-# pnpm
-pnpm preview
+# Остановка
+npm run docker:dev:stop
 
-# yarn
-yarn preview
-
-# bun
-bun run preview
+# Остановка с удалением данных БД (начать заново)
+docker compose down -v
 ```
 
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
+## 📚 Документация
+
+- [Инструкция по первому запуску](./README.SETUP.md) - подробная инструкция
+- [Инструкция по Docker](./README.DOCKER.md) - работа с Docker
+
+## 🔧 Без Docker (альтернатива)
+
+Если Docker не установлен, используйте облачную базу данных:
+1. Создайте проект на https://supabase.com
+2. Скопируйте connection string
+3. Создайте `.env` файл с `DATABASE_URL` и `JWT_SECRET`
+4. Выполните `npx prisma migrate dev --name init`
+5. Запустите `npm run dev`
+
+Подробнее в [README.SETUP.md](./README.SETUP.md)
