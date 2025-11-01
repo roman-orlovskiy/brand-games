@@ -8,7 +8,12 @@
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
-    "db:seed": "tsx prisma/seed.ts"
+    "db:seed": "tsx prisma/seed.ts",
+    "docker:dev": "docker-compose up -d",
+    "docker:dev:logs": "docker-compose logs -f app",
+    "docker:dev:stop": "docker-compose down",
+    "docker:prod": "docker-compose -f docker-compose.prod.yml up -d --build",
+    "docker:prod:stop": "docker-compose -f docker-compose.prod.yml down"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"
